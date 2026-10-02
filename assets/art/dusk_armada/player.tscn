@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="1"]
+[ext_resource type="Script" path="res://assets/art/dusk_armada/flap_sprite.gd" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/player.png" id="3"]
+
+[node name="Visual" type="Node2D"]
+script = ExtResource("1")
+neon_color = Color(1, 0.247, 0.847, 1)
+
+[node name="dusk_armada" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite2D" parent="dusk_armada"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("3")
+hframes = 2
+script = ExtResource("2")
+fps = 12
+
+[node name="Silhouette" type="Node2D" parent="dusk_armada"]
+visible = false
+
+[node name="Hull" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(0, -24, 7, -6, 20, 10, 20, 18, 6, 12, 0, 18, -6, 12, -20, 18, -20, 10, -7, -6)
+
+[node name="Cockpit" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(0, -12, 4, 0, 0, 4, -4, 0)

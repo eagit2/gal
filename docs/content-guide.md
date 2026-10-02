@@ -6,7 +6,7 @@ How to add content without touching code. Filled in as each system lands.
 `data/difficulty/{cadet,pilot,ace,nightmare}.tres` (`DifficultyDef`). The game scene currently uses `pilot`; difficulty select arrives in M4.
 
 ## Enemy
-`data/enemies/<id>.tres` (`EnemyDef`): hp, score, dive_score, speed, dive_shots, bullet_speed, behaviors (`zigzag`, `wide`), and `visual_scene`. The visual is a StyledVisual scene (see `assets/art/placeholder/enemies/`): a child named `dusk_armada` holding the base drawing, plus optional children named after other theme ids. Vector themes generate a wireframe from the base polygons using `neon_color`.
+`data/enemies/<id>.tres` (`EnemyDef`): hp, score, dive_score, speed, dive_shots, bullet_speed, behaviors (`zigzag`, `wide`), and `visual_scene`. The visual is a StyledVisual scene (see `assets/art/dusk_armada/enemies/`): a child named `dusk_armada` holding the base sprite and a hidden `Silhouette` of polygons, plus optional children named after other theme ids. Vector themes generate a wireframe from the base polygons using `neon_color`.
 
 ## Paths
 `data/paths/<id>.tres` are Curve2D resources in screen coordinates (540x960). Entry paths end near the formation; challenge paths should exit the screen.

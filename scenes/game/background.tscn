@@ -1,11 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="1"]
-[ext_resource type="Shader" path="res://assets/shaders/dusk_sky.gdshader" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/background/sky.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/background/clouds_far.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/background/clouds_near.png" id="5"]
+[ext_resource type="Script" path="res://assets/art/dusk_armada/scroll_layer.gd" id="6"]
 [ext_resource type="Shader" path="res://assets/shaders/outrun_grid.gdshader" id="3"]
-
-[sub_resource type="ShaderMaterial" id="dusk"]
-shader = ExtResource("2")
 
 [sub_resource type="ShaderMaterial" id="outrun"]
 shader = ExtResource("3")
@@ -14,11 +14,43 @@ shader = ExtResource("3")
 z_index = -10
 script = ExtResource("1")
 
-[node name="dusk_armada" type="ColorRect" parent="."]
-material = SubResource("dusk")
-offset_right = 540.0
-offset_bottom = 960.0
-mouse_filter = 2
+[node name="dusk_armada" type="Node2D" parent="."]
+texture_filter = 1
+
+[node name="Sky" type="Sprite2D" parent="dusk_armada"]
+scale = Vector2(2, 2)
+texture = ExtResource("2")
+centered = false
+
+[node name="CloudsFar" type="Node2D" parent="dusk_armada"]
+script = ExtResource("6")
+speed = 14.0
+
+[node name="A" type="Sprite2D" parent="dusk_armada/CloudsFar"]
+scale = Vector2(2, 2)
+texture = ExtResource("4")
+centered = false
+
+[node name="B" type="Sprite2D" parent="dusk_armada/CloudsFar"]
+position = Vector2(0, -960)
+scale = Vector2(2, 2)
+texture = ExtResource("4")
+centered = false
+
+[node name="CloudsNear" type="Node2D" parent="dusk_armada"]
+script = ExtResource("6")
+speed = 34.0
+
+[node name="A" type="Sprite2D" parent="dusk_armada/CloudsNear"]
+scale = Vector2(2, 2)
+texture = ExtResource("5")
+centered = false
+
+[node name="B" type="Sprite2D" parent="dusk_armada/CloudsNear"]
+position = Vector2(0, -960)
+scale = Vector2(2, 2)
+texture = ExtResource("5")
+centered = false
 
 [node name="outrun_grid" type="ColorRect" parent="."]
 material = SubResource("outrun")

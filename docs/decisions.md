@@ -2,6 +2,10 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-02: Dusk Armada pixel art is generated from ASCII pixel maps by `tools/art/gen_dusk_armada.py` (1x for a 270x480 grid, shown at 2x with nearest filtering). Edits are text diffs and need no image editor.
+- 2026-10-02: Enemy sprites face down (head toward the player), so dives lead with the head under the current rotation rule.
+- 2026-10-02: The sky ends in a dark cloud sea at 80% height. Over the bright sunset bands, orange enemies and the reserved bullet red were hard to read in the player zone.
+- 2026-10-02: Sprite visuals keep a hidden `Silhouette` of polygons inside their `dusk_armada` child, so vector styles still get the generated wireframe.
 - 2026-10-02: Ramming destroys the enemy too (Eric). Score is awarded as a normal kill.
 - 2026-10-02: Glow for the outrun grid is computed in the shader rather than with WorldEnvironment glow: it's guaranteed on the web Compatibility renderer and costs one full-screen pass. Revisit for sprites in M6.
 - 2026-10-02: Vector styles get an auto-generated wireframe from each visual's base polygons (StyledVisual), so a new entity needs one drawing, not one per style.

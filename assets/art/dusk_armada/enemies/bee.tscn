@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="1"]
+[ext_resource type="Script" path="res://assets/art/dusk_armada/flap_sprite.gd" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/enemies/bee.png" id="3"]
+
+[node name="Visual" type="Node2D"]
+script = ExtResource("1")
+neon_color = Color(0.176, 0.886, 0.902, 1)
+
+[node name="dusk_armada" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite2D" parent="dusk_armada"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("3")
+hframes = 2
+script = ExtResource("2")
+fps = 3
+
+[node name="Silhouette" type="Node2D" parent="dusk_armada"]
+visible = false
+
+[node name="WingL" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(-6, -4, -16, -12, -16, 2, -6, 4)
+
+[node name="WingR" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(6, -4, 16, -12, 16, 2, 6, 4)
+
+[node name="Body" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(0, -12, 7, -4, 6, 8, 0, 13, -6, 8, -7, -4)

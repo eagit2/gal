@@ -42,5 +42,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 ## M4 Difficulty + meta
 ## M5 Sector 1 complete
 ## M6 Art + audio pass
+- [x] Dusk Armada base sprites: player, 7 Sector 1 enemies, shots, pickup, explosion, sunset sky with cloud sea (`tools/art/gen_dusk_armada.py`)
+- [ ] The Matriarch boss art, boss damaged frames, player death explosion
+- [ ] Combo style treatments: P1 and P3 palette shaders, N2 and N3 vector looks
 ## M7 Content scale
 ## M8 Release polish

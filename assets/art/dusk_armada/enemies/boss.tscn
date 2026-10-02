@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="1"]
+[ext_resource type="Script" path="res://assets/art/dusk_armada/flap_sprite.gd" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/enemies/boss.png" id="3"]
+
+[node name="Visual" type="Node2D"]
+script = ExtResource("1")
+neon_color = Color(0.976, 0.973, 0.443, 1)
+
+[node name="dusk_armada" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite2D" parent="dusk_armada"]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("3")
+hframes = 2
+script = ExtResource("2")
+fps = 3
+
+[node name="Silhouette" type="Node2D" parent="dusk_armada"]
+visible = false
+
+[node name="WingL" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(-9, -6, -22, -2, -20, 10, -9, 8)
+
+[node name="WingR" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(9, -6, 22, -2, 20, 10, 9, 8)
+
+[node name="Body" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(-8, -14, 8, -14, 12, -4, 10, 10, 0, 16, -10, 10, -12, -4)
+
+[node name="Crown" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(-8, 14, -4, 20, 0, 14, 4, 20, 8, 14)
