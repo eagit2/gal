@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DifficultyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/difficulty_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"pilot"
+display_name = "Pilot"
+lives = 3
+upgrade_choices = 3
+enemy_bullet_speed = 1.0
+dive_frequency = 1.0
+enemy_hp = 1.0
+score_multiplier = 1.0
+modifiers_from_sector = 2

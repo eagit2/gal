@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DifficultyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/difficulty_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cadet"
+display_name = "Cadet"
+lives = 5
+upgrade_choices = 4
+enemy_bullet_speed = 0.7
+dive_frequency = 0.6
+enemy_hp = 0.8
+score_multiplier = 0.75
+modifiers_from_sector = -1
