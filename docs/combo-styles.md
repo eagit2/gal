@@ -1,6 +1,6 @@
 # Combo modes and art styles
 
-Status: proposal, 2026-10-02 (Eric: "combos need to be triggered in a certain way... multiple types, each leading to a different art style").
+Status: decided, 2026-10-02 (Eric confirmed the mapping. Original ask: "combos need to be triggered in a certain way... multiple types, each leading to a different art style").
 Art concepts: https://claude.ai/artifact/4E2e82z6Ss4LiyFTZt6hj1
 
 ## Idea

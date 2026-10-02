@@ -246,5 +246,5 @@ Because the game is data-driven, a handoff should also record:
 - **Playtest feel notes:** what felt bad (e.g. "dives too predictable in stage 3") since feel is hard to recover from code.
 
 ## 10. Open decisions
-1. Confirm the combo-mode mapping and triggers in `docs/combo-styles.md`.
+1. Resolved 2026-10-02: combo-mode mapping confirmed (`docs/combo-styles.md`).
 2. Resolved 2026-10-02: portrait orientation; repo `eagit2/gal`; two runtime-switched styles.
