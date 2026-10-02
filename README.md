@@ -5,9 +5,13 @@ A modern take on Galaga for the browser: deep upgrade system, selectable difficu
 ## Run
 Open the folder in Godot 4.5 and press F5. Main scene: `scenes/main/boot.tscn`.
 
+## Controls
+Arrows/WASD move, Space/Z fire, Esc/P pause. Gamepad: stick or D-pad, A fire, Start pause. Touch: drag to move (auto-fire).
+
 ## Test
 ```
 godot --headless -s res://tests/run_tests.gd
+godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd   # 30s simulated playthrough
 ```
 Tests live in `tests/unit/test_*.gd`, extend `TestCase`, and use `expect_*` helpers.
 

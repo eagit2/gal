@@ -14,4 +14,4 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_pressed() and not event.is_echo():
 		get_viewport().set_input_as_handled()
-		_prompt.text = "STARTING..."  # Difficulty select arrives in M4; game scene in M1.
+		SceneRouter.go_to("res://scenes/game/game.tscn")  # Difficulty select arrives in M4.

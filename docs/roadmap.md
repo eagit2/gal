@@ -11,14 +11,18 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Headless test runner + first tests
 - [x] Web export preset (single-threaded)
 - [x] CI workflow: test, export, publish to GitHub Pages
-- [ ] Push to GitHub repo; enable Pages (Settings > Pages > Source: GitHub Actions)
-- [ ] Confirm CI green and web build loads in browser
+- [x] Push to GitHub repo
+- [x] CI green (tests + web export)
+- [ ] Enable Pages (Settings > Pages > Source: GitHub Actions) and confirm the build loads in a browser
 
 ## M1 Core loop slice
-- [ ] Input actions (keyboard, gamepad, touch)
-- [ ] Player ship: move, shoot (pooled bullets)
-- [ ] One enemy type with Health/Hitbox components
-- [ ] Score, lives, HUD, game over, restart
+- [x] Input actions (keyboard, gamepad, touch)
+- [x] Player ship: move, shoot (pooled bullets), invulnerability after respawn
+- [x] One enemy type (bee) with Health/Hurtbox/Hitbox components, swaying grid, aimed shots
+- [x] Score, lives, HUD, pause, game over, restart, high score saved
+- [x] Waves repeat with rising aggression
+- [x] Headless smoke playthrough in CI
+- [ ] Playtest in browser and tune feel
 
 ## M2 Galaga feel
 - [ ] StyleDirector + style switch with placeholder visuals for both styles

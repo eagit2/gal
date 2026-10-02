@@ -9,6 +9,7 @@ config/features=PackedStringArray("4.5", "GL Compatibility")
 
 [autoload]
 
+Controls="*res://autoload/controls.gd"
 EventBus="*res://autoload/event_bus.gd"
 GameState="*res://autoload/game_state.gd"
 SaveManager="*res://autoload/save_manager.gd"
@@ -23,6 +24,13 @@ window/size/viewport_height=960
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep"
 window/handheld/orientation=1
+
+[layer_names]
+
+2d_physics/layer_1="player_hurtbox"
+2d_physics/layer_2="enemy_hurtbox"
+2d_physics/layer_3="player_shots"
+2d_physics/layer_4="enemy_shots"
 
 [rendering]
 

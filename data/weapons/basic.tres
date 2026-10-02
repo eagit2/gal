@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeaponDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/weapon_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/player_bullet.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"basic"
+fire_rate = 7.0
+projectile_scene = ExtResource("2")
+projectile_speed = 950.0
+spread_count = 1
+spread_angle = 0.0
+damage = 1

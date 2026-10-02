@@ -8,3 +8,14 @@ extends Resource
 @export var spread_count: int = 1
 @export var spread_angle: float = 0.0
 @export var damage: int = 1
+
+
+## Shot directions in degrees from straight up, spread evenly across spread_angle.
+func shot_angles() -> Array[float]:
+	var angles: Array[float] = []
+	if spread_count <= 1:
+		angles.append(0.0)
+		return angles
+	for i in spread_count:
+		angles.append(lerpf(-spread_angle / 2.0, spread_angle / 2.0, i / (spread_count - 1.0)))
+	return angles
