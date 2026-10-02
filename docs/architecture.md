@@ -17,7 +17,8 @@ Status: proposal, 2026-10-02. Engine and platform decided (Godot, browser). Port
 ### 2.1 Core loop
 ```
 Title > Difficulty select > Hangar (spend meta currency) > Run
-Run:  Stage > Upgrade pick (1 of 3) > Stage > ... > Boss > Sector clear > next Sector
+Run:  Stage (enemies may drop upgrades) > Upgrade pick (1 of 3) > Stage > ... > Boss > Sector clear > next Sector
+Medals earned in stages pay meta currency
 Death or win > Results (score, currency earned) > Hangar
 ```
 
@@ -29,8 +30,8 @@ Death or win > Results (score, currency earned) > Hangar
 
 ### 2.3 Modern additions
 - **Two-layer upgrades**
-  - *In-run (roguelite):* after each stage, choose 1 of 3 upgrade cards. Lost on death.
-  - *Meta (persistent):* currency earned per run buys permanent hangar unlocks (new ships, starting perks, new upgrades added to the card pool). Unlocks widen options more than they add raw power.
+  - *In-run (roguelite):* after each stage, choose 1 of 3 upgrade cards. Kills can also **drop upgrade pickups** during a stage (per-enemy `DropTable` chance, a pity bonus that grows with each dry kill, rarity rolled like cards, scaled by difficulty). Drops add to the card pick; they don't replace it. Lost on death. Details: `/mnt/project-files/design/intro-levels.md` section 2.1.
+  - *Meta (persistent):* currency comes from **stage medals** (an optional goal per stage, paid the first time it's earned each run, scaled by difficulty). It buys permanent hangar unlocks (new ships, starting perks, new upgrades added to the card pool). Unlocks widen options more than they add raw power.
 - **Upgrade categories:** Primary weapon (spread, laser, homing, piercing), Secondary (missiles, drones, bombs), Defense (shield, armor, dodge-dash), Utility (magnet, score multiplier, slow-mo on graze), Synergies (unlocked when two tagged upgrades are owned, e.g. *Homing + Missiles = Swarm*).
 - **Rarity tiers** (common/rare/epic) and **tags** drive card weighting and synergies.
 - **Sectors** (worlds) of 5 stages + boss, each with a theme and a mechanical twist (asteroid fields, gravity wells, shielded formations, darkness/limited vision, mirrored enemies).
@@ -88,7 +89,9 @@ Keyboard (arrows/WASD, Space fire, Shift dash, Esc pause), gamepad, and touch (d
 - **WaveDirector:** reads a `StageDef`, spawns `WaveDef`s on a timeline, assigns each enemy an entry `Path2D` and a formation slot.
 - **Formation:** grid of slots that sways and breathes; tracks which slots are filled.
 - **DiveController:** picks enemies to dive based on difficulty dive rate, stage pattern, and how many are already diving.
-- **UpgradeSystem:** applies `UpgradeDef` effects to a `PlayerStats` object via modifiers (add, multiply, flag); computes synergies from tags; rolls card choices with rarity weights and pool unlocks.
+- **UpgradeSystem:** applies `UpgradeDef` effects to a `PlayerStats` object via modifiers (add, multiply, flag); computes synergies from tags; rolls card choices and drop rarities with the same weights and pool unlocks.
+- **DropSystem:** on `enemy_killed`, rolls the enemy's `DropTable` (with pity bonus and `DifficultyDef.drop_mult`) and spawns a slow-falling pickup the ship collects by flying over it.
+- **MedalTracker:** watches the stage's medal goal (`StageDef.medal`) and pays `medal_currency` into `SaveManager` once per run.
 - **WeaponSystem:** a weapon is a `WeaponDef` (fire rate, pattern, projectile scene); upgrades modify it rather than replacing code.
 - **BossController:** phase state machine driven by `BossDef` (phases, HP thresholds, attack patterns).
 - **CaptureSystem:** tractor beam, captured ship, rescue, dual fighter.
@@ -102,7 +105,9 @@ SectorDef      id, name, theme, stages[], boss
 BossDef        id, phases[] (hp_threshold, attacks[], movement)
 UpgradeDef     id, name, description, rarity, tags[], max_stacks, effects[], requires[]
 SynergyDef     id, required_tags[], effects[]
-DifficultyDef  id, multipliers{}, lives, card_count, modifier_rules
+DifficultyDef  id, multipliers{}, lives, card_count, modifier_rules, drop_mult, currency_mult
+DropTable      chance, rarity_bonus   (on EnemyDef)
+StageDef       + medal (goal id), medal_currency
 ThemeDef       palette, background_scene, particle_set, music_set   (art-style hook)
 ```
 

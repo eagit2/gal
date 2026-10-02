@@ -37,9 +37,11 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [ ] Playtest in browser and tune feel
 
 ## M3 Upgrades v1
+- [ ] Upgrade drops: DropTable per enemy, pity bonus, falling pickup (adds to the card pick)
 - [ ] ComboTracker + ComboDef: Overdrive mode end to end (meter, buff, N1 style switch)
 - [ ] Remaining combo modes (Lock-On, Chain Reaction, Graze), Style Chain, Arcade '81 on rescue
 ## M4 Difficulty + meta
+- [ ] Stage medals (goal per stage) pay meta currency, scaled by difficulty
 ## M5 Sector 1 complete
 ## M6 Art + audio pass
 ## M7 Content scale
