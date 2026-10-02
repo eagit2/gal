@@ -1,0 +1,31 @@
+; Engine configuration file.
+config_version=5
+
+[application]
+
+config/name="Modern Galaga"
+run/main_scene="res://scenes/main/boot.tscn"
+config/features=PackedStringArray("4.5", "GL Compatibility")
+
+[autoload]
+
+EventBus="*res://autoload/event_bus.gd"
+GameState="*res://autoload/game_state.gd"
+SaveManager="*res://autoload/save_manager.gd"
+AudioManager="*res://autoload/audio_manager.gd"
+SceneRouter="*res://autoload/scene_router.gd"
+Pools="*res://autoload/pools.gd"
+
+[display]
+
+window/size/viewport_width=540
+window/size/viewport_height=960
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+window/handheld/orientation=1
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.02, 0.02, 0.06, 1)

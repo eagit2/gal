@@ -1,0 +1,13 @@
+class_name DifficultyDef
+extends Resource
+
+@export var id: StringName
+@export var display_name: String
+@export var lives: int = 3
+@export var upgrade_choices: int = 3
+@export var enemy_bullet_speed: float = 1.0
+@export var dive_frequency: float = 1.0
+@export var enemy_hp: float = 1.0
+@export var score_multiplier: float = 1.0
+## First sector (0-based) where stage modifiers apply. -1 means never.
+@export var modifiers_from_sector: int = -1
