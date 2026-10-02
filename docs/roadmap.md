@@ -22,7 +22,7 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Score, lives, HUD, pause, game over, restart, high score saved
 - [x] Waves repeat with rising aggression
 - [x] Headless smoke playthrough in CI
-- [ ] Playtest in browser and tune feel
+- [x] Playtest in browser (Eric: movement, fire rate, shooting OK; ship can now fly to the top)
 
 ## M2 Galaga feel
 - [ ] StyleDirector + style switch with placeholder visuals for both styles

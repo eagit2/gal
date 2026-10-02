@@ -6,7 +6,7 @@ signal hit
 
 const SPEED := 380.0
 const MARGIN := 28.0
-const MIN_Y := 640.0
+const MIN_Y := 70.0  # full screen height, below the HUD row
 const MAX_Y := 920.0
 const INVULN_TIME := 2.0
 ## Touch: keep the ship this far above the finger so it stays visible.
