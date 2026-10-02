@@ -21,4 +21,5 @@ godot --headless --export-release "Web" build/web/index.html
 - `docs/architecture.md` design and code architecture
 - `docs/roadmap.md` milestones and status
 - `docs/decisions.md` decision log
+- `docs/combo-styles.md` combo modes and art styles
 - `docs/content-guide.md` how to add content

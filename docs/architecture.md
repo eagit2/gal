@@ -159,8 +159,9 @@ Decided 2026-10-02 (concepts from the Art style concepts thread, https://claude.
 
 - Every entity's look lives in a `Visual` child scene. Each entity ships **one visual per style**: `assets/art/base/...` and `assets/art/outrun/...`. Gameplay code never references sprites directly.
 - **StyleDirector** (autoload) owns the active style. It listens to `EventBus` and swaps style with a short transition (flash, scanline wipe, grid rising from the horizon). Entities' `Visual` nodes listen for `style_changed` and swap or crossfade their child visual. Hitboxes never change.
-- **Triggers are data**, not code: `StageDef.style` (default `base`, or `outrun` for a whole stage), plus `StyleTrigger` resources such as boss final phase, challenge stages, or an "Overdrive" combo meter threshold (current defaults, pending Eric's confirmation). Exact conditions are a game-design decision, tracked in `docs/game-design.md`.
+- **Triggers are data**, not code. **Combo modes** (see `docs/combo-styles.md`) each switch to their own style: Overdrive → N1 Outrun Grid, Lock-On → N3 Cold Hologram, Chain Reaction → N2 Particle Storm, Graze → P3 Pocket Four, ship rescue → P1 Arcade Classic+. Stages and boss phases can also force a style (`StageDef.style`, boss phase field). Exact conditions are a game-design decision, tracked in `docs/game-design.md`.
 - **ThemeDef per style**: palette, background scene, particle set, post-process (glow on/off), music stem set. Audio swaps with it (synth-heavy stems for outrun).
+- **Cost:** P2 gets full sprite work. Neon styles reuse one vector visual per entity, recolored. P1 and P3 are palette or shader treatments of P2 sprites.
 - **Outrun look:** perspective grid floor shader scrolling toward the player, sunset gradient sun, magenta/cyan palette, additive glow, trails. Verify `WorldEnvironment` glow on web early (M2 spike); fallback is a cheap bloom shader.
 - **Placeholder first:** colored shapes for both styles until art lands, but the style switch itself is built in M2 so it is designed in, not bolted on.
 - **Shared juice:** hit flash shader, screen shake, hit-stop (2 to 4 frames on big kills), particles via `CPUParticles2D`, parallax background.
@@ -245,5 +246,5 @@ Because the game is data-driven, a handoff should also record:
 - **Playtest feel notes:** what felt bad (e.g. "dives too predictable in stage 3") since feel is hard to recover from code.
 
 ## 10. Open decisions
-1. Exact conditions that trigger the outrun style.
+1. Confirm the combo-mode mapping and triggers in `docs/combo-styles.md`.
 2. Resolved 2026-10-02: portrait orientation; repo `eagit2/gal`; two runtime-switched styles.

@@ -24,6 +24,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [ ] StyleDirector + style switch with placeholder visuals for both styles
 - [ ] Spike: outrun grid shader + glow on web build
 ## M3 Upgrades v1
+- [ ] ComboTracker + ComboDef: Overdrive mode end to end (meter, buff, N1 style switch)
+- [ ] Remaining combo modes (Lock-On, Chain Reaction, Graze), Style Chain, Arcade '81 on rescue
 ## M4 Difficulty + meta
 ## M5 Sector 1 complete
 ## M6 Art + audio pass
