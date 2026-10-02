@@ -2,7 +2,7 @@
 
 Newest first. One line per decision with the reason.
 
-- 2026-10-02: Two art styles switched at runtime: "dusk armata" base for most of the game, neon outrun grid under certain level conditions. StyleDirector autoload + per-style Visual scenes; triggers are data. (Eric)
+- 2026-10-02: Two art styles switched at runtime: "Dusk Armada" (concept P2, 16-bit pixel over dithered sunset) base for most of the game, "Outrun Grid" (concept N1, synthwave wireframe) under certain level conditions. StyleDirector autoload + per-style Visual scenes; triggers are data. (Eric)
 - 2026-10-02: Portrait orientation locked (540x960 internal). (Eric)
 - 2026-10-02: Minimal in-repo test runner (`tests/run_tests.gd`) instead of gdUnit4. No addon dependency; enough for logic tests. Revisit if we need mocks or scene tests.
 - 2026-10-02: Godot 4.5-stable pinned in CI.
