@@ -6,7 +6,16 @@ How to add content without touching code. Filled in as each system lands.
 `data/difficulty/{cadet,pilot,ace,nightmare}.tres` (`DifficultyDef`). The game scene currently uses `pilot`; difficulty select arrives in M4.
 
 ## Enemy
-Create `data/enemies/<id>.tres` of type `EnemyDef` (hp, score, fire_interval, bullet_speed, placeholder color). Until art lands, enemies use the placeholder polygons in `scenes/enemies/enemy.tscn` tinted by `color`; later set `visual_scene` to a scene under `assets/art/<style>/enemies/`.
+`data/enemies/<id>.tres` (`EnemyDef`): hp, score, dive_score, speed, dive_shots, bullet_speed, behaviors (`zigzag`, `wide`), and `visual_scene`. The visual is a StyledVisual scene (see `assets/art/placeholder/enemies/`): a child named `dusk_armada` holding the base drawing, plus optional children named after other theme ids. Vector themes generate a wireframe from the base polygons using `neon_color`.
+
+## Paths
+`data/paths/<id>.tres` are Curve2D resources in screen coordinates (540x960). Entry paths end near the formation; challenge paths should exit the screen.
+
+## Stages and sectors
+`data/stages/<id>.tres` (`StageDef`) holds WaveDefs as sub-resources: enemy, count, entry_path, formation_slots (one Vector2i(column, row) per enemy, grid 10x5), delay. `is_challenge` makes enemies fly through; `style` forces a theme for the stage. `data/sectors/<id>.tres` lists stages in play order; the game loops them with rising aggression. `tests/unit/test_stage_data.gd` checks slots are unique and on the grid.
+
+## Art styles
+`data/themes/<id>.tres` (`ThemeDef`): id, family (`pixel` or `vector`), palette. Register new themes in `autoload/style_director.gd` (THEMES).
 
 ## Weapon
 Create `data/weapons/<id>.tres` of type `WeaponDef` (fire_rate, projectile_scene, projectile_speed, spread_count, spread_angle, damage).

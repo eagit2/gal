@@ -1,23 +1,27 @@
 extends Node2D
-## M1 game loop: waves of formation enemies, score, lives, game over and restart.
-## Root runs while paused (to read the pause key); Entities pause.
+## Game loop: plays the sector's stages in order (looping with rising aggression), handles lives,
+## challenge bonuses, game over and restart. Root runs while paused (to read the pause key); Entities pause.
 
-const ENEMY_SCENE := preload("res://scenes/enemies/enemy.tscn")
 const PLAYER_START := Vector2(270, 860)
-const GRID_ORIGIN := Vector2(81, 130)
-const GRID_STEP := Vector2(54, 52)
-const GRID_SIZE := Vector2i(8, 4)
 const RESPAWN_DELAY := 1.2
-const WAVE_DELAY := 1.5
+const STAGE_DELAY := 2.5
+const BANNER_TIME := 2.0
+const CHALLENGE_HIT_BONUS := 100
+const CHALLENGE_PERFECT_BONUS := 10000
 
 @export var difficulty: DifficultyDef
-@export var enemy_def: EnemyDef
+@export var sector: SectorDef
+## Index of the first stage to play (tests start on the challenge stage).
+@export var first_stage := 0
 
-var wave := 0
+var stage_number := 0
 var game_over := false
 
 @onready var _entities: Node2D = $Entities
 @onready var _player: Player = $Entities/Player
+@onready var _formation: Formation = $Entities/Formation
+@onready var _runner: StageRunner = $Entities/StageRunner
+@onready var _dives: DiveController = $Entities/DiveController
 @onready var _hud: Hud = $HUD
 
 
@@ -27,45 +31,71 @@ func _ready() -> void:
 	_player.entities = _entities
 	_player.hit.connect(_on_player_hit)
 	_player.respawn(PLAYER_START)
+	_runner.formation = _formation
+	_runner.target = _player
+	_runner.entities = _entities
+	_runner.waves_done.connect(_on_waves_done)
+	_runner.finished.connect(_on_stage_finished)
+	_dives.difficulty = difficulty
+	_dives.target = _player
 	_hud.set_lives(GameState.lives)
-	spawn_wave()
+	stage_number = first_stage
+	_start_stage()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if game_over:
 		if event.is_action_pressed("fire") or (event is InputEventScreenTouch and event.pressed):
+			StyleDirector.set_stage_style(&"")
 			get_tree().reload_current_scene()
 		elif event.is_action_pressed("pause"):
+			StyleDirector.set_stage_style(&"")
 			SceneRouter.go_to("res://scenes/main/title.tscn")
 	elif event.is_action_pressed("pause"):
 		get_tree().paused = not get_tree().paused
 		_hud.show_message("PAUSED" if get_tree().paused else "")
 
 
-func spawn_wave() -> void:
-	EventBus.stage_started.emit(StringName("wave_%d" % wave))
-	for row in GRID_SIZE.y:
-		for col in GRID_SIZE.x:
-			var enemy: Enemy = ENEMY_SCENE.instantiate()
-			enemy.setup(enemy_def, GRID_ORIGIN + Vector2(col, row) * GRID_STEP, difficulty)
-			enemy.target = _player
-			enemy.entities = _entities
-			enemy.aggression = 1.0 + 0.2 * wave
-			_entities.add_child(enemy)
+func current_stage() -> StageDef:
+	return sector.stages[stage_number % sector.stages.size()]
+
+
+func _start_stage() -> void:
+	var stage := current_stage()
+	var loop := stage_number / sector.stages.size()
+	_dives.active = false
+	_dives.aggression = 1.0 + 0.25 * loop + 0.1 * (stage_number % sector.stages.size())
+	StyleDirector.set_stage_style(stage.style)
+	_hud.show_banner("CHALLENGING STAGE" if stage.is_challenge else "STAGE %d" % (stage_number + 1), BANNER_TIME)
+	EventBus.stage_started.emit(stage.id)
+	_runner.start(stage, difficulty)
+
+
+func _on_waves_done() -> void:
+	_dives.active = not current_stage().is_challenge
+
+
+func _on_stage_finished(kills: int, total: int) -> void:
+	_dives.active = false
+	var stage := current_stage()
+	EventBus.stage_cleared.emit(stage.id)
+	if stage.is_challenge:
+		var bonus := kills * CHALLENGE_HIT_BONUS
+		if kills == total:
+			bonus += CHALLENGE_PERFECT_BONUS
+		GameState.add_score(roundi(bonus * difficulty.score_multiplier))
+		_hud.show_banner("%sHITS %d / %d\nBONUS %d" % ["PERFECT!\n" if kills == total else "", kills, total, bonus], STAGE_DELAY)
+	stage_number += 1
+	get_tree().create_timer(STAGE_DELAY, false).timeout.connect(_on_stage_delay_done)
+
+
+func _on_stage_delay_done() -> void:
+	if not game_over:
+		_start_stage()
 
 
 func _on_enemy_killed(_enemy: Node2D, _position: Vector2, score: int) -> void:
 	GameState.add_score(roundi(score * difficulty.score_multiplier))
-	if get_tree().get_nodes_in_group(&"enemies").is_empty():
-		EventBus.stage_cleared.emit(StringName("wave_%d" % wave))
-		wave += 1
-		# Connect instead of await: the connection drops cleanly if the scene is reloaded meanwhile.
-		get_tree().create_timer(WAVE_DELAY, false).timeout.connect(_on_wave_delay_done)
-
-
-func _on_wave_delay_done() -> void:
-	if not game_over:
-		spawn_wave()
 
 
 func _on_player_hit() -> void:
@@ -75,11 +105,13 @@ func _on_player_hit() -> void:
 	if run_over:
 		_end_run()
 		return
+	# Connect instead of await: the connection drops cleanly if the scene is reloaded meanwhile.
 	get_tree().create_timer(RESPAWN_DELAY, false).timeout.connect(_player.respawn.bind(PLAYER_START))
 
 
 func _end_run() -> void:
 	game_over = true
+	_dives.active = false
 	EventBus.run_ended.emit(false)
 	if GameState.score > SaveManager.data["high_score"]:
 		SaveManager.data["high_score"] = GameState.score

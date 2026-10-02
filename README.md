@@ -6,14 +6,18 @@ A modern take on Galaga for the browser: deep upgrade system, selectable difficu
 Open the folder in Godot 4.5 and press F5. Main scene: `scenes/main/boot.tscn`.
 
 ## Controls
-Arrows/WASD move, Space/Z fire, Esc/P pause. Gamepad: stick or D-pad, A fire, Start pause. Touch: drag to move (auto-fire).
+Arrows/WASD move, Space/Z fire, Esc/P pause, F2 cycles art styles (debug). Gamepad: stick or D-pad, A fire, Start pause. Touch: drag to move (auto-fire).
 
 ## Test
 ```
 godot --headless -s res://tests/run_tests.gd
-godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd   # 30s simulated playthrough
+godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd -- --seconds=45      # simulated playthrough
+godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd -- --stage=2 --seconds=25  # challenge stage
 ```
 Tests live in `tests/unit/test_*.gd`, extend `TestCase`, and use `expect_*` helpers.
+
+## Screenshots
+`tools/screenshot.gd` renders frames to PNG (see its header; works in containers with `xvfb-run`).
 
 ## Web build
 CI exports the `Web` preset (single-threaded, no special headers needed) and publishes it to GitHub Pages on every push to `main`. Locally: install the 4.5 export templates, then

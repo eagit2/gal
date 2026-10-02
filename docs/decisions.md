@@ -2,6 +2,11 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-02: Ramming destroys the enemy too (Eric). Score is awarded as a normal kill.
+- 2026-10-02: Glow for the outrun grid is computed in the shader rather than with WorldEnvironment glow: it's guaranteed on the web Compatibility renderer and costs one full-screen pass. Revisit for sprites in M6.
+- 2026-10-02: Vector styles get an auto-generated wireframe from each visual's base polygons (StyledVisual), so a new entity needs one drawing, not one per style.
+- 2026-10-02: Style priority: debug (F2) > combo (M3) > stage style > base.
+- 2026-10-02: Only diving enemies shoot (Galaga rule); formation enemies hold fire.
 - 2026-10-02: Player can move over the full screen height, not just the bottom band (Eric playtest).
 - 2026-10-02: Input actions registered in code (`autoload/controls.gd`) rather than project.godot, so bindings are readable and diffable.
 - 2026-10-02: Physics layers: 1 player_hurtbox, 2 enemy_hurtbox, 3 player_shots, 4 enemy_shots. Hitboxes monitor; Hurtboxes are monitorable only.

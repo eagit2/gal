@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://assets/art/placeholder/enemies/boss.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"boss"
+hp = 2
+score = 150
+dive_score = 400
+speed = 230.0
+visual_scene = ExtResource("2")
+behaviors = Array[StringName]([&"wide"])
+dive_shots = 2
+bullet_speed = 300.0

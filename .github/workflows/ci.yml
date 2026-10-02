@@ -35,8 +35,11 @@ jobs:
       - name: Unit tests
         run: godot --headless -s res://tests/run_tests.gd
 
-      - name: Smoke playthrough
-        run: godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd
+      - name: Smoke playthrough (stages 1-2, then challenge stage)
+        run: |
+          godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd -- --seconds=45 2>&1 | tee smoke.log
+          godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd -- --stage=2 --seconds=25 2>&1 | tee -a smoke.log
+          ! grep -E "SCRIPT ERROR|SMOKE FAIL" smoke.log
 
       - name: Export web build
         run: |

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ThemeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/theme_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"dusk_armada"
+display_name = "Dusk Armada"
+family = &"pixel"
+palette = Array[Color]([Color(0.078, 0.039, 0.157, 1), Color(0.451, 0.129, 0.373, 1), Color(0.91, 0.392, 0.314, 1), Color(0.988, 0.647, 0.302, 1), Color(0.957, 0.89, 0.757, 1), Color(0.169, 0.71, 0.659, 1), Color(0.91, 0.271, 0.478, 1)])

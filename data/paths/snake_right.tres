@@ -1,0 +1,8 @@
+[gd_resource type="Curve2D" format=3]
+
+[resource]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 160, 340, -30, -40, -150, 40, 150, 430, 360, 40, -150, -40, 150, 110, 640, 0, -160, 0, 0, 240, 990),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4

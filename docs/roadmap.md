@@ -25,8 +25,17 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Playtest in browser (Eric: movement, fire rate, shooting OK; ship can now fly to the top)
 
 ## M2 Galaga feel
-- [ ] StyleDirector + style switch with placeholder visuals for both styles
-- [ ] Spike: outrun grid shader + glow on web build
+- [x] Ramming an enemy destroys it (and costs a life)
+- [x] Entry paths as data (`data/paths/*.tres`), fly to formation slot
+- [x] Formation sways while waves enter, then breathes
+- [x] Dives (DiveController + generated dive curves), aimed shots during dives, return from top
+- [x] 3 enemy types: bee, butterfly (zigzag dive), boss (2 hits, wide dive); double score mid-dive
+- [x] Stage 1 and 2 from data (40 enemies each); sector_1 loops with rising aggression
+- [x] Challenging stage: fly-through waves, no shots, hit bonus + perfect bonus
+- [x] StyleDirector + style switch with placeholder visuals for both styles (F2 debug toggle; challenge stage forces Outrun)
+- [x] Spike: outrun grid shader with in-shader glow, renders on the Compatibility renderer
+- [ ] Playtest in browser and tune feel
+
 ## M3 Upgrades v1
 - [ ] ComboTracker + ComboDef: Overdrive mode end to end (meter, buff, N1 style switch)
 - [ ] Remaining combo modes (Lock-On, Chain Reaction, Graze), Style Chain, Arcade '81 on rescue

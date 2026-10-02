@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ThemeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/theme_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"outrun_grid"
+display_name = "Outrun Grid"
+family = &"vector"
+palette = Array[Color]([Color(0.02, 0.004, 0.059, 1), Color(0.169, 0.039, 0.29, 1), Color(1, 0.247, 0.847, 1), Color(0.176, 0.886, 0.902, 1), Color(1, 0.608, 0.239, 1), Color(0.976, 0.973, 0.443, 1)])
