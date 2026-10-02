@@ -13,7 +13,7 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] CI workflow: test, export, publish to GitHub Pages
 - [x] Push to GitHub repo
 - [x] CI green (tests + web export)
-- [ ] Enable Pages (Settings > Pages > Source: GitHub Actions) and confirm the build loads in a browser
+- [x] Pages enabled; deploy succeeds (https://eagit2.github.io/gal/)
 
 ## M1 Core loop slice
 - [x] Input actions (keyboard, gamepad, touch)
