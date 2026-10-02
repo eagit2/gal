@@ -34,7 +34,7 @@ Death or win > Results (score, currency earned) > Hangar
   - *Meta (persistent):* currency comes from **stage medals** (an optional goal per stage, paid the first time it's earned each run, scaled by difficulty). It buys permanent hangar unlocks (new ships, starting perks, new upgrades added to the card pool). Unlocks widen options more than they add raw power.
 - **Upgrade categories:** Primary weapon (spread, laser, homing, piercing), Secondary (missiles, drones, bombs), Defense (shield, armor, dodge-dash), Utility (magnet, score multiplier, slow-mo on graze), Synergies (unlocked when two tagged upgrades are owned, e.g. *Homing + Missiles = Swarm*).
 - **Rarity tiers** (common/rare/epic) and **tags** drive card weighting and synergies.
-- **Sectors** (worlds) of 5 stages + boss, each with a theme and a mechanical twist (asteroid fields, gravity wells, shielded formations, darkness/limited vision, mirrored enemies).
+- **Sectors** (worlds). Sector 1 is the 10-stage onboarding sector (9 stages + boss, challenges at 3 and 7; see `/mnt/project-files/design/intro-levels.md`). Later sectors default to 5 stages + boss. Each sector has a theme and a mechanical twist (asteroid fields, gravity wells, shielded formations, darkness/limited vision, mirrored enemies).
 - **Stage modifiers** on later sectors and higher difficulty (enemies split on death, faster dives, armored front row).
 - **Boss fights** with phases and weak points, distinct from the formation game.
 
@@ -192,7 +192,7 @@ Each milestone ends with a **playable web build** and a short playtest note. Gam
 | M2 | Galaga feel | Entry paths, formation, dives, 3 enemy types, 1 full stage from data, challenge stage |
 | M3 | Upgrades v1 | Card pick screen, 15 upgrades across categories, stacking, 2 synergies, run state |
 | M4 | Difficulty + meta | 4 difficulty profiles, hangar, currency, save/load, settings menu |
-| M5 | Sector 1 complete | 5 stages + boss, tractor beam capture/dual fighter, stage modifiers |
+| M5 | Sector 1 complete | 10 stages incl. boss (per design/intro-levels.md), 4 new enemies, tractor beam capture/dual fighter, medals |
 | M6 | Art + audio pass | Chosen art style applied, SFX, adaptive music, juice |
 | M7 | Content scale | Sectors 2 to 4, 40+ upgrades, more bosses, balance pass |
 | M8 | Release polish | Touch controls, performance on low-end browsers, loading screen, itch.io/Pages release |

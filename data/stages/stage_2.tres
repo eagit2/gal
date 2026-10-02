@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
 [ext_resource type="Resource" path="res://data/enemies/bee.tres" id="e_bee"]
-[ext_resource type="Resource" path="res://data/enemies/boss.tres" id="e_boss"]
-[ext_resource type="Resource" path="res://data/enemies/butterfly.tres" id="e_butterfly"]
+[ext_resource type="Resource" path="res://data/enemies/warden.tres" id="e_warden"]
+[ext_resource type="Resource" path="res://data/enemies/moth.tres" id="e_moth"]
 [ext_resource type="Curve2D" path="res://data/paths/side_left.tres" id="p_side_left"]
 [ext_resource type="Curve2D" path="res://data/paths/side_right.tres" id="p_side_right"]
 [ext_resource type="Curve2D" path="res://data/paths/swoop_left.tres" id="p_swoop_left"]
@@ -20,7 +20,7 @@ delay = 0.0
 
 [sub_resource type="Resource" id="w1"]
 script = ExtResource("wave")
-enemy = ExtResource("e_butterfly")
+enemy = ExtResource("e_moth")
 count = 4
 entry_path = ExtResource("p_swoop_left")
 formation_slots = Array[Vector2i]([Vector2i(3, 2), Vector2i(4, 2), Vector2i(5, 2), Vector2i(6, 2)])
@@ -28,7 +28,7 @@ delay = 0.0
 
 [sub_resource type="Resource" id="w2"]
 script = ExtResource("wave")
-enemy = ExtResource("e_boss")
+enemy = ExtResource("e_warden")
 count = 4
 entry_path = ExtResource("p_side_right")
 formation_slots = Array[Vector2i]([Vector2i(3, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0)])
@@ -36,7 +36,7 @@ delay = 3.6
 
 [sub_resource type="Resource" id="w3"]
 script = ExtResource("wave")
-enemy = ExtResource("e_butterfly")
+enemy = ExtResource("e_moth")
 count = 4
 entry_path = ExtResource("p_side_right")
 formation_slots = Array[Vector2i]([Vector2i(3, 1), Vector2i(4, 1), Vector2i(5, 1), Vector2i(6, 1)])
@@ -44,7 +44,7 @@ delay = 4.3
 
 [sub_resource type="Resource" id="w4"]
 script = ExtResource("wave")
-enemy = ExtResource("e_butterfly")
+enemy = ExtResource("e_moth")
 count = 8
 entry_path = ExtResource("p_side_left")
 formation_slots = Array[Vector2i]([Vector2i(1, 1), Vector2i(2, 1), Vector2i(7, 1), Vector2i(8, 1), Vector2i(1, 2), Vector2i(2, 2), Vector2i(7, 2), Vector2i(8, 2)])
