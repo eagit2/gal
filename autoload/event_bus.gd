@@ -6,6 +6,8 @@ signal run_ended(victory: bool)
 signal stage_started(stage_id: StringName)
 signal stage_cleared(stage_id: StringName)
 signal enemy_killed(enemy: Node2D, position: Vector2, score: int)
+## An enemy left the screen without being killed (challenge stages).
+signal enemy_escaped(enemy: Node2D)
 signal player_hit()
 signal shot_fired()
 signal shot_missed()

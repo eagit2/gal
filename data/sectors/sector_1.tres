@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SectorDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/sector_def.gd" id="sector"]
+[ext_resource type="Script" path="res://resources/stage_def.gd" id="stagedef"]
+[ext_resource type="Resource" path="res://data/stages/stage_1.tres" id="s1"]
+[ext_resource type="Resource" path="res://data/stages/stage_2.tres" id="s2"]
+[ext_resource type="Resource" path="res://data/stages/challenge_1.tres" id="c1"]
+
+[resource]
+script = ExtResource("sector")
+id = &"sector_1"
+display_name = "Dusk Approach"
+stages = Array[ExtResource("stagedef")]([ExtResource("s1"), ExtResource("s2"), ExtResource("c1")])

@@ -8,6 +8,7 @@ const KEYS := {
 	"move_down": [KEY_DOWN, KEY_S],
 	"fire": [KEY_SPACE, KEY_Z, KEY_J],
 	"pause": [KEY_ESCAPE, KEY_P],
+	"debug_style": [KEY_F2],
 }
 const PAD_BUTTONS := {
 	"move_left": [JOY_BUTTON_DPAD_LEFT],

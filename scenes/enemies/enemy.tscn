@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://scenes/components/hitbox.gd" id="4"]
 
 [sub_resource type="RectangleShape2D" id="body"]
-size = Vector2(30, 22)
+size = Vector2(30, 24)
 
 [sub_resource type="RectangleShape2D" id="contact"]
 size = Vector2(22, 16)
@@ -35,16 +35,3 @@ script = ExtResource("4")
 
 [node name="Shape" type="CollisionShape2D" parent="ContactHitbox"]
 shape = SubResource("contact")
-
-[node name="Visual" type="Node2D" parent="."]
-
-[node name="Body" type="Polygon2D" parent="Visual"]
-polygon = PackedVector2Array(-6, -10, 6, -10, 10, -2, 6, 8, -6, 8, -10, -2)
-
-[node name="WingL" type="Polygon2D" parent="Visual"]
-color = Color(1, 1, 1, 0.75)
-polygon = PackedVector2Array(-8, -6, -17, -12, -17, 2, -8, 2)
-
-[node name="WingR" type="Polygon2D" parent="Visual"]
-color = Color(1, 1, 1, 0.75)
-polygon = PackedVector2Array(8, -6, 17, -12, 17, 2, 8, 2)

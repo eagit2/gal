@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="StageDef" load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
+[ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
+[ext_resource type="Resource" path="res://data/enemies/bee.tres" id="e_bee"]
+[ext_resource type="Resource" path="res://data/enemies/warden.tres" id="e_warden"]
+[ext_resource type="Resource" path="res://data/enemies/moth.tres" id="e_moth"]
+[ext_resource type="Curve2D" path="res://data/paths/loop_left.tres" id="p_loop_left"]
+[ext_resource type="Curve2D" path="res://data/paths/loop_right.tres" id="p_loop_right"]
+[ext_resource type="Curve2D" path="res://data/paths/snake_left.tres" id="p_snake_left"]
+[ext_resource type="Curve2D" path="res://data/paths/snake_right.tres" id="p_snake_right"]
+
+[sub_resource type="Resource" id="w0"]
+script = ExtResource("wave")
+enemy = ExtResource("e_bee")
+count = 8
+entry_path = ExtResource("p_loop_left")
+formation_slots = Array[Vector2i]([])
+delay = 0.0
+
+[sub_resource type="Resource" id="w1"]
+script = ExtResource("wave")
+enemy = ExtResource("e_moth")
+count = 8
+entry_path = ExtResource("p_loop_right")
+formation_slots = Array[Vector2i]([])
+delay = 3.2
+
+[sub_resource type="Resource" id="w2"]
+script = ExtResource("wave")
+enemy = ExtResource("e_bee")
+count = 8
+entry_path = ExtResource("p_snake_left")
+formation_slots = Array[Vector2i]([])
+delay = 6.4
+
+[sub_resource type="Resource" id="w3"]
+script = ExtResource("wave")
+enemy = ExtResource("e_moth")
+count = 8
+entry_path = ExtResource("p_snake_right")
+formation_slots = Array[Vector2i]([])
+delay = 9.6
+
+[sub_resource type="Resource" id="w4"]
+script = ExtResource("wave")
+enemy = ExtResource("e_warden")
+count = 4
+entry_path = ExtResource("p_loop_left")
+formation_slots = Array[Vector2i]([])
+delay = 12.8
+
+[sub_resource type="Resource" id="w5"]
+script = ExtResource("wave")
+enemy = ExtResource("e_warden")
+count = 4
+entry_path = ExtResource("p_loop_right")
+formation_slots = Array[Vector2i]([])
+delay = 12.8
+
+[resource]
+script = ExtResource("stage")
+id = &"challenge_1"
+waves = Array[ExtResource("wave")]([SubResource("w0"), SubResource("w1"), SubResource("w2"), SubResource("w3"), SubResource("w4"), SubResource("w5")])
+is_challenge = true
+style = &"outrun_grid"

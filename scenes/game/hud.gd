@@ -6,6 +6,8 @@ extends CanvasLayer
 @onready var _lives: Label = $Lives
 @onready var _high: Label = $HighScore
 @onready var _message: Label = $Message
+@onready var _banner: Label = $Banner
+var _banner_tween: Tween
 
 
 func _ready() -> void:
@@ -14,6 +16,7 @@ func _ready() -> void:
 	set_lives(GameState.lives)
 	_high.text = "HI %d" % SaveManager.data["high_score"]
 	show_message("")
+	_banner.visible = false
 
 
 func set_lives(lives: int) -> void:
@@ -23,6 +26,19 @@ func set_lives(lives: int) -> void:
 func show_message(text: String) -> void:
 	_message.text = text
 	_message.visible = text != ""
+
+
+## Text shown briefly mid-screen (stage names, challenge results).
+func show_banner(text: String, duration: float) -> void:
+	if _banner_tween:
+		_banner_tween.kill()
+	_banner.text = text
+	_banner.visible = true
+	_banner.modulate.a = 1.0
+	_banner_tween = create_tween()
+	_banner_tween.tween_interval(duration)
+	_banner_tween.tween_property(_banner, "modulate:a", 0.0, 0.3)
+	_banner_tween.tween_callback(_banner.hide)
 
 
 func _on_score_changed(score: int) -> void:

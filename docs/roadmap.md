@@ -25,13 +25,30 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Playtest in browser (Eric: movement, fire rate, shooting OK; ship can now fly to the top)
 
 ## M2 Galaga feel
-- [ ] StyleDirector + style switch with placeholder visuals for both styles
-- [ ] Spike: outrun grid shader + glow on web build
+- [x] Ramming an enemy destroys it (and costs a life)
+- [x] Entry paths as data (`data/paths/*.tres`), fly to formation slot
+- [x] Formation sways while waves enter, then breathes
+- [x] Dives (DiveController + generated dive curves), aimed shots during dives, return from top
+- [x] 3 enemy types: bee, moth (zigzag dive), warden (2 hits, wide dive); double score mid-dive. Names follow design/intro-levels.md
+- [x] Stage 1 and 2 from data (40 enemies each); sector_1 loops with rising aggression
+- [x] Challenging stage: fly-through waves, no shots, hit bonus + perfect bonus
+- [x] StyleDirector + style switch with placeholder visuals for both styles (F2 debug toggle; challenge stage forces Outrun)
+- [x] Spike: outrun grid shader with in-shader glow, renders on the Compatibility renderer
+- [ ] Playtest in browser and tune feel
+
 ## M3 Upgrades v1
+- [ ] Upgrade drops: DropTable per enemy, pity bonus, falling pickup (adds to the card pick)
 - [ ] ComboTracker + ComboDef: Overdrive mode end to end (meter, buff, N1 style switch)
 - [ ] Remaining combo modes (Lock-On, Chain Reaction, Graze), Style Chain, Arcade '81 on rescue
 ## M4 Difficulty + meta
+- [ ] Stage medals (goal per stage) pay meta currency, scaled by difficulty
 ## M5 Sector 1 complete
+Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
+- [ ] 10 stages: 1 First Contact, 2 Captured, 3 Challenge, 4 Fuse Line, 5 Crossfire, 6 Rain of Rings, 7 Challenge, 8 Shield Wall, 9 The Long Approach, 10 Boss: The Matriarch
+- [ ] New enemies: Fusewing, Lancer, Spinner, Shieldbearer; Moth loop-dive with 2-shot burst; Warden tractor beam + escorts
+- [ ] Tractor beam capture and dual fighter
+- [ ] The Matriarch boss: unique attacks and mechanics, including card theft
+- [ ] Stage intro titles, medals per stage
 ## M6 Art + audio pass
 ## M7 Content scale
 ## M8 Release polish

@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="1"]
+[ext_resource type="Shader" path="res://assets/shaders/dusk_sky.gdshader" id="2"]
+[ext_resource type="Shader" path="res://assets/shaders/outrun_grid.gdshader" id="3"]
+
+[sub_resource type="ShaderMaterial" id="dusk"]
+shader = ExtResource("2")
+
+[sub_resource type="ShaderMaterial" id="outrun"]
+shader = ExtResource("3")
+
+[node name="Background" type="Node2D"]
+z_index = -10
+script = ExtResource("1")
+
+[node name="dusk_armada" type="ColorRect" parent="."]
+material = SubResource("dusk")
+offset_right = 540.0
+offset_bottom = 960.0
+mouse_filter = 2
+
+[node name="outrun_grid" type="ColorRect" parent="."]
+material = SubResource("outrun")
+offset_right = 540.0
+offset_bottom = 960.0
+mouse_filter = 2
