@@ -1,6 +1,6 @@
 # Modern Galaga: Development Architecture
 
-Status: proposal, 2026-10-02. Engine and platform decided (Godot, browser). Art style open (pixel vs neon); this plan is style-agnostic.
+Status: proposal, 2026-10-02. Engine and platform decided (Godot, browser). Portrait. Two art styles switched at runtime (base + neon outrun), see section 6.
 
 ---
 
@@ -150,14 +150,18 @@ modern-galaga/                      (Git repo)
 ```
 Project-level files outside the repo (shared folder): `handoff-for-next-session.md` at the project root, plus concept art and reference video.
 
-## 6. Graphics (style-agnostic)
+## 6. Graphics (two styles, switched at runtime)
 
-- Every entity's look lives in a `Visual` child scene under `assets/art/<style>/`. Gameplay code never references sprites directly.
-- **Placeholder first:** colored geometric shapes until the style is chosen. All gameplay is built and tuned on placeholders.
-- **Pixel art path:** low internal resolution, nearest filtering, integer scaling, `AnimatedSprite2D`, palette-swap shader for enemy variants.
-- **Neon path:** higher resolution, vector-like sprites or `Line2D`/polygons, additive blending, `WorldEnvironment` glow (supported in Compatibility as of Godot 4.3+; verify on web early), trails.
-- **Shared juice:** hit flash shader, screen shake, hit-stop (2 to 4 frames on big kills), particles via `CPUParticles2D` (more reliable on web than GPU particles), parallax starfield.
-- **Readability rule:** enemy bullets use one reserved high-contrast color family that nothing else uses.
+Decided 2026-10-02: a **base style** ("dusk armata", to be defined) for most of the game, switching to a **neon outrun grid** style under specific level conditions.
+
+- Every entity's look lives in a `Visual` child scene. Each entity ships **one visual per style**: `assets/art/base/...` and `assets/art/outrun/...`. Gameplay code never references sprites directly.
+- **StyleDirector** (autoload) owns the active style. It listens to `EventBus` and swaps style with a short transition (flash, scanline wipe, grid rising from the horizon). Entities' `Visual` nodes listen for `style_changed` and swap or crossfade their child visual. Hitboxes never change.
+- **Triggers are data**, not code: `StageDef.style` (default `base`, or `outrun` for a whole stage), plus `StyleTrigger` resources such as boss final phase, challenge stages, a "Overdrive" upgrade or combo meter threshold. Exact conditions are a game-design decision, tracked in `docs/game-design.md`.
+- **ThemeDef per style**: palette, background scene, particle set, post-process (glow on/off), music stem set. Audio swaps with it (synth-heavy stems for outrun).
+- **Outrun look:** perspective grid floor shader scrolling toward the player, sunset gradient sun, magenta/cyan palette, additive glow, trails. Verify `WorldEnvironment` glow on web early (M2 spike); fallback is a cheap bloom shader.
+- **Placeholder first:** colored shapes for both styles until art lands, but the style switch itself is built in M2 so it is designed in, not bolted on.
+- **Shared juice:** hit flash shader, screen shake, hit-stop (2 to 4 frames on big kills), particles via `CPUParticles2D`, parallax background.
+- **Readability rule:** enemy bullets use one reserved high-contrast color family in **both** styles; check contrast against each palette.
 
 ## 7. Audio
 
@@ -238,6 +242,6 @@ Because the game is data-driven, a handoff should also record:
 - **Playtest feel notes:** what felt bad (e.g. "dives too predictable in stage 3") since feel is hard to recover from code.
 
 ## 10. Open decisions
-1. Art style (pixel vs neon): needed before M6.
-2. Code hosting: create a GitHub repo for the Godot project (recommended) so sessions can build, test, and publish the web build.
-3. Orientation: portrait (classic) vs landscape (better on desktop browsers). Recommend portrait with side panels on wide screens.
+1. Definition of the "dusk armata" base style (reference images needed).
+2. Exact conditions that trigger the outrun style.
+3. Resolved 2026-10-02: portrait orientation; repo `eagit2/gal`; two runtime-switched styles.

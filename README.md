@@ -1,6 +1,6 @@
 # Modern Galaga
 
-A modern take on Galaga for the browser: deep upgrade system, selectable difficulty, varied sectors and bosses. Built with Godot 4.5 (GDScript, Compatibility renderer).
+A modern take on Galaga for the browser: deep upgrade system, selectable difficulty, varied sectors and bosses. Built with Godot 4.5 (GDScript, Compatibility renderer). Portrait; a "dusk armata" base art style that switches to neon outrun under certain level conditions.
 
 ## Run
 Open the folder in Godot 4.5 and press F5. Main scene: `scenes/main/boot.tscn`.

@@ -21,6 +21,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [ ] Score, lives, HUD, game over, restart
 
 ## M2 Galaga feel
+- [ ] StyleDirector + style switch with placeholder visuals for both styles
+- [ ] Spike: outrun grid shader + glow on web build
 ## M3 Upgrades v1
 ## M4 Difficulty + meta
 ## M5 Sector 1 complete
