@@ -57,5 +57,11 @@ Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
 - [ ] The Matriarch boss: unique attacks and mechanics, including card theft
 - [ ] Stage intro titles, medals per stage
 ## M6 Art + audio pass
+- [x] Dusk Armada base sprites: player, 7 Sector 1 enemies, shots, pickup, explosion, sunset sky with cloud sea (`tools/art/gen_dusk_armada.py`)
+- [x] Damage feedback: hit flash, shake, sparks, damaged frames + smoke, debris explosions, player death explosion
+- [x] Energy shots: glowing tracers with muzzle flash, plasma orbs
+- [x] Shield bubble art with absorb flash, shatter on pop and grow-in on recharge (`shield.tscn`, ready for the shield in m2.5)
+- [ ] The Matriarch boss art
+- [ ] Combo style treatments: P1 and P3 palette shaders, N2 and N3 vector looks
 ## M7 Content scale
 ## M8 Release polish
