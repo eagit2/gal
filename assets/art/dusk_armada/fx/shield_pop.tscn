@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/fx/timed_free.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="2"]
+[ext_resource type="Script" path="res://assets/art/dusk_armada/flap_sprite.gd" id="3"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/fx/shield_pop.png" id="4"]
+
+[sub_resource type="Gradient" id="neon_fade"]
+colors = PackedColorArray(0.176, 0.886, 0.902, 1, 1, 0.247, 0.847, 0)
+
+[node name="ShieldPop" type="Node2D"]
+z_index = 5
+script = ExtResource("1")
+lifetime = 0.4
+
+[node name="Visual" type="Node2D" parent="."]
+script = ExtResource("2")
+
+[node name="dusk_armada" type="Node2D" parent="Visual"]
+texture_filter = 1
+
+[node name="Sprite" type="Sprite2D" parent="Visual/dusk_armada"]
+scale = Vector2(2, 2)
+texture = ExtResource("4")
+hframes = 4
+script = ExtResource("3")
+fps = 10.0
+loop = false
+
+[node name="outrun_grid" type="CPUParticles2D" parent="Visual"]
+emitting = true
+amount = 20
+lifetime = 0.35
+one_shot = true
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 28.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 60.0
+initial_velocity_max = 140.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color_ramp = SubResource("neon_fade")

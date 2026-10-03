@@ -19,6 +19,9 @@ Tests live in `tests/unit/test_*.gd`, extend `TestCase`, and use `expect_*` help
 ## Screenshots
 `tools/screenshot.gd` renders frames to PNG (see its header; works in containers with `xvfb-run`).
 
+## Art
+Dusk Armada sprites are generated: edit the pixel maps in `tools/art/gen_dusk_armada.py`, then run `python3 tools/art/gen_dusk_armada.py` (needs Pillow) and reimport.
+
 ## Web build
 CI exports the `Web` preset (single-threaded, no special headers needed) and publishes it to GitHub Pages on every push to `main`. Locally: install the 4.5 export templates, then
 ```

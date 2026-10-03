@@ -10,7 +10,6 @@ const NO_SLOT := Vector2i(-1, -1)
 const TURN_RATE := 10.0
 ## Fraction of the dive path at which each shot is fired.
 const SHOT_MARKS: Array[float] = [0.3, 0.42, 0.54]
-const HIT_TINT := Color(1, 0.55, 0.85)
 
 var def: EnemyDef
 var difficulty: DifficultyDef
@@ -43,7 +42,6 @@ func _ready() -> void:
 	add_child(_visual)
 	_health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp)))
 	_health.died.connect(_on_died)
-	_health.damaged.connect(func(_amount: int) -> void: _visual.modulate = HIT_TINT)
 	# Ramming: the enemy is destroyed along with the player's life.
 	$ContactHitbox.hit.connect(func(_h: Hurtbox) -> void: _health.take_damage(_health.hp))
 

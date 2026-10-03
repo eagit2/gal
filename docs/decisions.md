@@ -2,6 +2,13 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: Hit feedback lives in the visual (`DamageFx`), driven by the entity's `Health.damaged` signal. Gameplay scripts don't tint or flash sprites, so movement code can change freely. Ships with more than 1 HP get damaged frames and smoke at half health or below. (Eric asked for damage animations.)
+- 2026-10-03: Shots are glowing energy (an additive glow under a pixel core, no outline): the player fires cyan tracers with a muzzle flash, and enemies fire plasma orbs in the reserved red. (Eric asked for realistic-looking bullets.)
+- 2026-10-03: The sky is a smooth, undithered gradient in natural dusk colors (night blue to warm gold), not pixel bands (Eric). Sprites and clouds stay pixel art.
+- 2026-10-02: Dusk Armada pixel art is generated from ASCII pixel maps by `tools/art/gen_dusk_armada.py` (1x for a 270x480 grid, shown at 2x with nearest filtering). Edits are text diffs and need no image editor.
+- 2026-10-02: Enemy sprites face down (head toward the player), so dives lead with the head under the current rotation rule.
+- 2026-10-02: The sky ends in a dark cloud sea at 80% height. Over the bright sunset bands, orange enemies and the reserved bullet red were hard to read in the player zone.
+- 2026-10-02: Sprite visuals keep a hidden `Silhouette` of polygons inside their `dusk_armada` child, so vector styles still get the generated wireframe.
 - 2026-10-02: Sector 1 has 10 stages (9 + boss, challenges at 3 and 7). Later sectors default to 5 + boss. The boss has unique attacks and mechanics. (Eric, Level design thread.) Enemy ids now follow that design: butterfly → moth, boss → warden.
 - 2026-10-02: Upgrades also drop randomly from kills, by probability (DropTable + pity bonus), adding to the 1-of-3 card pick. Stage medals earn the meta currency. (Eric, Level design thread; see design/intro-levels.md 2.1.)
 - 2026-10-02: Ramming destroys the enemy too (Eric). Score is awarded as a normal kill.

@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="1"]
+[ext_resource type="Script" path="res://assets/art/dusk_armada/flap_sprite.gd" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/projectiles/player_bullet.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/projectiles/glow_round.png" id="4"]
+
+[sub_resource type="CanvasItemMaterial" id="add"]
+blend_mode = 1
+
+[node name="Visual" type="Node2D"]
+script = ExtResource("1")
+neon_color = Color(0.176, 0.886, 0.902, 1)
+
+[node name="dusk_armada" type="Node2D" parent="."]
+
+[node name="Glow" type="Sprite2D" parent="dusk_armada"]
+texture_filter = 2
+material = SubResource("add")
+modulate = Color(0.5, 0.95, 1, 0.7)
+scale = Vector2(0.45, 1.1)
+texture = ExtResource("4")
+
+[node name="Sprite" type="Sprite2D" parent="dusk_armada"]
+texture_filter = 1
+position = Vector2(0, 8)
+scale = Vector2(2, 2)
+texture = ExtResource("3")
+hframes = 2
+script = ExtResource("2")
+fps = 20.0
+
+[node name="Silhouette" type="Node2D" parent="dusk_armada"]
+visible = false
+
+[node name="Bolt" type="Polygon2D" parent="dusk_armada/Silhouette"]
+polygon = PackedVector2Array(-2, -9, 2, -9, 2, 9, -2, 9)

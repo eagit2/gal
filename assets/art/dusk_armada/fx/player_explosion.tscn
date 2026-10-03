@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scenes/fx/timed_free.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="2"]
+[ext_resource type="Script" path="res://assets/art/dusk_armada/flap_sprite.gd" id="3"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/fx/explosion.png" id="4"]
+
+[sub_resource type="Gradient" id="neon_fade"]
+colors = PackedColorArray(1, 0.247, 0.847, 1, 0.176, 0.886, 0.902, 0)
+
+[sub_resource type="Gradient" id="debris_fade"]
+offsets = PackedFloat32Array(0, 0.4, 1)
+colors = PackedColorArray(1, 0.95, 0.8, 1, 1, 0.6, 0.3, 1, 0.35, 0.25, 0.35, 0)
+
+[node name="PlayerExplosion" type="Node2D"]
+z_index = 5
+script = ExtResource("1")
+lifetime = 1.0
+
+[node name="Visual" type="Node2D" parent="."]
+script = ExtResource("2")
+
+[node name="dusk_armada" type="Node2D" parent="Visual"]
+texture_filter = 1
+
+[node name="Sprite" type="Sprite2D" parent="Visual/dusk_armada"]
+scale = Vector2(3, 3)
+texture = ExtResource("4")
+hframes = 4
+script = ExtResource("3")
+fps = 7.0
+loop = false
+
+[node name="Debris" type="CPUParticles2D" parent="Visual/dusk_armada"]
+emitting = true
+amount = 28
+lifetime = 1.0
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 260)
+initial_velocity_min = 60.0
+initial_velocity_max = 260.0
+damping_min = 40.0
+damping_max = 80.0
+scale_amount_min = 3.0
+scale_amount_max = 4.0
+color_ramp = SubResource("debris_fade")
+
+[node name="outrun_grid" type="CPUParticles2D" parent="Visual"]
+emitting = true
+amount = 56
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 120.0
+initial_velocity_max = 360.0
+damping_min = 200.0
+damping_max = 300.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color_ramp = SubResource("neon_fade")
