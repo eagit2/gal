@@ -14,6 +14,7 @@ const INVULN_TIME := 2.0
 const TOUCH_OFFSET := Vector2(0, -90)
 const SHIELD_SCENE := preload("res://scenes/player/shield.tscn")
 const SECONDARY_SCENE := preload("res://scenes/player/secondary_weapons.tscn")
+const PILOT_POWER := preload("res://scenes/player/pilot_power.gd")
 ## Enemy shots passing within this distance (but missing) count as grazes.
 const GRAZE_RADIUS := 30.0
 
@@ -40,6 +41,9 @@ func _ready() -> void:
 	var secondary: Node2D = SECONDARY_SCENE.instantiate()
 	secondary.player = self
 	add_child(secondary)
+	var power: Node = PILOT_POWER.new()
+	power.set("player", self)
+	add_child(power)
 
 
 func _physics_process(delta: float) -> void:
@@ -78,6 +82,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		_touch_target = event.position + TOUCH_OFFSET if event.pressed else null
 	elif event is InputEventScreenDrag:
 		_touch_target = event.position + TOUCH_OFFSET
+
+
+## Pilot powers: no damage for `seconds` (keeps the longer of this and any current window).
+func grant_invulnerability(seconds: float) -> void:
+	_invuln = maxf(_invuln, seconds)
 
 
 func respawn(at: Vector2) -> void:

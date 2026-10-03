@@ -37,3 +37,6 @@ signal credits_changed(credits: int)
 signal hangar_changed()
 ## An equipped module reached max level (it also spawned a fresh copy the first time).
 signal module_mastered(module: ModuleDef)
+## The pilot power recharged to `charge` (0..1), reported in 10% steps.
+signal power_changed(charge: float)
+signal power_used(pilot: PilotDef)

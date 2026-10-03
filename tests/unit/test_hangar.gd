@@ -122,3 +122,18 @@ func test_medal_goals() -> void:
 func test_sector_1_stages_have_medals() -> void:
 	for stage in (load("res://data/sectors/sector_1.tres") as SectorDef).stages:
 		expect_true(stage.medal != null, "%s medal" % stage.id)
+
+
+func test_pilots() -> void:
+	expect_true(CATALOG.pilots.size() >= 2, "pilots registered")
+	expect_eq(DirAccess.get_files_at("res://data/hangar/pilots").size(), CATALOG.pilots.size(), "pilot files registered")
+	expect_eq(CATALOG.pilots[0].cost, 0, "first pilot is free")
+	for pilot in CATALOG.pilots:
+		expect_true(pilot.cooldown > 0.0, "%s cooldown" % pilot.id)
+		for effect: Dictionary in pilot.effects:
+			expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "%s: %s" % [pilot.id, effect["stat"]])
+	var state := Loadout.default_state(CATALOG)
+	expect_eq(Loadout.pilot_of(CATALOG, state), CATALOG.pilots[0], "new save flies the first pilot")
+	state.erase("pilot")
+	state.erase("pilots")
+	expect_eq(Loadout.pilot_of(CATALOG, Loadout.normalize(state, CATALOG)), CATALOG.pilots[0], "older hangar saves get a pilot")

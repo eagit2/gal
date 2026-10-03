@@ -1,5 +1,5 @@
 extends Control
-## Hangar menus: a ship preview with the current loadout, then Loadout (slot modules into the
+## Hangar menus: a ship preview with the current loadout, then Pilot (active powers), Loadout (slot modules into the
 ## frame's linked slots), Modules (levels and AP), Shop (modules and upgrade chains) and Frames.
 ## Built in code from the module catalog, so new content needs only data. Keyboard, gamepad
 ## (focus) and touch all work; cancel goes back one menu.
@@ -112,6 +112,7 @@ func _home(focus := 0) -> void:
 	var frame := Hangar.frame()
 	var state := Hangar.state()
 	var used := range(frame.slots).filter(func(s: int) -> bool: return Loadout.in_slot(_catalog, state, s) >= 0).size()
+	_add(HangarUI.row("PILOT", "", Hangar.pilot().display_name.to_upper(), Color.TRANSPARENT, Hangar.pilot().color), "Pick your pilot. Each one brings an active power.", _pilots)
 	_add(HangarUI.row("LOADOUT", "", "%d / %d" % [used, frame.slots]), "Slot modules into your frame. Linked slots let blue support modules boost their partner.", _loadout)
 	_add(HangarUI.row("MODULES", "", str((state["modules"] as Array).size())), "Your modules. Equipped modules earn AP from kills and level up. A mastered module spawns a fresh copy.", _modules)
 	_add(HangarUI.row("SHOP", "", ""), "Buy modules with medal credits. Mastering a module unlocks its upgrade in the shop.", _shop)
@@ -123,7 +124,7 @@ func _home(focus := 0) -> void:
 func _loadout(focus := 0) -> void:
 	var frame := Hangar.frame()
 	var state := Hangar.state()
-	_page("LOADOUT  %s" % frame.display_name.to_upper(), _home.bind(0))
+	_page("LOADOUT  %s" % frame.display_name.to_upper(), _home.bind(1))
 	for slot in frame.slots:
 		var index := Loadout.in_slot(_catalog, state, slot)
 		var def := Loadout.def_at(_catalog, state, index)
@@ -159,7 +160,7 @@ func _equip(slot: int, index: int) -> void:
 
 func _modules() -> void:
 	var state := Hangar.state()
-	_page("MODULES", _home.bind(1))
+	_page("MODULES", _home.bind(2))
 	var modules: Array = state["modules"]
 	for index in modules.size():
 		var def := Loadout.def_at(_catalog, state, index)
@@ -172,7 +173,7 @@ func _modules() -> void:
 
 func _shop(focus := 0) -> void:
 	var state := Hangar.state()
-	_page("SHOP", _home.bind(2))
+	_page("SHOP", _home.bind(3))
 	for def in _catalog.modules:
 		if Loadout.owns(state, def.id):
 			continue
@@ -183,7 +184,7 @@ func _shop(focus := 0) -> void:
 			var req := _catalog.module(def.requires_mastered)
 			_add(HangarUI.row(def.display_name.to_upper(), "", "LOCKED", HangarUI.DIM, HangarUI.DIM), "%s\nMaster %s to unlock." % [_module_text(def), req.display_name], func() -> void: pass)
 	if _list.get_child_count() == 0:
-		_add(HangarUI.row("SOLD OUT"), "You own every module.", _home.bind(2))
+		_add(HangarUI.row("SOLD OUT"), "You own every module.", _home.bind(3))
 	_focus(focus)
 
 
@@ -197,7 +198,7 @@ func _buy_module(def: ModuleDef) -> void:
 
 
 func _frames(focus := 0) -> void:
-	_page("FRAMES", _home.bind(3))
+	_page("FRAMES", _home.bind(4))
 	for frame in _catalog.frames:
 		var right := "IN USE" if frame == Hangar.frame() else ("USE" if Hangar.owns_frame(frame.id) else str(frame.cost))
 		var color := HangarUI.GOOD if Hangar.owns_frame(frame.id) else (HangarUI.GOLD if frame.cost <= Hangar.credits() else HangarUI.ROSE)
@@ -213,3 +214,22 @@ func _pick_frame(frame: FrameDef, index: int) -> void:
 		_detail.text = "Needs %d more credits." % (frame.cost - Hangar.credits())
 		return
 	_frames(index)
+
+
+func _pilots(focus := 0) -> void:
+	_page("PILOTS", _home.bind(0))
+	for pilot in _catalog.pilots:
+		var owned := Hangar.owns_pilot(pilot.id)
+		var right := "FLYING" if pilot == Hangar.pilot() else ("FLY" if owned else str(pilot.cost))
+		var color := HangarUI.GOOD if owned else (HangarUI.GOLD if pilot.cost <= Hangar.credits() else HangarUI.ROSE)
+		var text := "%s: %s\n%s  (%ds recharge)\n%s" % [pilot.display_name.to_upper(), pilot.power_name, pilot.power_text, roundi(pilot.cooldown), pilot.bio]
+		_add(HangarUI.row(pilot.display_name.to_upper(), pilot.power_name, right, pilot.color, color), text, _pick_pilot.bind(pilot, _catalog.pilots.find(pilot)))
+	_focus(focus)
+
+
+func _pick_pilot(pilot: PilotDef, index: int) -> void:
+	if not Hangar.choose_pilot(pilot):
+		_detail.text = "Needs %d more credits." % (pilot.cost - Hangar.credits())
+		return
+	_pilots(index)
+	_detail.text = "%s is flying. Power: SHIFT, gamepad B, or a two-finger tap." % pilot.display_name.to_upper()

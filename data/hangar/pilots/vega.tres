@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="PilotDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/pilot_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"vega"
+display_name = "Vega"
+bio = "Ace gunner. Never lets go of the trigger."
+cost = 0
+color = Color(1, 0.624, 0.29, 1)
+power = 0
+power_name = "OVERCLOCK"
+power_text = "Guns fire 2.5x faster with an extra shot for 5 seconds."
+cooldown = 20.0
+duration = 5.0
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 2.5
+}, {
+"op": &"add",
+"stat": &"extra_shots",
+"value": 1
+}])
+distance = 0.0
+damage = 0

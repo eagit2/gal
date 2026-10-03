@@ -42,6 +42,9 @@ Effects are `{"stat": &"...", "op": &"add"|"mul"|"max", "value": ...}`. Stats an
 ## Hangar frame
 `data/hangar/frames/<id>.tres` (`FrameDef`): slots, pairs, effects, cost, sprite. Register it in the catalog. Hull palettes are `FRAME_PALS` in `tools/art/gen_dusk_armada.py`.
 
+## Pilot
+`data/hangar/pilots/<id>.tres` (`PilotDef`): bio, cost, color, power (Overclock, Bulwark, Phase Dash, Nova), power_name, power_text, cooldown, duration, effects (Overclock), distance (dash), damage (Nova). Register it in the catalog's `pilots`; the first one is free.
+
 ## Stage medal
 `data/medals/<id>.tres` (`MedalDef`): goal (`NO_DAMAGE`, `PERFECT`, `ACCURACY`, `GRAZES`), target, currency. Point `StageDef.medal` at it. It pays once per run, scaled by `DifficultyDef.score_multiplier`.
 

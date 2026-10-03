@@ -1,5 +1,5 @@
 extends Node
-## Meta progress: hangar credits, owned frames and modules and the loadout (stored in the meta save
+## Meta progress: hangar credits, owned frames, modules and pilots, and the loadout (stored in the meta save
 ## beside the run checkpoint), the permanent effects they give every run, module AP from kills, and
 ## stage medal payouts.
 
@@ -12,6 +12,7 @@ var run_earned := 0
 var _paid: Array[StringName] = []  # medal ids already paid this run
 var _tracker := MedalTracker.new()
 var _kills := 0  # kills not yet turned into AP
+var _power_effects: Array[Dictionary] = []  # an active pilot power (Overclock)
 
 
 func _ready() -> void:
@@ -39,6 +40,32 @@ func credits() -> int:
 
 func frame() -> FrameDef:
 	return Loadout.frame_of(CATALOG, state())
+
+
+func pilot() -> PilotDef:
+	return Loadout.pilot_of(CATALOG, state())
+
+
+func owns_pilot(id: StringName) -> bool:
+	return String(id) in (state()["pilots"] as Array)
+
+
+## Buys the pilot if needed, then flies with them. Returns false when it can't be afforded.
+func choose_pilot(def: PilotDef) -> bool:
+	if not owns_pilot(def.id):
+		if def.cost > credits():
+			return false
+		(state()["pilots"] as Array).append(String(def.id))
+		_add_credits(-def.cost)
+	state()["pilot"] = String(def.id)
+	_changed()
+	return true
+
+
+## Temporary effects from a pilot power, on top of the loadout. Empty to end them.
+func set_power_effects(effects: Array[Dictionary]) -> void:
+	_power_effects = effects
+	apply()
 
 
 func owns_frame(id: StringName) -> bool:
@@ -76,7 +103,7 @@ func equip(slot: int, index: int) -> void:
 
 ## Pushes the loadout into the run stats.
 func apply() -> void:
-	GameState.set_meta_effects(Loadout.effects(CATALOG, state()))
+	GameState.set_meta_effects(Loadout.effects(CATALOG, state()) + _power_effects)
 
 
 func _spend(amount: int) -> void:
@@ -108,6 +135,7 @@ func _grant_ap() -> void:
 func _on_run_started(_difficulty: StringName) -> void:
 	run_earned = 0
 	_kills = 0
+	_power_effects = []
 	_paid.clear()
 	apply()
 

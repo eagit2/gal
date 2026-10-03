@@ -1,7 +1,8 @@
 class_name Loadout
 extends RefCounted
 ## Hangar rules on the saved loadout state. Pure functions so tests can call them directly.
-## State: {"frame": id, "frames": [ids], "modules": [{"id", "ap", "born"}], "equipped": [module index or -1 per slot]}
+## State: {"frame": id, "frames": [ids], "modules": [{"id", "ap", "born"}], "equipped": [module index or -1 per slot],
+## "pilot": id, "pilots": [ids]}
 
 const SLOTS := 6
 
@@ -14,19 +15,28 @@ static func default_state(catalog: ModuleCatalog) -> Dictionary:
 	equipped.resize(SLOTS)
 	equipped.fill(-1)
 	var first := String(catalog.frames[0].id)
-	return {"frame": first, "frames": [first], "modules": modules, "equipped": equipped}
+	var pilot := String(catalog.pilots[0].id)
+	return {"frame": first, "frames": [first], "modules": modules, "equipped": equipped, "pilot": pilot, "pilots": [pilot]}
 
 
 ## Returns a usable state, replacing anything from an older or broken save.
 static func normalize(state: Variant, catalog: ModuleCatalog) -> Dictionary:
 	if not (state is Dictionary and state.has("frame") and state.has("modules") and state.has("equipped")):
 		return default_state(catalog)
+	if not state.has("pilot"):
+		state["pilot"] = String(catalog.pilots[0].id)
+		state["pilots"] = [state["pilot"]]
 	var equipped: Array = state["equipped"]
 	for slot in equipped.size():
 		equipped[slot] = int(equipped[slot])
 		if equipped[slot] >= (state["modules"] as Array).size():
 			equipped[slot] = -1
 	return state
+
+
+static func pilot_of(catalog: ModuleCatalog, state: Dictionary) -> PilotDef:
+	var pilot := catalog.pilot(StringName(state["pilot"]))
+	return pilot if pilot else catalog.pilots[0]
 
 
 static func frame_of(catalog: ModuleCatalog, state: Dictionary) -> FrameDef:

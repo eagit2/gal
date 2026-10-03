@@ -2,6 +2,7 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: Pilots bring one active power on a power button that recharges (Eric picked "Active button" over passive or both). Pilots are bought with credits in the hangar; the first is free.
 - 2026-10-03: Hangar credits come only from stage medals, paid once per medal per run and scaled by `DifficultyDef.score_multiplier` (architecture uses one score/currency multiplier). Credits save immediately so a death never loses them.
 - 2026-10-03: The hangar is materia style (Eric: "deeper menu, upgrade chain, think Final Fantasy materia"). Frames have slots with linked pairs, and modules level from AP (1 per kill while equipped). Mastery spawns a copy and unlocks a chain module. Blue support modules only work when linked. Effects use the UpgradeDef format and feed `GameState.set_meta_effects`, so the hangar adds no stat code. This replaces the v1 rank tree; old hangar saves reset (credits kept).
 - 2026-10-03: Every equipped module shows as a pixel part on the ship (Eric). It is drawn in the Dusk Armada visual only, so drones and neon styles stay clean.

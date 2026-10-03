@@ -32,6 +32,17 @@ Every equipped module adds a pixel part at its slot (wingtips, nose, tail, shoul
 ## Menu
 Title > HANGAR: a ship preview, then LOADOUT (choose a slot, then a module), MODULES (levels and AP), SHOP (modules, locked chains show what unlocks them), and FRAMES (buy or switch). Cancel goes back one level.
 
+## Pilots
+Picked on the hangar's PILOT page. Each pilot brings one active power (Eric picked "active button"): press SHIFT/X/K, gamepad B/X, or tap with a second finger. It recharges over the pilot's cooldown, and the HUD shows its charge under the shield.
+
+| Pilot | Power | Effect | Recharge | Cost |
+|---|---|---|---|---|
+| Vega | Overclock | 2.5x fire rate and +1 shot for 5s | 20s | free |
+| Rook | Bulwark | shield back up, untouchable for 3s | 25s | 250 |
+| Nyx | Phase Dash | blink 170 px in the move direction, untouchable mid-dash | 6s | 400 |
+| Juno | Nova | clears enemy shots, 2 damage to every enemy | 30s | 600 |
+
+Data: `data/hangar/pilots/` (`PilotDef`), run by `scenes/player/pilot_power.gd`. A new power type is one enum value and one `match` branch.
+
 ## Next
-- Pilots with unique powers (waiting on Eric's pick: active, passive, or both).
 - Medals for stages 4 to 10 and the real Sector 1 goals (M5).

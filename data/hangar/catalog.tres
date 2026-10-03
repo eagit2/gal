@@ -1,8 +1,13 @@
-[gd_resource type="Resource" script_class="ModuleCatalog" load_steps=29 format=3]
+[gd_resource type="Resource" script_class="ModuleCatalog" load_steps=34 format=3]
 
 [ext_resource type="Script" path="res://resources/module_catalog.gd" id="1"]
 [ext_resource type="Script" path="res://resources/frame_def.gd" id="fdef"]
 [ext_resource type="Script" path="res://resources/module_def.gd" id="mdef"]
+[ext_resource type="Script" path="res://resources/pilot_def.gd" id="pdef"]
+[ext_resource type="Resource" path="res://data/hangar/pilots/vega.tres" id="p_vega"]
+[ext_resource type="Resource" path="res://data/hangar/pilots/rook.tres" id="p_rook"]
+[ext_resource type="Resource" path="res://data/hangar/pilots/nyx.tres" id="p_nyx"]
+[ext_resource type="Resource" path="res://data/hangar/pilots/juno.tres" id="p_juno"]
 [ext_resource type="Resource" path="res://data/hangar/frames/kestrel.tres" id="f_kestrel"]
 [ext_resource type="Resource" path="res://data/hangar/frames/talon.tres" id="f_talon"]
 [ext_resource type="Resource" path="res://data/hangar/frames/bastion.tres" id="f_bastion"]
@@ -34,3 +39,4 @@ script = ExtResource("1")
 frames = Array[ExtResource("fdef")]([ExtResource("f_kestrel"), ExtResource("f_talon"), ExtResource("f_bastion"), ExtResource("f_seraph")])
 modules = Array[ExtResource("mdef")]([ExtResource("m_twin_cannon"), ExtResource("m_heavy_rounds"), ExtResource("m_pierce_lens"), ExtResource("m_missile_pod"), ExtResource("m_drone_bay"), ExtResource("m_spread_cannon"), ExtResource("m_swarm_rack"), ExtResource("m_amplifier"), ExtResource("m_overlink"), ExtResource("m_seeker"), ExtResource("m_volatile"), ExtResource("m_rapid_link"), ExtResource("m_magnet_coil"), ExtResource("m_salvage_scanner"), ExtResource("m_score_uplink"), ExtResource("m_jackpot_uplink"), ExtResource("m_graze_coil"), ExtResource("m_combo_primer"), ExtResource("m_thrusters"), ExtResource("m_capacitor"), ExtResource("m_bubble_layer")])
 starter_modules = Array[StringName]([&"thrusters", &"magnet_coil"])
+pilots = Array[ExtResource("pdef")]([ExtResource("p_vega"), ExtResource("p_rook"), ExtResource("p_nyx"), ExtResource("p_juno")])
