@@ -73,7 +73,7 @@ func test_nose_takes_weapons_and_sides_take_anything() -> void:
 	var state := _owning(["twin_cannon", "regen_field", "needle_gun"])
 	expect_true(not Loadout.place(CATALOG, state, &"nose", &"regen_field"), "no shield on the nose")
 	expect_true(Loadout.place(CATALOG, state, &"nose", &"twin_cannon"), "weapon on the nose")
-	expect_eq(_stats(state)[&"extra_shots"], 1)
+	expect_eq(_stats(state)[&"extra_shots"], 0, "the second barrel lives in the cannon's WeaponDef")
 	expect_true(Loadout.place(CATALOG, state, &"right", &"pulse_laser"), "a second weapon on a side mount")
 	expect_true(not Loadout.place(CATALOG, state, &"rear", &"needle_gun"), "but only two weapons")
 
@@ -140,7 +140,8 @@ func test_stock_rotates_unowned_parts() -> void:
 	for id: String in stock:
 		expect_true(not Loadout.owns(state, StringName(id)), "%s not owned" % id)
 		expect_eq(stock.count(id), 1, "%s once" % id)
-	var def := CATALOG.part(StringName(stock[0]))
+	state["stock"] = ["twin_cannon", "power_chip", "bubble"]
+	var def := CATALOG.part(&"twin_cannon")
 	expect_true(HangarStock.take(state, def), "buy from stock")
 	expect_true(Loadout.owns(state, def.id) and not HangarStock.in_stock(state, def.id), "owned, gone from stock")
 	expect_true(not HangarStock.take(state, CATALOG.part(&"pulse_laser")), "can't buy what isn't stocked")

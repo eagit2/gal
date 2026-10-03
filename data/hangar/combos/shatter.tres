@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="LinkComboDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/link_combo_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"shatter"
+display_name = "Shatter"
+text = "Chilled enemies take +1 damage from arcs"
+chips = Array[StringName]([&"frost_chip", &"volt_chip"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"damage",
+"value": 1
+}, {
+"op": &"add",
+"stat": &"chain",
+"value": 1
+}])

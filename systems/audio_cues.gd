@@ -82,7 +82,9 @@ func _on_enemy_killed(enemy: Node2D, _position: Vector2, _score: int) -> void:
 
 ## The shield reports its charge in steps: 0 means it just popped, 1 means it is back.
 func _on_shield_changed(charge: float) -> void:
-	if charge <= 0.0 and _shield_up:
+	if charge < 0.0:
+		_shield_up = false  # No shield fitted: nothing to pop.
+	elif charge <= 0.0 and _shield_up:
 		_shield_up = false
 		AudioManager.play(&"shield_pop")
 	elif charge >= 1.0 and not _shield_up:
@@ -92,7 +94,7 @@ func _on_shield_changed(charge: float) -> void:
 
 func _on_run_started() -> void:
 	_in_run = true
-	_shield_up = true
+	_shield_up = int(GameState.stats.get(&"shield", 0)) > 0
 
 
 func _on_stage_started(stage_id: StringName) -> void:

@@ -23,8 +23,19 @@ const FORMATS := {
 }
 
 
-static func value(stat: StringName, v: float) -> String:
+## `weapon` (the part's own gun, if any) supplies the base for rate, shots, damage and pierce.
+static func value(stat: StringName, v: float, weapon: WeaponDef = null) -> String:
 	var kind: String = FORMATS.get(stat, ["", "plain"])[1]
+	if weapon:
+		match stat:
+			&"damage":
+				return str(roundi(weapon.damage + v))
+			&"pierce":
+				return str(roundi(weapon.pierce + v))
+			&"extra_shots":
+				return str(roundi(weapon.spread_count + v))
+			&"fire_rate":
+				return "%.1f/s" % (weapon.fire_rate * v)
 	match kind:
 		"pct":
 			return "%d%%" % roundi(v * 100.0)
@@ -48,7 +59,7 @@ static func name(stat: StringName) -> String:
 
 
 ## "Damage 2 → 3, Shots 1 → 2" for each stat in `effects`, from stats `before` to `after`.
-static func change(effects: Array, before: Dictionary, after: Dictionary) -> String:
+static func change(effects: Array, before: Dictionary, after: Dictionary, weapon: WeaponDef = null) -> String:
 	var parts: PackedStringArray = []
 	var seen: Array[StringName] = []
 	for e: Dictionary in effects:
@@ -56,7 +67,7 @@ static func change(effects: Array, before: Dictionary, after: Dictionary) -> Str
 		if stat in seen:
 			continue
 		seen.append(stat)
-		var a := value(stat, before[stat])
-		var b := value(stat, after[stat])
+		var a := value(stat, before[stat], weapon)
+		var b := value(stat, after[stat], weapon)
 		parts.append("%s %s" % [name(stat), a if a == b else "%s → %s" % [a, b]])
 	return ", ".join(parts)

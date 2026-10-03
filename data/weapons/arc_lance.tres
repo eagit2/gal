@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="WeaponDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/weapon_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/lance_bolt.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"arc_lance"
+fire_rate = 3.5
+projectile_scene = ExtResource("2")
+projectile_speed = 1100.0
+spread_count = 1
+spread_angle = 0.0
+damage = 4
+spacing = 0.0
+pierce = 3
+homing = 0.0

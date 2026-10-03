@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="LinkComboDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/link_combo_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"blizzard"
+display_name = "Blizzard"
+text = "An extra shot and a deeper chill"
+chips = Array[StringName]([&"frost_chip", &"split_chip"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"extra_shots",
+"value": 1
+}, {
+"op": &"add",
+"stat": &"chill",
+"value": 1
+}])

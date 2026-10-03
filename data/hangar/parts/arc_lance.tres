@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/arc_lance.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -8,20 +9,8 @@ id = &"arc_lance"
 display_name = "Arc Lance"
 category = 0
 tier = 4
-text = "A lance that hits harder, pierces and seeks."
-effects = Array[Dictionary]([{
-"op": &"add",
-"stat": &"damage",
-"value": 1
-}, {
-"op": &"add",
-"stat": &"pierce",
-"value": 1
-}, {
-"op": &"add",
-"stat": &"homing",
-"value": 1.0
-}])
+text = "A long beam-bolt that hits hard and pierces 3 enemies."
+effects = Array[Dictionary]([])
 attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"add",
@@ -56,3 +45,4 @@ attributes = Array[Dictionary]([{
 sockets = 4
 links = 2
 part = &"lens_weapon"
+weapon = ExtResource("2")

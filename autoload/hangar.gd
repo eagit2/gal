@@ -82,6 +82,22 @@ func buy_part(def: PartDef) -> bool:
 	return true
 
 
+## Buys a stocked chip. Returns false when it isn't in stock or can't be afforded.
+func buy_chip(chip: ChipDef) -> bool:
+	if chip.price > credits() or not HangarStock.take_chip(state(), chip):
+		return false
+	_spend(chip.price)
+	return true
+
+
+## Puts a chip in a part's socket ("" empties it). Returns false when no free copy is left.
+func set_chip(def: PartDef, index: int, chip: StringName) -> bool:
+	if not Loadout.set_chip(CATALOG, state(), def, index, chip):
+		return false
+	_changed()
+	return true
+
+
 ## Raises one attribute of an owned part. Returns false when maxed or unaffordable.
 func upgrade(def: PartDef, attr: StringName) -> bool:
 	var price := Loadout.upgrade_price(state(), def, attr)

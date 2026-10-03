@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ChipDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/chip_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"split_chip"
+display_name = "Split"
+text = "+1 shot in a wider fan"
+color = Color(0.373, 0.878, 0.416, 1)
+price = 150
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"extra_shots",
+"value": 1
+}, {
+"op": &"add",
+"stat": &"spread",
+"value": 10.0
+}])

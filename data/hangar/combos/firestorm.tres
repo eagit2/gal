@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="LinkComboDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/link_combo_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"firestorm"
+display_name = "Firestorm"
+text = "+2 burning shots in a wide fan"
+chips = Array[StringName]([&"ember_chip", &"split_chip"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"extra_shots",
+"value": 2
+}, {
+"op": &"add",
+"stat": &"spread",
+"value": 15.0
+}])

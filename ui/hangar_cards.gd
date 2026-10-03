@@ -9,11 +9,12 @@ const LOCKED := Color(0.3, 0.28, 0.45)
 
 
 ## A row of link sockets (Loadout.sockets): gold circles, a bar joining linked pairs, and green
-## ones for sockets the ship tree adds.
-static func sockets(groups: Array[int], size := 18) -> HBoxContainer:
+## ones for sockets the ship tree adds. `fills`: the chip color in each socket (transparent = empty).
+static func sockets(groups: Array[int], size := 18, fills: Array[Color] = []) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", 8)
+	var index := 0
 	for group in groups:
 		var cluster := HBoxContainer.new()
 		cluster.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -21,6 +22,8 @@ static func sockets(groups: Array[int], size := 18) -> HBoxContainer:
 		row.add_child(cluster)
 		var color := TREE_GREEN if group == 0 else SOCKET_GOLD
 		for i in maxi(group, 1):
+			var fill: Color = fills[index] if index < fills.size() else Color.TRANSPARENT
+			index += 1
 			if i > 0:
 				var bar := ColorRect.new()
 				bar.color = SOCKET_GOLD
@@ -28,16 +31,16 @@ static func sockets(groups: Array[int], size := 18) -> HBoxContainer:
 				bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 				bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 				cluster.add_child(bar)
-			cluster.add_child(_circle(color, size))
+			cluster.add_child(_circle(color, size, fill))
 	return row
 
 
-static func _circle(color: Color, size: int) -> Panel:
+static func _circle(color: Color, size: int, fill := Color.TRANSPARENT) -> Panel:
 	var circle := Panel.new()
 	circle.custom_minimum_size = Vector2(size, size)
 	circle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	circle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var b := HangarUI.box(HangarUI.INK, color, 3)
+	var b := HangarUI.box(fill if fill.a > 0 else HangarUI.INK, color, 3)
 	b.set_corner_radius_all(size / 2)
 	circle.add_theme_stylebox_override("panel", b)
 	return circle
@@ -45,7 +48,7 @@ static func _circle(color: Color, size: int) -> Panel:
 
 ## A part row that opens in place when highlighted: the row, then each attribute's level bars and
 ## final number, then the part's sockets. `stats`: [[name, level, max, value text]].
-static func drop_card(row: Button, stats: Array, groups: Array[int], color: Color) -> Button:
+static func drop_card(row: Button, stats: Array, groups: Array[int], fills: Array[Color], color: Color) -> Button:
 	var details := VBoxContainer.new()
 	details.name = "Details"
 	details.visible = false
@@ -54,8 +57,7 @@ static func drop_card(row: Button, stats: Array, groups: Array[int], color: Colo
 	details.add_theme_constant_override("separation", 8)
 	for s: Array in stats:
 		details.add_child(_stat_line(s[0], HangarUI.bars(s[1], s[2], color), HangarUI.label(s[3], 16), color))
-	details.add_child(_stat_line("LINKS", sockets(groups), Control.new(), SOCKET_GOLD))
-	details.add_child(HangarUI.label("SELECT AGAIN TO UPGRADE >", 8, SOCKET_GOLD))
+	details.add_child(_stat_line("LINKS", sockets(groups, 18, fills), Control.new(), SOCKET_GOLD))
 	row.add_child(details)
 	var parts: Control = row.get_node("Parts")
 	parts.anchor_bottom = 0.0
@@ -120,4 +122,32 @@ static func ship_card(ship: ShipDef, unlocked: bool, flying: bool) -> Button:
 	tag_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	tag_label.custom_minimum_size.x = 220
 	text.add_child(tag_label)
+	return card
+
+
+## A chip in the store: its color, name, what it does, copies owned and price.
+static func chip_card(chip: ChipDef, owned: int, credits: int) -> Button:
+	var card := Button.new()
+	card.custom_minimum_size.y = 112
+	HangarUI.style(card)
+	var row := HBoxContainer.new()
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 40
+	row.offset_right = -12
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 40)
+	card.add_child(row)
+	row.add_child(_circle(SOCKET_GOLD, 48, chip.color))
+	var text := VBoxContainer.new()
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text.alignment = BoxContainer.ALIGNMENT_CENTER
+	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text.add_theme_constant_override("separation", 8)
+	row.add_child(text)
+	text.add_child(HangarUI.label("%s CHIP" % chip.display_name.to_upper(), 16))
+	var what := HangarUI.label(chip.text, 8, chip.color)
+	what.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text.add_child(what)
+	text.add_child(HangarUI.label("OWNED %d" % owned if owned > 0 else "CHIP", 8, HangarUI.DIM))
+	row.add_child(HangarUI.label(str(chip.price), 16, HangarUI.GOLD if chip.price <= credits else HangarUI.ROSE, HORIZONTAL_ALIGNMENT_RIGHT))
 	return card

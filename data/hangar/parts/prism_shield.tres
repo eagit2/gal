@@ -11,6 +11,10 @@ tier = 3
 text = "1 extra layer and recharges 20% faster."
 effects = Array[Dictionary]([{
 "op": &"add",
+"stat": &"shield",
+"value": 1
+}, {
+"op": &"add",
 "stat": &"shield_layers",
 "value": 1
 }, {
