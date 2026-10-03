@@ -12,6 +12,7 @@ const METER_LABELS := {&"overdrive": "OD", &"lock_on": "LK", &"chain_reaction": 
 @onready var _message: Label = $Message
 @onready var _banner: Label = $Banner
 @onready var _shield: Label = $Shield
+@onready var _power: Label = $Power
 @onready var _freeze: Label = $Freeze
 @onready var _freeze_tint: ColorRect = $FreezeTint
 @onready var _meters: VBoxContainer = $Meters
@@ -37,8 +38,18 @@ func _ready() -> void:
 		_freeze_tint.visible = true
 		show_toast("CRYO PULSE", Color(0.55, 0.9, 1)))
 	EventBus.freeze_ended.connect(_freeze_tint.hide)
+	# Tapping the label fires Cryo Pulse on touch screens (two fingers belong to the pilot power).
+	_freeze.gui_input.connect(func(e: InputEvent) -> void:
+		if (e is InputEventMouseButton or e is InputEventScreenTouch) and e.pressed:
+			EventBus.special_requested.emit())
 	EventBus.synergy_activated.connect(func(s: SynergyDef) -> void: show_toast("SYNERGY: %s" % s.display_name.to_upper(), Color(1, 0.55, 0.95)))
+	EventBus.medal_earned.connect(func(m: MedalDef, credits: int) -> void: show_toast("MEDAL: %s  +%d CREDITS" % [m.display_name.to_upper(), credits], Color(0.95, 0.77, 0.43)))
+	EventBus.run_ended.connect(_on_run_ended)
+	EventBus.power_changed.connect(_on_power_changed)
+	EventBus.power_used.connect(func(p: PilotDef) -> void: show_toast(p.power_name, p.color))
+	EventBus.module_mastered.connect(func(m: ModuleDef) -> void: show_toast("%s MASTERED" % m.display_name.to_upper(), Color(0.5, 1, 0.75)))
 	_build_meters()
+	_on_power_changed(1.0)
 	_mode.visible = false
 	_mode_bar.visible = false
 	_toast.visible = false
@@ -80,9 +91,13 @@ func _on_shield_changed(charge: float) -> void:
 	_shield.modulate.a = 1.0 if charge >= 1.0 else 0.55
 
 
+func _on_power_changed(charge: float) -> void:
+	var pilot := Hangar.pilot()
+	_power.text = "%s READY" % pilot.power_name if charge >= 1.0 else "%s %d%%" % [pilot.power_name, floori(charge * 100.0)]
+	_power.modulate = pilot.color if charge >= 1.0 else Color(1, 1, 1, 0.55)
 func _on_freeze_charges_changed(charges: int) -> void:
 	_freeze.visible = GameState.stats[&"freeze_charges"] > 0
-	_freeze.text = "FREEZE x%d  [X]" % charges
+	_freeze.text = "FREEZE x%d  [C]" % charges
 	_freeze.modulate.a = 1.0 if charges > 0 else 0.4
 
 
@@ -153,3 +168,8 @@ func _on_upgrade_picked(id: StringName) -> void:
 	var upgrade := GameState.POOL.find(id)
 	if upgrade:
 		show_toast("+ " + upgrade.display_name.to_upper(), UpgradePick.RARITY_COLORS[upgrade.rarity])
+
+
+func _on_run_ended(_victory: bool) -> void:
+	if Hangar.run_earned > 0:
+		show_toast("+%d HANGAR CREDITS" % Hangar.run_earned, Color(0.95, 0.77, 0.43))

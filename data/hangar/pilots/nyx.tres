@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PilotDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/pilot_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"nyx"
+display_name = "Nyx"
+bio = "Test pilot. Flies through gaps that aren't there."
+cost = 400
+color = Color(0.31, 0.651, 1, 1)
+power = 2
+power_name = "PHASE DASH"
+power_text = "Blink 170 px in your move direction, untouchable mid-dash."
+cooldown = 6.0
+duration = 0.5
+effects = Array[Dictionary]([])
+distance = 170.0
+damage = 0

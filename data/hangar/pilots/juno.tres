@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PilotDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/pilot_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"juno"
+display_name = "Juno"
+bio = "Demolitions expert. Prefers the loud option."
+cost = 600
+color = Color(1, 0.353, 0.478, 1)
+power = 3
+power_name = "NOVA"
+power_text = "Wipe every enemy shot off the screen and hit every enemy for 2."
+cooldown = 30.0
+duration = 0.0
+effects = Array[Dictionary]([])
+distance = 0.0
+damage = 2

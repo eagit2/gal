@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="FrameDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/frame_def.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/player_bastion.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"bastion"
+display_name = "Bastion"
+description = "5 slots, two linked pairs. Built-in shield layer, a little slower."
+cost = 450
+slots = 5
+pairs = 2
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"shield_layers",
+"value": 1
+}, {
+"op": &"mul",
+"stat": &"move_speed",
+"value": 0.95
+}])
+sprite = ExtResource("2")

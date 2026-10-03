@@ -35,6 +35,14 @@ func _physics_process(delta: float) -> void:
 	_report()
 
 
+## Brings the bubble back up at once (Bulwark).
+func restore() -> void:
+	if up:
+		return
+	_recharge = 0.0
+	_physics_process(0.0)
+
+
 ## 0 right after popping, 1 when up.
 func charge() -> float:
 	return 1.0 if up else clampf(1.0 - _recharge / recharge_time, 0.0, 1.0)

@@ -57,8 +57,10 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [ ] Playtest and tune: drop rate, meter thresholds, upgrade values
 - [x] M3.5 upgrade rework: drops change bullets only, cards are utility (Cryo Pulse freeze, extra bubbles, credit multiplier), lower values
 ## M4 Difficulty + meta
+- [x] Hangar v2 (materia style): 4 frames with linked slots, 21 modules that level from AP, mastery copies and upgrade chains, ship parts per module, deeper menu (`docs/hangar.md`)
+- [x] Pilots with active powers: Vega (Overclock), Rook (Bulwark), Nyx (Phase Dash), Juno (Nova)
 - [x] Title screen: Continue (resumes the saved run at its last stage), New Game with difficulty pick and an overwrite confirm. Hangar button hook in `title.gd`.
-- [ ] Stage medals (goal per stage) pay meta currency, scaled by difficulty
+- [x] Stage medals (goal per stage) pay meta currency, scaled by difficulty (v1 goals on stages 1, 2 and challenge 1)
 ## M5 Sector 1 complete
 Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
 - [ ] 10 stages: 1 First Contact, 2 Captured, 3 Challenge, 4 Fuse Line, 5 Crossfire, 6 Rain of Rings, 7 Challenge, 8 Shield Wall, 9 The Long Approach, 10 Boss: The Matriarch

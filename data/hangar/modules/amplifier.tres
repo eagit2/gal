@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"amplifier"
+display_name = "Amplifier"
+description = "Linked module works one level higher."
+kind = 1
+cost = 250
+effects = Array[Dictionary]([])
+per_level = Array[Dictionary]([])
+ap_levels = Array[int]([80, 240])
+amplify = 1
+link_kind = -1
+requires_mastered = &""
+part = &"fin_support"

@@ -14,9 +14,10 @@ func _ready() -> void:
 static func default_data() -> Dictionary:
 	return {
 		"version": SCHEMA_VERSION,
-		"currency": 0,
+		"currency": 0,  # hangar credits
 		"high_score": 0,
 		"unlocks": [],
+		"hangar": {},  # loadout state, see Loadout.default_state
 		## Checkpoint of the run in progress (GameState.snapshot), empty when there is none.
 		"run": {},
 		"last_difficulty": "pilot",

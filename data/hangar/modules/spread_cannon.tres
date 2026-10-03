@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"spread_cannon"
+display_name = "Spread Cannon"
+description = "Two extra shots in a wide fan. Unlocked by mastering Twin Cannon."
+kind = 0
+cost = 300
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"extra_shots",
+"value": 2
+}, {
+"op": &"add",
+"stat": &"spread",
+"value": 10.0
+}])
+per_level = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.05
+}])
+ap_levels = Array[int]([100, 300])
+amplify = 0
+link_kind = -1
+requires_mastered = &"twin_cannon"
+part = &"cannon_weapon"

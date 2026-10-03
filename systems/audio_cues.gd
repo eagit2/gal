@@ -15,6 +15,9 @@ const OPTIONAL_CUES := {
 	&"combo_started": &"combo_start",
 	&"combo_ended": &"combo_end",
 	&"synergy_activated": &"synergy",
+	&"power_used": &"combo_start",
+	&"medal_earned": &"pickup",
+	&"module_mastered": &"synergy",
 }
 
 var _shield_up := true

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"overlink"
+display_name = "Overlink"
+description = "Linked module works two levels higher. Unlocked by mastering Amplifier."
+kind = 1
+cost = 500
+effects = Array[Dictionary]([])
+per_level = Array[Dictionary]([])
+ap_levels = Array[int]([120, 360])
+amplify = 2
+link_kind = -1
+requires_mastered = &"amplifier"
+part = &"fin_support"

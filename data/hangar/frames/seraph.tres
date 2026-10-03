@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FrameDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/frame_def.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/player_seraph.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"seraph"
+display_name = "Seraph"
+description = "6 slots, three linked pairs. Faster guns."
+cost = 900
+slots = 6
+pairs = 3
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.05
+}])
+sprite = ExtResource("2")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StageDef" load_steps=17 format=3]
+[gd_resource type="Resource" script_class="StageDef" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
@@ -9,6 +9,7 @@
 [ext_resource type="Curve2D" path="res://data/paths/side_right.tres" id="p_side_right"]
 [ext_resource type="Curve2D" path="res://data/paths/swoop_left.tres" id="p_swoop_left"]
 [ext_resource type="Curve2D" path="res://data/paths/swoop_right.tres" id="p_swoop_right"]
+[ext_resource type="Resource" path="res://data/medals/sharpshooter.tres" id="medal"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -73,3 +74,4 @@ waves = Array[ExtResource("wave")]([SubResource("w0"), SubResource("w1"), SubRes
 is_challenge = false
 reinforcements = 4
 style = &""
+medal = ExtResource("medal")

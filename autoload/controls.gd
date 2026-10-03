@@ -7,9 +7,10 @@ const KEYS := {
 	"move_up": [KEY_UP, KEY_W],
 	"move_down": [KEY_DOWN, KEY_S],
 	"fire": [KEY_SPACE, KEY_Z, KEY_J],
-	"special": [KEY_X, KEY_SHIFT, KEY_K],
+	"special": [KEY_C, KEY_L],
 	"pause": [KEY_ESCAPE, KEY_P],
 	"mute": [KEY_M],
+	"power": [KEY_SHIFT, KEY_X, KEY_K],
 	"debug_style": [KEY_F2],
 }
 const PAD_BUTTONS := {
@@ -18,8 +19,9 @@ const PAD_BUTTONS := {
 	"move_up": [JOY_BUTTON_DPAD_UP],
 	"move_down": [JOY_BUTTON_DPAD_DOWN],
 	"fire": [JOY_BUTTON_A],
-	"special": [JOY_BUTTON_B, JOY_BUTTON_Y],
+	"special": [JOY_BUTTON_Y],
 	"pause": [JOY_BUTTON_START],
+	"power": [JOY_BUTTON_B, JOY_BUTTON_X],
 }
 const PAD_AXES := {
 	"move_left": [JOY_AXIS_LEFT_X, -1.0],
