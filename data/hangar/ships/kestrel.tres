@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ShipDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/ship_def.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/player.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"kestrel"
+display_name = "Kestrel"
+description = "Base ship. One weapon on the nose; a power, a shield and a bonus part on the left, rear and right mounts."
+slots = {
+&"bonus": 1,
+&"power": 1,
+&"shield": 1,
+&"weapon": 1
+}
+mounts = Array[StringName]([&"nose", &"left", &"rear", &"right"])
+sprite = ExtResource("2")

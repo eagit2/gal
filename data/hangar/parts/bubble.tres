@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"bubble"
+display_name = "Bubble"
+category = 1
+tier = 0
+rank_text = Array[String](["Absorbs 1 hit, recharges", "Recharges 20% faster", "Absorbs 2 hits"])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"shield_recharge",
+"value": 0.8,
+"rank": 2
+}, {
+"op": &"add",
+"stat": &"shield_layers",
+"value": 1,
+"rank": 3
+}])
+part = &"dome_hull"

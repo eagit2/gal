@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"missile_pod"
+display_name = "Missile Pod"
+category = 0
+tier = 2
+rank_text = Array[String](["Homing missile beside your gun", "Missiles 40% more often", "Fires a pair"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"missiles",
+"value": 1
+}, {
+"op": &"mul",
+"stat": &"missile_rate",
+"value": 1.4,
+"rank": 2
+}, {
+"op": &"add",
+"stat": &"missiles",
+"value": 1,
+"rank": 3
+}])
+part = &"pod_weapon"

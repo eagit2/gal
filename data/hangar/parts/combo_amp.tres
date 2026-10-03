@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"combo_amp"
+display_name = "Combo Amp"
+category = 4
+tier = 2
+rank_text = Array[String](["Combo meter fills 20% faster", "35% faster", "Longer combo window"])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"chain_gain",
+"value": 1.2
+}, {
+"op": &"mul",
+"stat": &"graze_gain",
+"value": 1.2
+}, {
+"op": &"mul",
+"stat": &"chain_gain",
+"value": 1.12,
+"rank": 2
+}, {
+"op": &"mul",
+"stat": &"graze_gain",
+"value": 1.12,
+"rank": 2
+}, {
+"op": &"mul",
+"stat": &"overdrive_window",
+"value": 1.25,
+"rank": 3
+}])
+part = &"antenna_support"

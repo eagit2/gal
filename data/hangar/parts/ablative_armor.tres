@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ablative_armor"
+display_name = "Ablative Armor"
+category = 1
+tier = 1
+rank_text = Array[String](["2 extra layers, slow recharge", "3 extra layers", "Recharges faster"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"shield_layers",
+"value": 2
+}, {
+"op": &"mul",
+"stat": &"shield_recharge",
+"value": 2.5
+}, {
+"op": &"add",
+"stat": &"shield_layers",
+"value": 1,
+"rank": 2
+}, {
+"op": &"mul",
+"stat": &"shield_recharge",
+"value": 0.6,
+"rank": 3
+}])
+part = &"lens_hull"

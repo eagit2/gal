@@ -62,8 +62,13 @@ func _physics_process(delta: float) -> void:
 	var real_delta := delta / Engine.time_scale
 	var speed: float = SPEED * stats[&"move_speed"]
 	var motion := Input.get_vector("move_left", "move_right", "move_up", "move_down") * speed * real_delta
+	# Engine placement: faster strafing away from the side the engine sits on.
+	var strafe: float = stats[&"strafe_left"] if motion.x < 0.0 else stats[&"strafe_right"]
+	motion.x *= strafe
 	if _touch_target != null:
-		motion = ((_touch_target as Vector2) - position).limit_length(speed * 1.5 * real_delta)
+		var to_target := (_touch_target as Vector2) - position
+		strafe = stats[&"strafe_left"] if to_target.x < 0.0 else stats[&"strafe_right"]
+		motion = to_target.limit_length(speed * 1.5 * real_delta * strafe)
 	var before := position
 	var max_x := 540 - MARGIN - (WINGMAN_OFFSET.x if dual else 0.0)
 	position = (position + motion).clamp(Vector2(MARGIN, MIN_Y), Vector2(max_x, MAX_Y))

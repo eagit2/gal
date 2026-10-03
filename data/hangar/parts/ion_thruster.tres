@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ion_thruster"
+display_name = "Ion Thruster"
+category = 3
+tier = 0
+rank_text = Array[String](["+10% speed", "+15% speed", "+20% speed"])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"move_speed",
+"value": 1.1
+}, {
+"op": &"mul",
+"stat": &"move_speed",
+"value": 1.045,
+"rank": 2
+}, {
+"op": &"mul",
+"stat": &"move_speed",
+"value": 1.045,
+"rank": 3
+}])
+part = &"booster_support"

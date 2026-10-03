@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"pulse_laser"
+display_name = "Pulse Laser"
+category = 0
+tier = 0
+rank_text = Array[String](["Fast single shot", "+25% fire rate", "Twin bolts"])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.25,
+"rank": 2
+}, {
+"op": &"add",
+"stat": &"extra_shots",
+"value": 1,
+"rank": 3
+}])
+part = &"barrel_weapon"

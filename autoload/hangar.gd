@@ -1,28 +1,23 @@
 extends Node
-## Meta progress: scrap (the hangar currency, saved as "currency"), owned frames, modules and pilots,
+## Meta progress: scrap (the hangar currency, saved as "currency"), owned ships, parts and pilots,
 ## and the loadout (stored in the meta save beside the run checkpoint), the permanent effects they give
-## every run, module AP from kills, scrap pickups and stage medal payouts.
+## every run, scrap pickups and stage medal payouts.
 
-const CATALOG: ModuleCatalog = preload("res://data/hangar/catalog.tres")
-## AP every equipped module earns per kill.
-const AP_PER_KILL := 1
+const CATALOG: HangarCatalog = preload("res://data/hangar/catalog.tres")
 
 ## Scrap earned in the current run, from piles and medals (for the game over screen).
 var run_earned := 0
 var _paid: Array[StringName] = []  # medal ids already paid this run
 var _tracker := MedalTracker.new()
-var _kills := 0  # kills not yet turned into AP
 var _power_effects: Array[Dictionary] = []  # an active pilot power (Overclock)
 
 
 func _ready() -> void:
 	SaveManager.data["hangar"] = Loadout.normalize(SaveManager.data.get("hangar"), CATALOG)
 	EventBus.run_started.connect(_on_run_started)
-	EventBus.run_ended.connect(func(_v: bool) -> void: _grant_ap())
 	EventBus.stage_started.connect(_on_stage_started)
 	EventBus.stage_cleared.connect(_on_stage_cleared)
 	EventBus.run_ended.connect(func(_v: bool) -> void: SaveManager.save())
-	EventBus.enemy_killed.connect(func(_e: Node2D, _p: Vector2, _s: int) -> void: _kills += 1)
 	EventBus.shot_fired.connect(func() -> void: _tracker.shots += 1)
 	EventBus.shot_hit.connect(func() -> void: _tracker.hits += 1)
 	EventBus.bullet_grazed.connect(func(_p: Vector2) -> void: _tracker.grazes += 1)
@@ -39,8 +34,8 @@ func credits() -> int:
 	return int(SaveManager.data["currency"])
 
 
-func frame() -> FrameDef:
-	return Loadout.frame_of(CATALOG, state())
+func ship() -> ShipDef:
+	return Loadout.ship_of(CATALOG, state())
 
 
 func pilot() -> PilotDef:
@@ -63,43 +58,34 @@ func choose_pilot(def: PilotDef) -> bool:
 	return true
 
 
+## Buys the part, or its next rank. A newly bought part is fitted when its mount has room.
+## Returns false when it is maxed or can't be afforded.
+func buy_part(def: PartDef) -> bool:
+	var price := Loadout.next_price(state(), def)
+	if price < 0 or price > credits():
+		return false
+	var fresh := Loadout.rank_of(state(), def.id) == 0
+	Loadout.rank_up(state(), def)
+	if fresh:
+		var fitted := Loadout.preview(CATALOG, state(), def, 1)
+		if _fills_empty(fitted, def):
+			state()["mounts"] = fitted["mounts"]
+	_spend(price)
+	return true
+
+
+## Fits part `id` on `mount` ("" empties it). Returns false when it doesn't fit.
+func place(mount: StringName, id: StringName) -> bool:
+	if not Loadout.place(CATALOG, state(), mount, id):
+		return false
+	_changed()
+	return true
+
+
 ## Temporary effects from a pilot power, on top of the loadout. Empty to end them.
 func set_power_effects(effects: Array[Dictionary]) -> void:
 	_power_effects = effects
 	apply()
-
-
-func owns_frame(id: StringName) -> bool:
-	return String(id) in (state()["frames"] as Array)
-
-
-func buy_module(def: ModuleDef) -> bool:
-	if not Loadout.in_shop(CATALOG, state(), def) or def.cost > credits():
-		return false
-	(state()["modules"] as Array).append({"id": String(def.id), "ap": 0, "born": false})
-	_spend(def.cost)
-	return true
-
-
-func buy_frame(def: FrameDef) -> bool:
-	if owns_frame(def.id) or def.cost > credits():
-		return false
-	(state()["frames"] as Array).append(String(def.id))
-	Loadout.set_frame(CATALOG, state(), def.id)
-	_spend(def.cost)
-	return true
-
-
-func use_frame(id: StringName) -> void:
-	if owns_frame(id):
-		Loadout.set_frame(CATALOG, state(), id)
-		_changed()
-
-
-## Puts module `index` in `slot`; -1 empties it.
-func equip(slot: int, index: int) -> void:
-	Loadout.equip(state(), slot, index)
-	_changed()
 
 
 ## Pushes the loadout into the run stats.
@@ -110,6 +96,12 @@ func apply() -> void:
 func _spend(amount: int) -> void:
 	_add_credits(-amount)
 	_changed()
+
+
+## True when the previewed loadout only filled an empty mount (never swaps out a fitted part).
+func _fills_empty(fitted: Dictionary, def: PartDef) -> bool:
+	var mount := Loadout.mount_of(fitted, def.id)
+	return mount != &"" and String(state()["mounts"].get(String(mount), "")) == ""
 
 
 func _changed() -> void:
@@ -132,19 +124,8 @@ func _add_credits(amount: int) -> void:
 	EventBus.credits_changed.emit(credits())
 
 
-func _grant_ap() -> void:
-	if _kills == 0:
-		return
-	var mastered := Loadout.add_ap(CATALOG, state(), _kills * AP_PER_KILL)
-	_kills = 0
-	_changed()
-	for def in mastered:
-		EventBus.module_mastered.emit(def)
-
-
 func _on_run_started(_difficulty: StringName) -> void:
 	run_earned = 0
-	_kills = 0
 	_power_effects = []
 	_paid.clear()
 	apply()
@@ -157,7 +138,6 @@ func _on_stage_started(stage_id: StringName) -> void:
 
 
 func _on_stage_cleared(_stage_id: StringName) -> void:
-	_grant_ap()
 	var medal := _tracker.medal
 	if not _tracker.earned() or medal.id in _paid:
 		SaveManager.save()

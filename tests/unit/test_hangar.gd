@@ -1,20 +1,18 @@
 extends TestCase
-## Hangar loadout rules (slots, links, levels, mastery, chains) and medal goals.
+## Hangar loadout rules (typed slots, mounts, placement, ranks, store previews) and medal goals.
 
-const CATALOG: ModuleCatalog = preload("res://data/hangar/catalog.tres")
-
-
-func _state(frame: StringName, ids: Array) -> Dictionary:
-	var state := Loadout.default_state(CATALOG)
-	state["modules"] = []
-	for id: String in ids:
-		state["modules"].append({"id": id, "ap": 0, "born": false})
-	Loadout.set_frame(CATALOG, state, frame)
-	return state
+const CATALOG: HangarCatalog = preload("res://data/hangar/catalog.tres")
 
 
 func _stats(state: Dictionary) -> Dictionary:
 	return UpgradeSystem.compute(Loadout.effects(CATALOG, state))
+
+
+func _owning(ids: Array) -> Dictionary:
+	var state := Loadout.default_state(CATALOG)
+	for id: String in ids:
+		state["parts"][id] = 1
+	return state
 
 
 func _medal(goal: MedalDef.Goal, target := 0.0) -> MedalDef:
@@ -25,85 +23,103 @@ func _medal(goal: MedalDef.Goal, target := 0.0) -> MedalDef:
 
 
 func test_every_file_is_in_the_catalog() -> void:
-	expect_eq(DirAccess.get_files_at("res://data/hangar/modules").size(), CATALOG.modules.size(), "modules registered")
-	expect_eq(DirAccess.get_files_at("res://data/hangar/frames").size(), CATALOG.frames.size(), "frames registered")
+	expect_eq(DirAccess.get_files_at("res://data/hangar/parts").size(), CATALOG.parts.size(), "parts registered")
+	expect_eq(DirAccess.get_files_at("res://data/hangar/ships").size(), CATALOG.ships.size(), "ships registered")
 
 
 func test_content_is_valid() -> void:
-	for def in CATALOG.modules:
-		for effect: Dictionary in def.effects + def.per_level:
+	for def in CATALOG.parts:
+		expect_eq(def.rank_text.size(), PartDef.MAX_RANK, "%s rank texts" % def.id)
+		for effect: Dictionary in def.effects:
 			expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "%s: %s" % [def.id, effect["stat"]])
-		expect_true(def.requires_mastered == &"" or CATALOG.module(def.requires_mastered) != null, "%s chain" % def.id)
 		expect_true(ResourceLoader.exists("res://assets/art/dusk_armada/parts/%s.png" % def.part), "%s part" % def.id)
-	for frame in CATALOG.frames:
-		expect_true(frame.pairs * 2 <= frame.slots, "%s pairs fit" % frame.id)
-	for id in CATALOG.starter_modules:
-		expect_true(CATALOG.module(id) != null, "starter %s" % id)
+	for category: String in CATALOG.placement:
+		for mount: String in CATALOG.placement[category]:
+			for effect: Dictionary in CATALOG.placement[category][mount]:
+				expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "placement %s %s" % [category, mount])
+	for mount in CATALOG.starter_mounts:
+		var def := CATALOG.part(StringName(CATALOG.starter_mounts[mount]))
+		expect_true(def != null and CATALOG.ships[0].accepts(StringName(mount), def), "starter on %s" % mount)
 
 
-func test_levels_from_ap() -> void:
-	var def := CATALOG.module(&"twin_cannon")
-	expect_eq(def.level_for(0), 1)
-	expect_eq(def.level_for(def.ap_levels[0]), 2)
-	expect_eq(def.level_for(99999), def.max_level())
+func test_new_save_flies_one_of_each_slot() -> void:
+	var state := Loadout.default_state(CATALOG)
+	var slots: Array[StringName] = []
+	for mount in CATALOG.ships[0].mounts:
+		var def := Loadout.part_at(CATALOG, state, mount)
+		expect_true(def != null, "%s fitted" % mount)
+		slots.append(def.slot())
+	expect_eq(slots, [&"weapon", &"shield", &"bonus", &"power"], "nose, left, rear, right")
+	expect_true(_stats(state)[&"freeze_charges"] == 1, "starter power works")
 
 
-func test_equipped_modules_give_stats_and_levels_stack() -> void:
-	var state := _state(&"kestrel", ["twin_cannon"])
-	expect_eq(_stats(state)[&"extra_shots"], 0, "owned but not equipped")
-	Loadout.equip(state, 2, 0)
-	expect_eq(_stats(state)[&"extra_shots"], 1, "equipped")
-	state["modules"][0]["ap"] = 99999
-	expect_true(is_equal_approx(_stats(state)[&"fire_rate"], 1.05 * 1.05), "two levels above 1")
+func test_weapons_only_on_the_nose() -> void:
+	var state := _owning(["twin_cannon", "regen_field"])
+	expect_true(not Loadout.place(CATALOG, state, &"left", &"twin_cannon"), "no weapon on a side mount")
+	expect_true(not Loadout.place(CATALOG, state, &"nose", &"regen_field"), "no shield on the nose")
+	expect_true(Loadout.place(CATALOG, state, &"nose", &"twin_cannon"), "weapon on the nose")
+	expect_eq(_stats(state)[&"extra_shots"], 1)
 
 
-func test_support_needs_a_link() -> void:
-	var state := _state(&"kestrel", ["seeker", "twin_cannon", "magnet_coil"])
-	Loadout.equip(state, 0, 0)
-	expect_eq(_stats(state)[&"homing"], 0.0, "seeker alone does nothing")
-	Loadout.equip(state, 1, 2)
-	expect_eq(_stats(state)[&"homing"], 0.0, "seeker needs a weapon partner")
-	Loadout.equip(state, 1, 1)
-	expect_eq(_stats(state)[&"homing"], 1.5, "linked to a weapon")
-	Loadout.equip(state, 2, 0)
-	expect_eq(_stats(state)[&"homing"], 0.0, "slot 3 has no partner on Kestrel")
+func test_one_part_per_slot_type() -> void:
+	var state := _owning(["regen_field", "vector_jet"])
+	expect_true(not Loadout.place(CATALOG, state, &"right", &"regen_field"), "the bubble already fills the shield slot")
+	Loadout.place(CATALOG, state, &"left", &"")
+	expect_true(Loadout.place(CATALOG, state, &"right", &"regen_field"), "free slot after emptying")
+	expect_true(Loadout.place(CATALOG, state, &"rear", &"vector_jet"), "swapping the bonus part on its own mount")
+	expect_true(Loadout.place(CATALOG, state, &"left", &"vector_jet"), "moving a part to another mount")
+	expect_eq(String(state["mounts"]["rear"]), "", "moved off the old mount")
 
 
-func test_amplifier_raises_partner_level() -> void:
-	var state := _state(&"kestrel", ["amplifier", "twin_cannon"])
-	Loadout.equip(state, 0, 0)
-	Loadout.equip(state, 1, 1)
-	expect_eq(Loadout.slot_level(CATALOG, state, 1), 2)
-	expect_true(is_equal_approx(_stats(state)[&"fire_rate"], 1.05), "level 2 effects")
+func test_placement_changes_handling() -> void:
+	var state := Loadout.default_state(CATALOG)
+	expect_true(is_equal_approx(_stats(state)[&"strafe_right"], 1.0), "rear engine: no strafe bonus")
+	expect_true(_stats(state)[&"move_speed"] > 1.1 * 1.1, "rear engine: straight speed")
+	Loadout.place(CATALOG, state, &"left", &"")
+	Loadout.place(CATALOG, state, &"left", &"ion_thruster")
+	expect_true(is_equal_approx(_stats(state)[&"strafe_right"], 1.25), "left engine pushes right")
+	expect_true(is_equal_approx(_stats(state)[&"strafe_left"], 1.0), "but not left")
+	Loadout.place(CATALOG, state, &"rear", &"bubble")
+	expect_true(is_equal_approx(_stats(state)[&"shield_recharge"], 1.0), "rear shield: normal")
+	Loadout.place(CATALOG, state, &"right", &"bubble")
+	expect_true(is_equal_approx(_stats(state)[&"shield_recharge"], 0.8), "side shield recharges faster")
 
 
-func test_equip_moves_a_module_and_frames_trim_slots() -> void:
-	var state := _state(&"seraph", ["thrusters"])
-	Loadout.equip(state, 5, 0)
-	Loadout.equip(state, 0, 0)
-	expect_eq(state["equipped"][5], -1, "moved out of slot 6")
-	Loadout.equip(state, 5, 0)
-	Loadout.set_frame(CATALOG, state, &"kestrel")
-	expect_eq(state["equipped"][5], -1, "slot 6 cleared on a 3-slot frame")
+func test_ranks_add_effects_and_cost_more() -> void:
+	var def := CATALOG.part(&"twin_cannon")
+	var state := _owning(["twin_cannon"])
+	Loadout.place(CATALOG, state, &"nose", &"twin_cannon")
+	expect_eq(_stats(state)[&"damage"], 0, "rank 1")
+	Loadout.rank_up(state, def)
+	expect_eq(_stats(state)[&"damage"], 1, "rank 2")
+	Loadout.rank_up(state, def)
+	expect_eq(_stats(state)[&"extra_shots"], 2, "rank 3")
+	expect_eq(Loadout.next_price(state, def), -1, "maxed")
+	expect_true(def.price(3) > def.price(2) and def.price(2) > 0, "ranks cost more")
+	expect_eq(CATALOG.part(&"pulse_laser").price(1), 0, "starter parts are free")
 
 
-func test_mastery_spawns_a_copy_once_and_unlocks_chain() -> void:
-	var state := _state(&"kestrel", ["twin_cannon"])
-	Loadout.equip(state, 0, 0)
-	var spread := CATALOG.module(&"spread_cannon")
-	expect_true(not Loadout.in_shop(CATALOG, state, spread), "chain locked")
-	var mastered := Loadout.add_ap(CATALOG, state, 500)
-	expect_eq(mastered.size(), 1)
-	expect_eq((state["modules"] as Array).size(), 2, "copy spawned")
-	expect_true(Loadout.in_shop(CATALOG, state, spread), "chain unlocked")
-	Loadout.add_ap(CATALOG, state, 500)
-	expect_eq((state["modules"] as Array).size(), 2, "only once")
+func test_store_preview_fits_without_touching_the_save() -> void:
+	var state := Loadout.default_state(CATALOG)
+	var before := state.duplicate(true)
+	var cannon := Loadout.preview(CATALOG, state, CATALOG.part(&"twin_cannon"), 2)
+	expect_eq(String(cannon["mounts"]["nose"]), "twin_cannon", "weapon previews on the nose")
+	expect_eq(Loadout.rank_of(cannon, &"twin_cannon"), 2)
+	var regen := Loadout.preview(CATALOG, state, CATALOG.part(&"regen_field"), 1)
+	expect_eq(String(regen["mounts"]["left"]), "regen_field", "swaps the fitted shield")
+	expect_eq(state, before, "save untouched")
 
 
-func test_old_saves_reset() -> void:
-	var state := Loadout.normalize({"thruster_tuning": 2}, CATALOG)
-	expect_eq(state["frame"], "kestrel")
-	expect_eq((state["modules"] as Array).size(), CATALOG.starter_modules.size())
+func test_old_saves_reset_but_keep_pilots() -> void:
+	var state := Loadout.normalize({"frame": "talon", "modules": [], "equipped": [], "pilot": "rook", "pilots": ["vega", "rook"]}, CATALOG)
+	expect_eq(state["ship"], "kestrel")
+	expect_eq(state["pilot"], "rook")
+	expect_true(Loadout.part_at(CATALOG, state, &"nose") != null, "fresh loadout")
+	var broken := Loadout.default_state(CATALOG)
+	broken["parts"]["gone"] = 2
+	broken["mounts"]["rear"] = "gone"
+	broken = Loadout.normalize(broken, CATALOG)
+	expect_true(not broken["parts"].has("gone") and broken["mounts"]["rear"] == "", "unknown parts dropped")
 
 
 func test_medal_goals() -> void:

@@ -1,5 +1,5 @@
 extends TestCase
-## Capture data and the hangar's new modules.
+## Capture data and the hangar's freeze and scrap parts.
 
 
 func test_capture_brain_has_a_beam() -> void:
@@ -13,8 +13,5 @@ func test_some_enemy_can_capture() -> void:
 	expect_true(warden.can_capture, "warden captures")
 
 
-func test_hangar_sells_freeze_and_scrap_modules() -> void:
-	var ids: Array[StringName] = []
-	for module in Hangar.CATALOG.modules:
-		ids.append(module.id)
-	expect_true(&"cryo_pulse" in ids and &"scrap_compactor" in ids, "new modules in catalog")
+func test_hangar_sells_freeze_and_scrap_parts() -> void:
+	expect_true(Hangar.CATALOG.part(&"cryo_pulse") != null and Hangar.CATALOG.part(&"scrap_compactor") != null, "parts in catalog")
