@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PilotDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/pilot_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"rook"
+display_name = "Rook"
+bio = "Veteran escort pilot. Comes home every time."
+cost = 250
+color = Color(0.725, 0.545, 1, 1)
+power = 1
+power_name = "BULWARK"
+power_text = "Shield snaps back up and you are untouchable for 3 seconds."
+cooldown = 25.0
+duration = 3.0
+effects = Array[Dictionary]([])
+distance = 0.0
+damage = 0

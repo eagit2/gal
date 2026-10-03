@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StageDef" load_steps=16 format=3]
+[gd_resource type="Resource" script_class="StageDef" load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
@@ -9,6 +9,7 @@
 [ext_resource type="Curve2D" path="res://data/paths/loop_right.tres" id="p_loop_right"]
 [ext_resource type="Curve2D" path="res://data/paths/snake_left.tres" id="p_snake_left"]
 [ext_resource type="Curve2D" path="res://data/paths/snake_right.tres" id="p_snake_right"]
+[ext_resource type="Resource" path="res://data/medals/perfect.tres" id="medal"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -64,3 +65,4 @@ id = &"challenge_1"
 waves = Array[ExtResource("wave")]([SubResource("w0"), SubResource("w1"), SubResource("w2"), SubResource("w3"), SubResource("w4"), SubResource("w5")])
 is_challenge = true
 style = &"outrun_grid"
+medal = ExtResource("medal")

@@ -40,6 +40,14 @@ offset_bottom = 64.0
 theme_override_font_sizes/font_size = 16
 text = "SHIELD UP"
 
+[node name="Power" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 64.0
+offset_right = 316.0
+offset_bottom = 88.0
+theme_override_font_sizes/font_size = 16
+text = "POWER READY"
+
 [node name="Meters" type="VBoxContainer" parent="."]
 offset_left = 426.0
 offset_top = 40.0

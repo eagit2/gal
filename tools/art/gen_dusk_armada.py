@@ -117,6 +117,35 @@ PLAYER = [
 ]
 PLAYER_PAL = {"a": "#f4e3c1", "b": "#3d8bff", "c": "#bff6ff", "d": "#ffb347", "e": "#ffe08a", "f": "#ff7a3d"}
 
+# Frame palettes (hangar ship frames): same shape, new hull and canopy colors.
+FRAME_PALS = {
+    "talon": {**PLAYER_PAL, "a": "#cfe8d2", "b": "#2fbf7a", "c": "#c9ffe4"},
+    "bastion": {**PLAYER_PAL, "a": "#c7bde0", "b": "#7a5cff", "c": "#e2d8ff", "d": "#ff8f5a"},
+    "seraph": {**PLAYER_PAL, "a": "#ffe9b0", "b": "#ff4f9a", "c": "#ffe0f0", "d": "#7ef0ff"},
+}
+
+# Hangar module parts, drawn for the right side facing up (the left side is flipped).
+# m metal, n dark metal, o module orb (kind color), h orb highlight.
+PARTS = {
+    "cannon": [".m.", ".m.", "mmm", "mom", "nmn"],
+    "barrel": ["m.m", "m.m", "mmm", "mom", "nnn"],
+    "lens": [".o.", "oho", "mmm", "n.n"],
+    "pod": [".m.", "mmm", "mom", "mom", "n.n"],
+    "bay": ["mmmm", "mohm", "nmmn"],
+    "fin": ["m..", "mm.", "mom", "nmm"],
+    "coil": ["mom", "nmn", "mom"],
+    "dish": ["m.m", "mom", ".n."],
+    "antenna": [".o.", ".m.", ".m.", "nmn"],
+    "booster": ["mom", "mmm", "n.n"],
+    "dome": [".oo.", "ohho", "nmmn"],
+}
+PART_KINDS = {"weapon": "#5fe06a", "support": "#4fa6ff", "system": "#ffd34f", "hull": "#b98bff"}
+
+
+def part_palette(orb: str) -> dict:
+    return {"m": "#c9c3d8", "n": "#6f6a86", "o": orb, "h": "#ffffff"}
+
+
 # ---------------------------------------------------------------- enemies (drawn head up, flipped)
 BEE = [
     [
@@ -535,6 +564,12 @@ def main() -> None:
     (OUT / "fx").mkdir(exist_ok=True)
     (OUT / "background").mkdir(exist_ok=True)
     sprite("player", PLAYER, PLAYER_PAL)
+    for frame_id, pal in FRAME_PALS.items():
+        sprite(f"player_{frame_id}", PLAYER, pal)
+    (OUT / "parts").mkdir(exist_ok=True)
+    for part, rows in PARTS.items():
+        for kind, orb in PART_KINDS.items():
+            frame_image(rows, part_palette(orb)).save(OUT / "parts" / f"{part}_{kind}.png")
     sprite("enemies/bee", BEE, BEE_PAL, flip=True)
     sprite("enemies/moth", MOTH, MOTH_PAL, flip=True)
     sprite("enemies/warden", WARDEN, WARDEN_PAL, flip=True, damage=True)

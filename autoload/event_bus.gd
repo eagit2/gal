@@ -30,3 +30,13 @@ signal combo_started(combo: ComboDef, chain: int)
 signal combo_ended(combo: ComboDef)
 ## Meter fill in 0..1 for each combo id, sent when it changes.
 signal combo_meter_changed(combo_id: StringName, fill: float)
+## A stage medal was earned and paid `credits` hangar credits.
+signal medal_earned(medal: MedalDef, credits: int)
+signal credits_changed(credits: int)
+## The hangar loadout, frames or modules changed.
+signal hangar_changed()
+## An equipped module reached max level (it also spawned a fresh copy the first time).
+signal module_mastered(module: ModuleDef)
+## The pilot power recharged to `charge` (0..1), reported in 10% steps.
+signal power_changed(charge: float)
+signal power_used(pilot: PilotDef)

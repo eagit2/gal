@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"missile_pod"
+display_name = "Missile Pod"
+description = "Launches homing missiles. Levels fire them faster."
+kind = 0
+cost = 200
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"missiles",
+"value": 1
+}])
+per_level = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"missile_rate",
+"value": 1.15
+}])
+ap_levels = Array[int]([80, 240])
+amplify = 0
+link_kind = -1
+requires_mastered = &""
+part = &"pod_weapon"

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"twin_cannon"
+display_name = "Twin Cannon"
+description = "Fires one extra shot. Levels raise fire rate."
+kind = 0
+cost = 120
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"extra_shots",
+"value": 1
+}])
+per_level = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.05
+}])
+ap_levels = Array[int]([60, 200])
+amplify = 0
+link_kind = -1
+requires_mastered = &""
+part = &"cannon_weapon"

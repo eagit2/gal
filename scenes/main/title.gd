@@ -28,7 +28,7 @@ func _ready() -> void:
 	_difficulty_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_difficulty_info.add_theme_font_size_override(&"font_size", 16)
 	_menu.add_child(_difficulty_info)
-	# M4: _add_item("HANGAR", SceneRouter.go_to.bind("res://scenes/main/hangar.tscn"))
+	_add_item("HANGAR   %d CREDITS" % Hangar.credits(), SceneRouter.go_to.bind("res://scenes/main/hangar.tscn"))
 	_refresh()
 	$Confirm/Box/Buttons/Yes.pressed.connect(_start_new)
 	$Confirm/Box/Buttons/No.pressed.connect(_close_confirm)

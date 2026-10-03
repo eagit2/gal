@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"salvage_scanner"
+display_name = "Salvage Scanner"
+description = "Upgrade drops 15% more likely, more per level."
+kind = 2
+cost = 90
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"drop_mult",
+"value": 1.15
+}])
+per_level = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"drop_mult",
+"value": 1.1
+}])
+ap_levels = Array[int]([60, 200])
+amplify = 0
+link_kind = -1
+requires_mastered = &""
+part = &"dish_system"
