@@ -6,7 +6,7 @@
 script = ExtResource("1")
 id = &"cadet"
 display_name = "Cadet"
-lives = 5
+lives = 1
 enemy_bullet_speed = 0.7
 dive_frequency = 0.6
 formation_fire = 0.6

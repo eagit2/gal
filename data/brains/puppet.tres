@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SwarmerBrain" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/behaviors/swarmer_brain.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+speed = 430.0
+turn_rate = 3.2
+fire_interval = 0.8
+max_time = 6.0
+peel_time = 0.15
+top_speed = 720.0
+lead = 0.3
+shots = 0
+reattack_chance = 0.0

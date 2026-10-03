@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EliteDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="def"]
+[ext_resource type="Script" path="res://scenes/enemies/elites/puppeteer.gd" id="trait"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/shieldbearer.tscn" id="visual"]
+[ext_resource type="Resource" path="res://data/brains/puppet.tres" id="brain"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/elites/puppet_strings.tscn" id="strings"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("trait")
+puppet_brain = ExtResource("brain")
+strings_visual = ExtResource("strings")
+
+[resource]
+script = ExtResource("def")
+id = &"puppeteer"
+display_name = "Puppeteer"
+hint = "Hurls your foes at you. Kill it to cut the strings"
+hp = 40
+score = 3000
+scrap = 26
+speed = 70.0
+fire_interval = 2.2
+fan_shots = 3
+visual_scene = ExtResource("visual")
+visual_scale = 1.8
+tint = Color(1.25, 0.7, 0.75, 1)
+trait_logic = SubResource("trait_logic")

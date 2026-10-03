@@ -8,7 +8,7 @@ extends RefCounted
 ##   repeat      replay the same stage instead of advancing
 ##   difficulty  cadet | pilot | ace | nightmare
 ##   capture     capture runs start at 3s and repeat every few seconds
-##   elite       an elite id (frost_shell, rock_hauler, shield_warden) that joins every stage at 4s
+##   elite       an elite id (a file name in data/elites, e.g. puppeteer) that joins every stage at 4s
 
 var stage := ""
 var god := false
