@@ -1,16 +1,21 @@
 class_name Enemy
 extends Node2D
-## Galaga-style enemy: enters along a path, settles into its formation slot, and dives at the player.
-## Enemies without a slot (challenge stages) fly the path and leave.
+## Galaga-style enemy: flies in along its entry path, settles into its formation slot, then attacks
+## when the DiveController sends it. Attacks are steered live by the EnemyDef's brain, not by fixed
+## paths. Enemies without a slot (challenge stages) fly the entry path and leave.
 
 enum State { ENTERING, TO_SLOT, IN_FORMATION, DIVING, RETURNING }
 
 const ENEMY_BULLET := preload("res://scenes/projectiles/enemy_bullet.tscn")
+const ESCORT_BRAIN := preload("res://data/brains/escort.tres")
 const NO_SLOT := Vector2i(-1, -1)
 const TURN_RATE := 10.0
-## Fraction of the dive path at which each shot is fired.
-const SHOT_MARKS: Array[float] = [0.3, 0.42, 0.54]
-const HIT_TINT := Color(1, 0.55, 0.85)
+const TOP := -40.0
+const BOTTOM := 1010.0
+const MIN_X := 24.0
+const MAX_X := 516.0
+const SEPARATION_RADIUS := 34.0
+const SEPARATION_FORCE := 260.0
 
 var def: EnemyDef
 var difficulty: DifficultyDef
@@ -19,9 +24,26 @@ var slot := NO_SLOT
 var target: Player
 var entities: Node
 var state := State.ENTERING
+
+# Attack state, read and written by brains.
+var brain: EnemyBrain
+var velocity := Vector2.ZERO
+var phase := 0
+var phase_time := 0.0
+var attack_time := 0.0
+var fire_cooldown := 0.0
+var shots_left := 0
+## Stage aggression when the attack started; brains scale risk-taking by it.
+var aggression := 1.0
+## Per-enemy personality in 0..1, so two enemies with the same brain don't fly identically.
+var quirk := randf()
+## Face the player instead of the direction of travel (strafers).
+var aim_facing := false
+var leader: Enemy
+var escort_offset := Vector2.ZERO
+
 var _path: Curve2D
 var _distance := 0.0
-var _shots: Array[float] = []
 var _visual: Node2D
 
 @onready var _health: Health = $Health
@@ -32,7 +54,8 @@ func setup(enemy_def: EnemyDef, diff: DifficultyDef, entry_path: Curve2D, format
 	difficulty = diff
 	formation = form
 	slot = formation_slot
-	_follow(entry_path)
+	_path = entry_path
+	_distance = 0.0
 	position = entry_path.get_point_position(0)
 
 
@@ -43,15 +66,16 @@ func _ready() -> void:
 	add_child(_visual)
 	_health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp)))
 	_health.died.connect(_on_died)
-	_health.damaged.connect(func(_amount: int) -> void: _visual.modulate = HIT_TINT)
-	# Ramming: the enemy is destroyed along with the player's life.
+	# Ramming (or hitting the player's shield) destroys the enemy.
 	$ContactHitbox.hit.connect(func(_h: Hurtbox) -> void: _health.take_damage(_health.hp))
 
 
 func _physics_process(delta: float) -> void:
 	match state:
-		State.ENTERING, State.DIVING:
+		State.ENTERING:
 			_advance_path(delta)
+		State.DIVING:
+			_attack(delta)
 		State.TO_SLOT, State.RETURNING:
 			_fly_to_slot(delta)
 		State.IN_FORMATION:
@@ -59,18 +83,126 @@ func _physics_process(delta: float) -> void:
 			rotation = lerp_angle(rotation, 0.0, minf(1.0, TURN_RATE * delta))
 
 
-func start_dive(player_position: Vector2) -> void:
+# --- Attacks ---------------------------------------------------------------------------------
+
+func start_attack(player: Player, stage_aggression: float) -> void:
+	if state != State.IN_FORMATION or def.brain == null:
+		return
+	target = player
+	aggression = stage_aggression
+	_begin_attack(def.brain)
+
+
+## Called by a squad leader's brain: fly alongside `squad_leader` at `offset`.
+func start_escort(squad_leader: Enemy, offset: Vector2) -> void:
 	if state != State.IN_FORMATION:
 		return
+	leader = squad_leader
+	escort_offset = offset
+	aggression = squad_leader.aggression
+	_begin_attack(ESCORT_BRAIN)
+
+
+## The leader is gone: attack on our own.
+func release_escort() -> void:
+	leader = null
+	brain = def.brain
+	brain.begin(self)
+
+
+func _begin_attack(attack_brain: EnemyBrain) -> void:
 	state = State.DIVING
-	_follow(DivePaths.build(position, player_position, def.behaviors))
-	_shots = SHOT_MARKS.slice(0, def.dive_shots)
+	add_to_group(&"attackers")
+	brain = attack_brain
+	attack_time = 0.0
+	fire_cooldown = randf_range(0.2, 0.6)
+	aim_facing = false
+	brain.begin(self)
 
 
-func _follow(curve: Curve2D) -> void:
-	_path = curve
-	_distance = 0.0
+func _attack(delta: float) -> void:
+	attack_time += delta
+	phase_time += delta
+	fire_cooldown -= delta
+	var done := brain.tick(self, delta) or attack_time > brain.max_time
+	var push := Steering.separation(position, _attacker_positions(), SEPARATION_RADIUS) * SEPARATION_FORCE
+	position += (velocity + push) * delta
+	position.x = clampf(position.x, MIN_X, MAX_X)
+	if aim_facing and is_instance_valid(target):
+		_face(target.global_position - global_position, delta)
+	else:
+		_face(velocity, delta)
+	if position.y > BOTTOM:
+		position = Vector2(position.x, TOP)
+		done = done or not brain.continue_after_wrap(self)
+	if done:
+		_end_attack()
 
+
+func _end_attack() -> void:
+	remove_from_group(&"attackers")
+	leader = null
+	aim_facing = false
+	state = State.RETURNING
+
+
+func set_phase(value: int) -> void:
+	phase = value
+	phase_time = 0.0
+
+
+## Turns toward `direction` at up to `turn_rate` radians per second and moves at `speed`.
+func steer(direction: Vector2, speed: float, turn_rate: float, delta: float) -> void:
+	velocity = Steering.turn(velocity, direction, turn_rate * delta, speed * _speed_scale())
+
+
+## Where the player will be in `lead` seconds, kept on screen.
+func predicted_player(lead: float) -> Vector2:
+	if not is_instance_valid(target):
+		return Vector2(270, 860)
+	var guess := target.global_position + target.velocity * lead
+	return guess.clamp(Vector2(MIN_X, Player.MIN_Y), Vector2(MAX_X, Player.MAX_Y))
+
+
+func is_damaged() -> bool:
+	return _health.hp < _health.max_hp
+
+
+## Up to `count` idle formation enemies within `radius`, nearest first (squad recruiting).
+func nearby_idle(radius: float, count: int) -> Array[Enemy]:
+	var found: Array[Enemy] = []
+	for node in get_tree().get_nodes_in_group(&"enemies"):
+		var other := node as Enemy
+		if other != self and other.state == State.IN_FORMATION and other.position.distance_to(position) <= radius:
+			found.append(other)
+	found.sort_custom(func(a: Enemy, b: Enemy) -> bool: return a.position.distance_squared_to(position) < b.position.distance_squared_to(position))
+	return found.slice(0, count)
+
+
+## Fires one shot at `point`, with random `spread` and a fixed `offset_degrees` (fans).
+func fire_at(point: Vector2, spread := 0.0, offset_degrees := 0.0) -> void:
+	if not is_instance_valid(target) or not target.alive or global_position.y > target.global_position.y - 60.0:
+		return
+	var bullet: Bullet = Pools.acquire(ENEMY_BULLET)
+	var angle := deg_to_rad(offset_degrees + randf_range(-spread, spread))
+	var direction := global_position.direction_to(point).rotated(angle)
+	var speed := def.bullet_speed * difficulty.enemy_bullet_speed
+	bullet.launch(entities, global_position + direction * 14.0, direction * speed, 1, ENEMY_BULLET)
+
+
+func _speed_scale() -> float:
+	return 1.0 + 0.15 * (aggression - 1.0)
+
+
+func _attacker_positions() -> Array[Vector2]:
+	var positions: Array[Vector2] = []
+	for node in get_tree().get_nodes_in_group(&"attackers"):
+		if node != self:
+			positions.append((node as Node2D).position)
+	return positions
+
+
+# --- Entry and formation ---------------------------------------------------------------------
 
 func _advance_path(delta: float) -> void:
 	_distance += def.speed * delta
@@ -78,22 +210,11 @@ func _advance_path(delta: float) -> void:
 	var previous := position
 	position = _path.sample_baked(minf(_distance, length))
 	_face(position - previous, delta)
-	if state == State.DIVING and not _shots.is_empty() and _distance / length >= _shots[0]:
-		_shots.pop_front()
-		_fire()
 	if _distance >= length:
-		_on_path_end()
-
-
-func _on_path_end() -> void:
-	if slot == NO_SLOT:
-		_leave()
-	elif state == State.DIVING:
-		# Re-enter from above the screen, Galaga style.
-		position = Vector2(formation.slot_position(slot).x, -40.0)
-		state = State.RETURNING
-	else:
-		state = State.TO_SLOT
+		if slot == NO_SLOT:
+			_leave()
+		else:
+			state = State.TO_SLOT
 
 
 func _fly_to_slot(delta: float) -> void:
@@ -113,15 +234,6 @@ func _face(direction: Vector2, delta: float) -> void:
 		rotation = lerp_angle(rotation, direction.angle() - PI / 2.0, minf(1.0, TURN_RATE * delta))
 
 
-func _fire() -> void:
-	if not is_instance_valid(target) or not target.alive or global_position.y > target.global_position.y - 40.0:
-		return
-	var bullet: Bullet = Pools.acquire(ENEMY_BULLET)
-	var direction := global_position.direction_to(target.global_position)
-	var speed := def.bullet_speed * difficulty.enemy_bullet_speed
-	bullet.launch(entities, global_position + direction * 14.0, direction * speed, 1, ENEMY_BULLET)
-
-
 func _leave() -> void:
 	remove_from_group(&"enemies")
 	EventBus.enemy_escaped.emit(self)
@@ -130,6 +242,7 @@ func _leave() -> void:
 
 func _on_died() -> void:
 	remove_from_group(&"enemies")
+	remove_from_group(&"attackers")
 	var score := def.dive_score if state == State.DIVING else def.score
 	EventBus.enemy_killed.emit(self, global_position, score)
 	queue_free()

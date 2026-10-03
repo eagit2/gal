@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="1"]
+
+[node name="Visual" type="Node2D"]
+script = ExtResource("1")
+neon_color = Color(0.169, 0.91, 0.859, 1)
+
+[node name="dusk_armada" type="Node2D" parent="."]
+
+[node name="Bubble" type="Polygon2D" parent="dusk_armada"]
+color = Color(0.169, 0.71, 0.659, 0.2)
+polygon = PackedVector2Array(30.0, 0.0, 29.0, 7.8, 26.0, 15.0, 21.2, 21.2, 15.0, 26.0, 7.8, 29.0, 0.0, 30.0, -7.8, 29.0, -15.0, 26.0, -21.2, 21.2, -26.0, 15.0, -29.0, 7.8, -30.0, 0.0, -29.0, -7.8, -26.0, -15.0, -21.2, -21.2, -15.0, -26.0, -7.8, -29.0, -0.0, -30.0, 7.8, -29.0, 15.0, -26.0, 21.2, -21.2, 26.0, -15.0, 29.0, -7.8)
+
+[node name="Rim" type="Line2D" parent="dusk_armada"]
+points = PackedVector2Array(30.0, 0.0, 29.0, 7.8, 26.0, 15.0, 21.2, 21.2, 15.0, 26.0, 7.8, 29.0, 0.0, 30.0, -7.8, 29.0, -15.0, 26.0, -21.2, 21.2, -26.0, 15.0, -29.0, 7.8, -30.0, 0.0, -29.0, -7.8, -26.0, -15.0, -21.2, -21.2, -15.0, -26.0, -7.8, -29.0, -0.0, -30.0, 7.8, -29.0, 15.0, -26.0, 21.2, -21.2, 26.0, -15.0, 29.0, -7.8)
+closed = true
+width = 2.0
+default_color = Color(0.5, 0.95, 0.88, 0.75)

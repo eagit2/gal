@@ -9,6 +9,8 @@ signal enemy_killed(enemy: Node2D, position: Vector2, score: int)
 ## An enemy left the screen without being killed (challenge stages).
 signal enemy_escaped(enemy: Node2D)
 signal player_hit()
+## Shield charge in 0..1 (1 = bubble up), reported in 10% steps.
+signal shield_changed(charge: float)
 signal shot_fired()
 signal shot_missed()
 signal player_died(lives_left: int)

@@ -7,6 +7,10 @@ extends Resource
 @export var upgrade_choices: int = 3
 @export var enemy_bullet_speed: float = 1.0
 @export var dive_frequency: float = 1.0
+## Rate of shots from enemies sitting in formation.
+@export var formation_fire: float = 1.0
+## Seconds for the shield bubble to come back after it pops.
+@export var shield_recharge: float = 12.0
 @export var enemy_hp: float = 1.0
 @export var score_multiplier: float = 1.0
 ## First sector (0-based) where stage modifiers apply. -1 means never.

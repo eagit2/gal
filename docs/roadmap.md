@@ -34,7 +34,14 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Challenging stage: fly-through waves, no shots, hit bonus + perfect bonus
 - [x] StyleDirector + style switch with placeholder visuals for both styles (F2 debug toggle; challenge stage forces Outrun)
 - [x] Spike: outrun grid shader with in-shader glow, renders on the Compatibility renderer
-- [ ] Playtest in browser and tune feel
+- [x] Playtest in browser (Eric: controls fine; pacing needs to be frantic, add a shield, enemies need their own logic)
+
+## M2.5 Intensity pass (playtest feedback)
+- [x] Enemy brains replace fixed dive paths: swarmer (bee, homing kamikaze, re-attacks), strafer (moth, shadows the player and fires bursts, may commit), hunter (warden, leads escorts, spread shots, rams when hurt), escort
+- [x] Squad attacks start 2s into a stage, up to 3 at once; cap scales with difficulty and aggression (3 to 12); formation fire
+- [x] More volume: waves arrive ~45% faster; reinforcement squads fill empty slots (stage 1: +3, stage 2: +4)
+- [x] Auto shield bubble: absorbs one shot or ram, recharges (DifficultyDef.shield_recharge, 9 to 16s)
+- [ ] Playtest and tune numbers in `data/brains/` and `data/difficulty/`
 
 ## M3 Upgrades v1
 - [ ] Upgrade drops: DropTable per enemy, pity bonus, falling pickup (adds to the card pick)

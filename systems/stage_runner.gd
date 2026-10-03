@@ -1,12 +1,14 @@
 class_name StageRunner
 extends Node
-## Spawns a StageDef's waves on their timeline and reports when every enemy is dead or gone.
+## Spawns a StageDef's waves on their timeline, sends reinforcement squads into empty slots when the
+## formation thins out, and reports when every enemy is dead or gone.
 
 signal waves_done
 signal finished(kills: int, total: int)
 
 const ENEMY_SCENE := preload("res://scenes/enemies/enemy.tscn")
 const SPAWN_INTERVAL := 0.14
+const REINFORCE_COOLDOWN := 2.5
 
 var formation: Formation
 var target: Player
@@ -18,6 +20,8 @@ var _time := 0.0
 var _kills := 0
 var _total := 0
 var _running := false
+var _reinforcements_left := 0
+var _reinforce_timer := 0.0
 
 
 func _ready() -> void:
@@ -31,6 +35,8 @@ func start(stage_def: StageDef, difficulty: DifficultyDef) -> void:
 	_total = _queue.size()
 	_time = 0.0
 	_kills = 0
+	_reinforcements_left = 0 if stage_def.is_challenge else stage_def.reinforcements
+	_reinforce_timer = REINFORCE_COOLDOWN
 	_running = true
 	formation.breathing = false
 
@@ -59,9 +65,38 @@ func _physics_process(delta: float) -> void:
 	if spawned_any and _queue.is_empty():
 		formation.breathing = true
 		waves_done.emit()
-	if _queue.is_empty() and get_tree().get_nodes_in_group(&"enemies").is_empty():
+	if _queue.is_empty() and _reinforcements_left > 0:
+		_reinforce_timer -= delta
+		if _reinforce_timer <= 0.0 and get_tree().get_nodes_in_group(&"enemies").size() < stage.reinforce_below:
+			_reinforce()
+	if _queue.is_empty() and _reinforcements_left == 0 and get_tree().get_nodes_in_group(&"enemies").is_empty():
 		_running = false
 		finished.emit(_kills, _total)
+
+
+## Queues one squad of a random wave's enemy type, flying that wave's entry path into free slots.
+func _reinforce() -> void:
+	_reinforcements_left -= 1
+	_reinforce_timer = REINFORCE_COOLDOWN
+	var occupied: Array[Vector2i] = []
+	for node in get_tree().get_nodes_in_group(&"enemies"):
+		occupied.append((node as Enemy).slot)
+	var slots := free_slots(occupied)
+	slots.shuffle()
+	var wave: WaveDef = stage.waves.pick_random()
+	for i in mini(stage.reinforcement_size, slots.size()):
+		_queue.append({"time": _time + i * SPAWN_INTERVAL, "enemy": wave.enemy, "path": wave.entry_path, "slot": slots[i]})
+	_total += mini(stage.reinforcement_size, slots.size())
+
+
+static func free_slots(occupied: Array[Vector2i]) -> Array[Vector2i]:
+	var free: Array[Vector2i] = []
+	for row in Formation.ROWS:
+		for column in Formation.COLUMNS:
+			var slot := Vector2i(column, row)
+			if slot not in occupied:
+				free.append(slot)
+	return free
 
 
 func _spawn(entry: Dictionary) -> void:

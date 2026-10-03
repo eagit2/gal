@@ -5,6 +5,8 @@ extends Node2D
 const PLAYER_START := Vector2(270, 860)
 const RESPAWN_DELAY := 1.2
 const STAGE_DELAY := 2.5
+## Seconds into a stage before attacks start (they begin while later waves are still flying in).
+const ATTACK_DELAY := 2.0
 const BANNER_TIME := 2.0
 const CHALLENGE_HIT_BONUS := 100
 const CHALLENGE_PERFECT_BONUS := 10000
@@ -34,10 +36,10 @@ func _ready() -> void:
 	_runner.formation = _formation
 	_runner.target = _player
 	_runner.entities = _entities
-	_runner.waves_done.connect(_on_waves_done)
 	_runner.finished.connect(_on_stage_finished)
 	_dives.difficulty = difficulty
 	_dives.target = _player
+	_player.shield.recharge_time = difficulty.shield_recharge
 	_hud.set_lives(GameState.lives)
 	stage_number = first_stage
 	_start_stage()
@@ -69,10 +71,12 @@ func _start_stage() -> void:
 	_hud.show_banner("CHALLENGING STAGE" if stage.is_challenge else "STAGE %d" % (stage_number + 1), BANNER_TIME)
 	EventBus.stage_started.emit(stage.id)
 	_runner.start(stage, difficulty)
+	get_tree().create_timer(ATTACK_DELAY, false).timeout.connect(_open_attacks.bind(stage_number))
 
 
-func _on_waves_done() -> void:
-	_dives.active = not current_stage().is_challenge
+func _open_attacks(for_stage: int) -> void:
+	if for_stage == stage_number and not game_over:
+		_dives.active = not current_stage().is_challenge
 
 
 func _on_stage_finished(kills: int, total: int) -> void:

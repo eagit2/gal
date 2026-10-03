@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="StraferBrain" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/behaviors/strafer_brain.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+speed = 320.0
+turn_rate = 3.5
+fire_interval = 0.9
+max_time = 9.0
+line_offset = 260.0
+line_jitter = 120.0
+strafe_time = 3.0
+burst = 3
+burst_gap = 0.14
+track_speed = 230.0
+commit_chance = 0.3

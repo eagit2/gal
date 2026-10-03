@@ -2,6 +2,8 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: Pacing must feel frantic (Eric's M2 playtest). Enemy attacks are steered live by per-type brains (`EnemyBrain` resources in `data/brains/`) instead of fixed dive curves; entries still fly in on data paths. Squads attack from 2s into a stage, formation fires, and reinforcement squads refill the formation.
+- 2026-10-03: The player shield is an always-on bubble that absorbs one hit (shot or ram, the rammer dies) and recharges (Eric picked "Auto bubble"). Recharge time is a DifficultyDef value.
 - 2026-10-02: Sector 1 has 10 stages (9 + boss, challenges at 3 and 7). Later sectors default to 5 + boss. The boss has unique attacks and mechanics. (Eric, Level design thread.) Enemy ids now follow that design: butterfly → moth, boss → warden.
 - 2026-10-02: Upgrades also drop randomly from kills, by probability (DropTable + pity bonus), adding to the 1-of-3 card pick. Stage medals earn the meta currency. (Eric, Level design thread; see design/intro-levels.md 2.1.)
 - 2026-10-02: Ramming destroys the enemy too (Eric). Score is awarded as a normal kill.
