@@ -4,21 +4,17 @@
 
 [resource]
 script = ExtResource("1")
-id = &"twin_shot"
-display_name = "Twin Shot"
-description = "+1 shot per volley in a narrow fan."
-category = 0
-rarity = 1
-source = 1
-tags = Array[StringName]([&"spread"])
-max_stacks = 2
+id = &"salvage_contract"
+display_name = "Salvage Contract"
+description = "+25% hangar credits earned this run."
+category = 3
+rarity = 0
+source = 0
+tags = Array[StringName]([&"credits"])
+max_stacks = 3
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"extra_shots",
-"value": 1
-}, {
-"op": &"add",
-"stat": &"spread",
-"value": 8.0
+"stat": &"credit_mult",
+"value": 0.25
 }])
 requires = Array[StringName]([])

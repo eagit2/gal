@@ -48,6 +48,8 @@ func launch(parent: Node, from: Vector2, vel: Vector2, dmg: int, pool_scene: Pac
 
 
 func _physics_process(delta: float) -> void:
+	if grazeable and GameState.freeze_left > 0.0:
+		return  # Enemy shots hang in the air during a Cryo Pulse.
 	if homing > 0.0 and _active:
 		_steer(delta)
 	position += velocity * delta

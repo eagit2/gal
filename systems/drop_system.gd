@@ -4,7 +4,7 @@ extends Node
 ## Charm stat, plus a pity bonus that grows with each dry kill and resets on a drop.
 
 const PICKUP_SCENE := preload("res://scenes/pickups/pickup.tscn")
-const PITY_STEP := 0.005
+const PITY_STEP := 0.0025
 
 ## Off on challenge stages.
 var enabled := true

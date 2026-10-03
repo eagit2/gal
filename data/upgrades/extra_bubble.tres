@@ -4,16 +4,17 @@
 
 [resource]
 script = ExtResource("1")
-id = &"wing_drone"
-display_name = "Wing Drone"
-description = "A drone flies beside you and fires with you."
-category = 1
+id = &"extra_bubble"
+display_name = "Extra Bubble"
+description = "Shield holds one more bubble (one more hit) before popping."
+category = 2
 rarity = 1
-tags = Array[StringName]([&"drone"])
+source = 0
+tags = Array[StringName]([&"shield"])
 max_stacks = 2
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"drones",
+"stat": &"shield_layers",
 "value": 1
 }])
 requires = Array[StringName]([])

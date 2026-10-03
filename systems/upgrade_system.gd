@@ -27,6 +27,9 @@ const BASE_STATS := {
 	&"explode_radius": 0.0,  # kills damage enemies within this radius
 	&"time_scale": 1.0,
 	&"graze_score": 0,
+	&"freeze_charges": 0,  # Cryo Pulse uses per stage
+	&"freeze_time": 3.0,  # seconds enemies stay frozen
+	&"credit_mult": 1.0,  # hangar credits earned this run
 }
 ## Effects on these stats happen once when the upgrade is gained instead of being a stat.
 const INSTANT_STATS: Array[StringName] = [&"lives"]
@@ -72,19 +75,19 @@ static func stacks(owned: Array[UpgradeDef], id: StringName) -> int:
 	return owned.filter(func(u: UpgradeDef) -> bool: return u.id == id).size()
 
 
-## Upgrades that can still be offered: below max stacks with requirements owned.
-static func available(pool: UpgradePool, owned: Array[UpgradeDef]) -> Array[UpgradeDef]:
+## Upgrades from `source` that can still be offered: below max stacks with requirements owned.
+static func available(pool: UpgradePool, owned: Array[UpgradeDef], source := UpgradeDef.Source.CARD) -> Array[UpgradeDef]:
 	var ids: Array[StringName] = []
 	for upgrade in owned:
 		ids.append(upgrade.id)
 	var result: Array[UpgradeDef] = []
 	for upgrade in pool.upgrades:
-		if stacks(owned, upgrade.id) < upgrade.max_stacks and upgrade.requires.all(func(r: StringName) -> bool: return r in ids):
+		if upgrade.source == source and stacks(owned, upgrade.id) < upgrade.max_stacks and upgrade.requires.all(func(r: StringName) -> bool: return r in ids):
 			result.append(upgrade)
 	return result
 
 
-## `count` distinct upgrades, weighted by rarity.
+## `count` distinct card upgrades, weighted by rarity.
 static func roll_choices(pool: UpgradePool, owned: Array[UpgradeDef], count: int, rng: RandomNumberGenerator) -> Array[UpgradeDef]:
 	var candidates := available(pool, owned)
 	var picked: Array[UpgradeDef] = []
@@ -98,13 +101,16 @@ static func roll_choices(pool: UpgradePool, owned: Array[UpgradeDef], count: int
 	return picked
 
 
-## One upgrade for a pickup: roll a rarity (shifted up by `rarity_bonus` tiers), then an upgrade of it.
+## One drop upgrade for a pickup: roll a rarity (shifted up by `rarity_bonus` tiers), then an upgrade of it.
 ## Falls back to any available upgrade when that rarity has none left.
 static func roll_drop(pool: UpgradePool, owned: Array[UpgradeDef], rarity_bonus: int, rng: RandomNumberGenerator) -> UpgradeDef:
-	var candidates := available(pool, owned)
+	var candidates := available(pool, owned, UpgradeDef.Source.DROP)
 	if candidates.is_empty():
 		return null
 	var rarity := mini(rng.rand_weighted(PackedFloat32Array(pool.rarity_weights)) + rarity_bonus, UpgradeDef.Rarity.EPIC)
-	var of_rarity := candidates.filter(func(u: UpgradeDef) -> bool: return u.rarity == rarity)
-	var options: Array = of_rarity if not of_rarity.is_empty() else candidates
-	return options[rng.randi() % options.size()]
+	# No candidate at the rolled tier: step down to the best tier that has one.
+	for tier in range(rarity, -1, -1):
+		var options := candidates.filter(func(u: UpgradeDef) -> bool: return u.rarity == tier)
+		if not options.is_empty():
+			return options[rng.randi() % options.size()]
+	return candidates[rng.randi() % candidates.size()]

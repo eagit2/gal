@@ -16,6 +16,8 @@ var _blend := 0.0
 
 
 func _physics_process(delta: float) -> void:
+	if GameState.freeze_left > 0.0:
+		return
 	_t += delta
 	_blend = move_toward(_blend, 1.0 if breathing else 0.0, delta * 0.5)
 

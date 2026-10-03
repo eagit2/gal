@@ -13,6 +13,8 @@ const METER_LABELS := {&"overdrive": "OD", &"lock_on": "LK", &"chain_reaction": 
 @onready var _banner: Label = $Banner
 @onready var _shield: Label = $Shield
 @onready var _power: Label = $Power
+@onready var _freeze: Label = $Freeze
+@onready var _freeze_tint: ColorRect = $FreezeTint
 @onready var _meters: VBoxContainer = $Meters
 @onready var _mode: Label = $Mode
 @onready var _mode_bar: ProgressBar = $ModeBar
@@ -31,6 +33,15 @@ func _ready() -> void:
 	EventBus.combo_started.connect(_on_combo_started)
 	EventBus.combo_ended.connect(_on_combo_ended)
 	EventBus.upgrade_picked.connect(_on_upgrade_picked)
+	EventBus.freeze_charges_changed.connect(_on_freeze_charges_changed)
+	EventBus.freeze_started.connect(func(_d: float) -> void:
+		_freeze_tint.visible = true
+		show_toast("CRYO PULSE", Color(0.55, 0.9, 1)))
+	EventBus.freeze_ended.connect(_freeze_tint.hide)
+	# Tapping the label fires Cryo Pulse on touch screens (two fingers belong to the pilot power).
+	_freeze.gui_input.connect(func(e: InputEvent) -> void:
+		if (e is InputEventMouseButton or e is InputEventScreenTouch) and e.pressed:
+			EventBus.special_requested.emit())
 	EventBus.synergy_activated.connect(func(s: SynergyDef) -> void: show_toast("SYNERGY: %s" % s.display_name.to_upper(), Color(1, 0.55, 0.95)))
 	EventBus.medal_earned.connect(func(m: MedalDef, credits: int) -> void: show_toast("MEDAL: %s  +%d CREDITS" % [m.display_name.to_upper(), credits], Color(0.95, 0.77, 0.43)))
 	EventBus.run_ended.connect(_on_run_ended)
@@ -84,6 +95,10 @@ func _on_power_changed(charge: float) -> void:
 	var pilot := Hangar.pilot()
 	_power.text = "%s READY" % pilot.power_name if charge >= 1.0 else "%s %d%%" % [pilot.power_name, floori(charge * 100.0)]
 	_power.modulate = pilot.color if charge >= 1.0 else Color(1, 1, 1, 0.55)
+func _on_freeze_charges_changed(charges: int) -> void:
+	_freeze.visible = GameState.stats[&"freeze_charges"] > 0
+	_freeze.text = "FREEZE x%d  [C]" % charges
+	_freeze.modulate.a = 1.0 if charges > 0 else 0.4
 
 
 ## Short notice mid-screen (upgrade gained, synergy unlocked).

@@ -6,14 +6,15 @@
 script = ExtResource("1")
 id = &"rapid_fire"
 display_name = "Rapid Fire"
-description = "Fire 20% faster."
+description = "Fire 15% faster."
 category = 0
 rarity = 0
+source = 1
 tags = Array[StringName]([&"rapid"])
 max_stacks = 3
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"fire_rate",
-"value": 1.2
+"value": 1.15
 }])
 requires = Array[StringName]([])

@@ -78,10 +78,14 @@ func _physics_process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventScreenTouch and event.index > 0:
+		return  # Extra fingers are for the pilot power; the first keeps steering.
 	if event is InputEventScreenTouch:
 		_touch_target = event.position + TOUCH_OFFSET if event.pressed else null
-	elif event is InputEventScreenDrag:
+	elif event is InputEventScreenDrag and event.index == 0:
 		_touch_target = event.position + TOUCH_OFFSET
+	elif event.is_action_pressed("special"):
+		EventBus.special_requested.emit()
 
 
 ## Pilot powers: no damage for `seconds` (keeps the longer of this and any current window).

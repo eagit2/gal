@@ -55,6 +55,7 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Style Chain multiplier, meter decay, HUD meters and mode timer
 - [x] Styles: Cold Hologram, Particle Storm, Pocket Four (post shader), Arcade Classic+ (post shader + starfield)
 - [ ] Playtest and tune: drop rate, meter thresholds, upgrade values
+- [x] M3.5 upgrade rework: drops change bullets only, cards are utility (Cryo Pulse freeze, extra bubbles, credit multiplier), lower values
 ## M4 Difficulty + meta
 - [x] Hangar v2 (materia style): 4 frames with linked slots, 21 modules that level from AP, mastery copies and upgrade chains, ship parts per module, deeper menu (`docs/hangar.md`)
 - [x] Pilots with active powers: Vega (Overclock), Rook (Bulwark), Nyx (Phase Dash), Juno (Nova)

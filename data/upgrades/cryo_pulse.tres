@@ -4,16 +4,17 @@
 
 [resource]
 script = ExtResource("1")
-id = &"missile_pod"
-display_name = "Missile Pod"
-description = "Launch a homing missile every 2 seconds. Stacks add missiles."
-category = 1
+id = &"cryo_pulse"
+display_name = "Cryo Pulse"
+description = "Once per stage, freeze every enemy and shot on screen for 3s. X / Shift, or tap with two fingers."
+category = 3
 rarity = 1
-tags = Array[StringName]([&"missile"])
-max_stacks = 3
+source = 0
+tags = Array[StringName]([&"freeze"])
+max_stacks = 2
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"missiles",
+"stat": &"freeze_charges",
 "value": 1
 }])
 requires = Array[StringName]([])

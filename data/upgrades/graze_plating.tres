@@ -9,6 +9,7 @@ display_name = "Graze Plating"
 description = "+50% Graze meter gain."
 category = 3
 rarity = 0
+source = 0
 tags = Array[StringName]([&"graze"])
 max_stacks = 1
 effects = Array[Dictionary]([{

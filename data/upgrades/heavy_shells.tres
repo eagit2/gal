@@ -6,18 +6,15 @@
 script = ExtResource("1")
 id = &"heavy_shells"
 display_name = "Heavy Shells"
-description = "+1 damage per shot, fire 15% slower."
+description = "+1 shot damage."
 category = 0
-rarity = 2
+rarity = 1
+source = 1
 tags = Array[StringName]([&"power"])
-max_stacks = 1
+max_stacks = 2
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"damage",
 "value": 1
-}, {
-"op": &"mul",
-"stat": &"fire_rate",
-"value": 0.85
 }])
 requires = Array[StringName]([])

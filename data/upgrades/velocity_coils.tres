@@ -6,14 +6,15 @@
 script = ExtResource("1")
 id = &"velocity_coils"
 display_name = "Velocity Coils"
-description = "Shots fly 30% faster."
+description = "Shots fly 25% faster."
 category = 0
 rarity = 0
+source = 1
 tags = Array[StringName]([&"rapid"])
 max_stacks = 2
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"projectile_speed",
-"value": 1.3
+"value": 1.25
 }])
 requires = Array[StringName]([])

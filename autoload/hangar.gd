@@ -159,6 +159,8 @@ func _on_stage_cleared(_stage_id: StringName) -> void:
 	EventBus.medal_earned.emit(medal, amount)
 
 
+## Difficulty multiplier times the run's credit_mult stat (Salvage Contract).
 func _currency_mult() -> float:
 	var path := "res://data/difficulty/%s.tres" % GameState.difficulty_id
-	return (load(path) as DifficultyDef).score_multiplier if ResourceLoader.exists(path) else 1.0
+	var difficulty := (load(path) as DifficultyDef).score_multiplier if ResourceLoader.exists(path) else 1.0
+	return difficulty * GameState.stats[&"credit_mult"]

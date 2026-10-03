@@ -9,6 +9,7 @@ display_name = "Fuse Shells"
 description = "Chain Reaction events count double."
 category = 3
 rarity = 1
+source = 0
 tags = Array[StringName]([&"chain"])
 max_stacks = 1
 effects = Array[Dictionary]([{

@@ -9,6 +9,7 @@ display_name = "Piercing Rounds"
 description = "Shots pass through one more enemy."
 category = 0
 rarity = 1
+source = 1
 tags = Array[StringName]([&"pierce"])
 max_stacks = 2
 effects = Array[Dictionary]([{
