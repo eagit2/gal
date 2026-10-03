@@ -2,6 +2,7 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: The sky is a smooth, undithered gradient in natural dusk colors (night blue to warm gold), not pixel bands (Eric). Sprites and clouds stay pixel art.
 - 2026-10-02: Dusk Armada pixel art is generated from ASCII pixel maps by `tools/art/gen_dusk_armada.py` (1x for a 270x480 grid, shown at 2x with nearest filtering). Edits are text diffs and need no image editor.
 - 2026-10-02: Enemy sprites face down (head toward the player), so dives lead with the head under the current rotation rule.
 - 2026-10-02: The sky ends in a dark cloud sea at 80% height. Over the bright sunset bands, orange enemies and the reserved bullet red were hard to read in the player zone.

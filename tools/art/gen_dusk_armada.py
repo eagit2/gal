@@ -333,46 +333,43 @@ EXPLOSION_PAL = {"d": "#fff4d0", "y": "#ffe08a", "o": "#fca54d", "r": "#e86450"}
 
 # ---------------------------------------------------------------- background
 SKY_W, SKY_H = 270, 480
-SKY_BANDS = ["#140a28", "#1e0f38", "#2c1247", "#3f1653", "#561b5b", "#73215f",
-             "#932b60", "#b2385d", "#cf4b57", "#e86450", "#f5834a", "#fca54d"]
-SKY_SOFTEN = 0.35  # 0 keeps the full sunset contrast, 1 flattens it to one color
-BAYER4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
-SUN = ["#ffe58a", "#ffc56e", "#ff9f62", "#ff7a59", "#ff7a59"]
+# Natural dusk, top to horizon: night blue, slate violet, dusty mauve, rose, peach, warm gold.
+SKY_STOPS = [(0.0, "#141a33"), (0.25, "#2b2f55"), (0.5, "#5a4f78"), (0.7, "#9a6f86"),
+             (0.86, "#d4937f"), (1.0, "#efbb84")]
+SUN_CORE, SUN_EDGE, SUN_GLOW = "#fff3d6", "#ffd9a0", "#f6c08e"
 
 
 HORIZON = 0.8  # fraction of the height where the sun sets into the cloud sea
-CLOUD_SEA = [("#932b60", "#561b5b"), ("#73215f", "#3f1653"), ("#561b5b", "#2c1247"),
-             ("#3f1653", "#1e0f38"), ("#2c1247", "#140a28")]
+CLOUD_SEA = [("#c98f86", "#5b4d6e"), ("#8a6c84", "#463d5c"), ("#655574", "#342e4a"),
+             ("#4a4060", "#25223a"), ("#342e4a", "#18162a")]
+
+
+def mix(a: tuple, b: tuple, t: float) -> tuple:
+    return tuple(round(a[k] + (b[k] - a[k]) * t) for k in range(3)) + (255,)
 
 
 def sky() -> Image.Image:
-    """Banded, dithered sunset above a dark cloud sea. The sea keeps the player's zone
+    """Smooth, undithered dusk gradient above a dark cloud sea. The sea keeps the player's zone
     dark so ships and the reserved bullet color stay readable."""
     img = Image.new("RGBA", (SKY_W, SKY_H))
     hy = round(SKY_H * HORIZON)
-    # Soften the sky: pull each band 35% toward the sky's average color, then blend
-    # neighbouring bands with a 4x4 ordered dither so no band edge reads as a line.
-    bands = [rgba(c) for c in SKY_BANDS]
-    avg = [sum(c[k] for c in bands) / len(bands) for k in range(3)]
-    bands = [tuple(round(c[k] + (avg[k] - c[k]) * SKY_SOFTEN) for k in range(3)) + (255,) for c in bands]
-    band_h = hy / len(bands)
+    stops = [(t, rgba(c)) for t, c in SKY_STOPS]
+    cx, r = SKY_W * 0.68, 40
+    core, edge, glow = rgba(SUN_CORE), rgba(SUN_EDGE), rgba(SUN_GLOW)
     for y in range(hy):
-        f = y / band_h - 0.5
-        i = max(0, min(len(bands) - 2, int(math.floor(f))))
-        fr = min(1.0, max(0.0, f - i))
+        t = y / (hy - 1)
+        k = next(i for i in range(len(stops) - 1) if t <= stops[i + 1][0])
+        (t0, c0), (t1, c1) = stops[k], stops[k + 1]
+        u = (t - t0) / (t1 - t0)
+        u = u * u * (3 - 2 * u)  # smoothstep between stops
+        row = mix(c0, c1, u)
         for x in range(SKY_W):
-            img.putpixel((x, y), bands[i + 1] if fr > (BAYER4[y % 4][x % 4] + 0.5) / 16 else bands[i])
-    cx, r = round(SKY_W * 0.68), 44
-    for j in range(-r, 1):
-        y = hy + j
-        # Retro sun: slices widen toward the horizon.
-        if j > -22 and (y % 6) < 1 + (j + 22) / 9:
-            continue
-        w = int(math.sqrt(r * r - j * j))
-        col = SUN[min(3, int((j + r) / r * 4))]
-        for x in range(cx - w, cx + w + 1):
-            if 0 <= x < SKY_W:
-                img.putpixel((x, y), rgba(col))
+            d = math.hypot(x - cx, (y - hy) * 1.0)
+            if d <= r:  # sun disc, half set behind the cloud sea
+                img.putpixel((x, y), mix(core, edge, (d / r) ** 2))
+            else:  # soft glow around the sun
+                g = max(0.0, 1 - (d - r) / (r * 2.2)) ** 2 * 0.55
+                img.putpixel((x, y), mix(row, glow, g))
     # Cloud sea: rows of puffs, lit rims, darker toward the viewer.
     for y in range(hy, SKY_H):
         for x in range(SKY_W):
@@ -451,8 +448,8 @@ def main() -> None:
     sprite("pickup", PICKUP, PICKUP_PAL)
     sprite("fx/explosion", explosion_frames(), EXPLOSION_PAL, outline=False)
     sky().save(OUT / "background" / "sky.png")
-    clouds(11, 5, "#7a3070", "#4f1c5c", 255).save(OUT / "background" / "clouds_far.png")
-    clouds(23, 3, "#43205c", "#22103a", 235).save(OUT / "background" / "clouds_near.png")
+    clouds(11, 5, "#8f7591", "#5d5072", 255).save(OUT / "background" / "clouds_far.png")
+    clouds(23, 3, "#4a4060", "#2c2842", 235).save(OUT / "background" / "clouds_near.png")
     print("wrote", OUT)
 
 
