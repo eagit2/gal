@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bm1o5h0gncb0k"
-path="res://.godot/imported/butterfly.png-c4bdb4fe9ae09f5d812a0c5ad8224da4.ctex"
+uid="uid://etb8yn37mn27"
+path="res://.godot/imported/warden.png-060124aa921d780745d6d8bb3ca68d9d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/art/dusk_armada/enemies/butterfly.png"
-dest_files=["res://.godot/imported/butterfly.png-c4bdb4fe9ae09f5d812a0c5ad8224da4.ctex"]
+source_file="res://assets/art/dusk_armada/enemies/warden.png"
+dest_files=["res://.godot/imported/warden.png-060124aa921d780745d6d8bb3ca68d9d.ctex"]
 
 [params]
 

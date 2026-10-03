@@ -110,7 +110,7 @@ BEE = [
 ]
 BEE_PAL = {"a": "#ffd9a8", "b": "#ff7a3d", "c": "#ffb347", "e": "#2a1b4d", "w": "#ffd9a8"}
 
-BUTTERFLY = [
+MOTH = [
     [
         ".a.............a.",
         "..a...........a..",
@@ -136,9 +136,9 @@ BUTTERFLY = [
         ".......b.b.......",
     ],
 ]
-BUTTERFLY_PAL = {"a": "#ffe08a", "b": "#9b5de5", "c": "#ffe08a", "w": "#c9a6ff", "v": "#f4e3c1"}
+MOTH_PAL = {"a": "#ffe08a", "b": "#9b5de5", "c": "#ffe08a", "w": "#c9a6ff", "v": "#f4e3c1"}
 
-BOSS = [
+WARDEN = [
     [
         "..a.............a..",
         "...a...........a...",
@@ -168,7 +168,7 @@ BOSS = [
         "...b....b.b....b...",
     ],
 ]
-BOSS_PAL = {"a": "#ffe08a", "y": "#ffe08a", "b": "#2bb5a8", "c": "#f4e3c1", "d": "#ffb347", "w": "#ff7a3d"}
+WARDEN_PAL = {"a": "#ffe08a", "y": "#ffe08a", "b": "#2bb5a8", "c": "#f4e3c1", "d": "#ffb347", "w": "#ff7a3d"}
 
 FUSEWING = [
     [
@@ -437,8 +437,8 @@ def main() -> None:
     (OUT / "background").mkdir(exist_ok=True)
     sprite("player", PLAYER, PLAYER_PAL)
     sprite("enemies/bee", BEE, BEE_PAL, flip=True)
-    sprite("enemies/butterfly", BUTTERFLY, BUTTERFLY_PAL, flip=True)
-    sprite("enemies/boss", BOSS, BOSS_PAL, flip=True)
+    sprite("enemies/moth", MOTH, MOTH_PAL, flip=True)
+    sprite("enemies/warden", WARDEN, WARDEN_PAL, flip=True)
     sprite("enemies/fusewing", FUSEWING, FUSEWING_PAL, flip=True)
     sprite("enemies/lancer", LANCER, LANCER_PAL)
     sprite("enemies/spinner", spinner_frames(), SPINNER_PAL)

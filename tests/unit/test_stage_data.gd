@@ -29,6 +29,6 @@ func test_challenge_stage_has_no_slots() -> void:
 
 
 func test_every_enemy_has_a_visual() -> void:
-	for id in ["bee", "butterfly", "boss"]:
+	for id in ["bee", "moth", "warden"]:
 		var def: EnemyDef = load("res://data/enemies/%s.tres" % id)
 		expect_true(def.visual_scene != null, id)

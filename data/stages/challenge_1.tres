@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
 [ext_resource type="Resource" path="res://data/enemies/bee.tres" id="e_bee"]
-[ext_resource type="Resource" path="res://data/enemies/boss.tres" id="e_boss"]
-[ext_resource type="Resource" path="res://data/enemies/butterfly.tres" id="e_butterfly"]
+[ext_resource type="Resource" path="res://data/enemies/warden.tres" id="e_warden"]
+[ext_resource type="Resource" path="res://data/enemies/moth.tres" id="e_moth"]
 [ext_resource type="Curve2D" path="res://data/paths/loop_left.tres" id="p_loop_left"]
 [ext_resource type="Curve2D" path="res://data/paths/loop_right.tres" id="p_loop_right"]
 [ext_resource type="Curve2D" path="res://data/paths/snake_left.tres" id="p_snake_left"]
@@ -20,7 +20,7 @@ delay = 0.0
 
 [sub_resource type="Resource" id="w1"]
 script = ExtResource("wave")
-enemy = ExtResource("e_butterfly")
+enemy = ExtResource("e_moth")
 count = 8
 entry_path = ExtResource("p_loop_right")
 formation_slots = Array[Vector2i]([])
@@ -36,7 +36,7 @@ delay = 6.4
 
 [sub_resource type="Resource" id="w3"]
 script = ExtResource("wave")
-enemy = ExtResource("e_butterfly")
+enemy = ExtResource("e_moth")
 count = 8
 entry_path = ExtResource("p_snake_right")
 formation_slots = Array[Vector2i]([])
@@ -44,7 +44,7 @@ delay = 9.6
 
 [sub_resource type="Resource" id="w4"]
 script = ExtResource("wave")
-enemy = ExtResource("e_boss")
+enemy = ExtResource("e_warden")
 count = 4
 entry_path = ExtResource("p_loop_left")
 formation_slots = Array[Vector2i]([])
@@ -52,7 +52,7 @@ delay = 12.8
 
 [sub_resource type="Resource" id="w5"]
 script = ExtResource("wave")
-enemy = ExtResource("e_boss")
+enemy = ExtResource("e_warden")
 count = 4
 entry_path = ExtResource("p_loop_right")
 formation_slots = Array[Vector2i]([])
