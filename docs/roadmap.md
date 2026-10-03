@@ -59,7 +59,7 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] M3.6 no between-stage pick: utility upgrades drop as gold capsules
 - [x] M3.7 scrap economy (drops are hangar currency), elites with traits, capture and dual fighter, combos keep the screen
 - [x] M3.8 enemy roster batch 1 (design/enemy-roster.md): falling rocks crush enemies, Blinker, Dasher, Rock Dropper, Puppeteer, Phase Stalker, Hive Carrier; 1 ship per run plus Spare Hull part; Hangar from game over
-- [ ] M3.9 enemy roster batch 2: Splitter, Plated, Mender, Mine Layer, Mimic, Meteor Caller, Mirror Knight, Gravity Well, Twin Sentinels, Sweeper, per-stage HP ramp
+- [x] M3.9 enemy roster batch 2: Splitter, Plated, Mender, Mine Layer, Mimic, Meteor Caller, Mirror Knight, Gravity Well, Twin Sentinels, Sweeper; per-stage HP multiplier plus a ramp each loop; random elite pools per stage
 ## M4 Difficulty + meta
 - [x] Hangar v2 (materia style): 4 frames with linked slots, 21 modules that level from AP, mastery copies and upgrade chains, ship parts per module, deeper menu (`docs/hangar.md`)
 - [x] Pilots with active powers: Vega (Overclock), Rook (Bulwark), Nyx (Phase Dash), Juno (Nova)

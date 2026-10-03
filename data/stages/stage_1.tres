@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StageDef" load_steps=22 format=3]
+[gd_resource type="Resource" script_class="StageDef" load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/elite_def.gd" id="elite_def_script"]
@@ -14,6 +14,10 @@
 [ext_resource type="Resource" path="res://data/elites/rock_hauler.tres" id="elite_rock_hauler"]
 [ext_resource type="Resource" path="res://data/enemies/rock_dropper.tres" id="e_rock_dropper"]
 [ext_resource type="Resource" path="res://data/elites/puppeteer.tres" id="elite_puppeteer"]
+[ext_resource type="Resource" path="res://data/enemies/plated.tres" id="e_plated"]
+[ext_resource type="Resource" path="res://data/elites/meteor_caller.tres" id="elite_meteor_caller"]
+[ext_resource type="Resource" path="res://data/elites/mirror_knight.tres" id="elite_mirror_knight"]
+[ext_resource type="Resource" path="res://data/elites/twin_sentinels.tres" id="elite_twin_sentinels"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -41,7 +45,7 @@ delay = 1.98
 
 [sub_resource type="Resource" id="w3"]
 script = ExtResource("wave")
-enemy = ExtResource("e_moth")
+enemy = ExtResource("e_plated")
 count = 4
 entry_path = ExtResource("p_side_left")
 formation_slots = Array[Vector2i]([Vector2i(3, 1), Vector2i(4, 1), Vector2i(5, 1), Vector2i(6, 1)])
@@ -79,4 +83,7 @@ is_challenge = false
 reinforcements = 3
 style = &""
 medal = ExtResource("medal")
-elites = Array[ExtResource("elite_def_script")]([ExtResource("elite_rock_hauler"), ExtResource("elite_puppeteer")])
+elites = Array[ExtResource("elite_def_script")]([ExtResource("elite_rock_hauler")])
+elite_pool = Array[ExtResource("elite_def_script")]([ExtResource("elite_puppeteer"), ExtResource("elite_meteor_caller"), ExtResource("elite_mirror_knight"), ExtResource("elite_twin_sentinels")])
+elite_picks = 1
+mimic_chance = 0.04

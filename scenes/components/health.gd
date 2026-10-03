@@ -25,3 +25,11 @@ func take_damage(amount: int) -> void:
 	damaged.emit(amount)
 	if hp == 0:
 		died.emit()
+
+
+## Restores up to `amount` hp (Mender). Returns true if anything was restored.
+func heal(amount: int) -> bool:
+	if hp <= 0 or hp >= max_hp:
+		return false
+	hp = mini(hp + amount, max_hp)
+	return true

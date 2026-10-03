@@ -43,10 +43,13 @@ var leader: Enemy
 var escort_offset := Vector2.ZERO
 ## Per-enemy state for the EnemyDef's trait (EnemyTrait).
 var trait_state := {}
+## Stage HP multiplier, set by the StageRunner before it joins the tree.
+var hp_scale := 1.0
 
 var _path: Curve2D
 var _distance := 0.0
 var _visual: Node2D
+var _tint := Color.WHITE
 
 @onready var _health: Health = $Health
 
@@ -66,7 +69,8 @@ func _ready() -> void:
 	_visual = def.visual_scene.instantiate()
 	_visual.name = "Visual"
 	add_child(_visual)
-	_health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp)))
+	_tint = _visual.modulate
+	_health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp * hp_scale)))
 	_health.died.connect(_on_died)
 	# Ramming (or hitting the player's shield) destroys the enemy.
 	$ContactHitbox.hit.connect(func(_h: Hurtbox) -> void: _health.take_damage(_health.hp))
@@ -193,7 +197,7 @@ func predicted_player(lead: float) -> Vector2:
 ## A Shield Warden elite protects this enemy: shots pass through it.
 func set_shielded(on: bool) -> void:
 	$Hurtbox.invulnerable = on
-	_visual.modulate = Color(0.85, 0.75, 1.3) if on else Color.WHITE
+	_visual.modulate = _tint * Color(0.85, 0.75, 1.3) if on else _tint
 
 
 ## Damage from outside a hitbox (kill blasts).
@@ -203,6 +207,10 @@ func damage(amount: int) -> void:
 
 func is_damaged() -> bool:
 	return _health.hp < _health.max_hp
+
+
+func health() -> Health:
+	return _health
 
 
 ## Up to `count` idle formation enemies within `radius`, nearest first (squad recruiting).

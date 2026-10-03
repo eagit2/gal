@@ -22,6 +22,8 @@ var entered := false
 var fire_scale := 1.0
 ## Traits switch the patrol fans off (phased out).
 var can_fire := true
+## Stage HP multiplier, set by the StageRunner before it joins the tree.
+var hp_scale := 1.0
 var _dir := 1.0
 var _t := randf() * TAU
 var _fire := 1.5
@@ -46,7 +48,7 @@ func _ready() -> void:
 	_visual.scale = Vector2.ONE * def.visual_scale
 	_visual.modulate = def.tint
 	add_child(_visual)
-	health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp)))
+	health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp * hp_scale)))
 	health.died.connect(_on_died)
 	hurtbox.hurt.connect(func(hitbox: Hitbox) -> void: health.take_damage(def.trait_logic.absorb(self, hitbox.damage, hitbox)))
 	$ContactHitbox.hit.connect(func(_h: Hurtbox) -> void: health.take_damage(RAM_DAMAGE))

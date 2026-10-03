@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EliteDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="def"]
+[ext_resource type="Script" path="res://scenes/enemies/elites/twin_trait.gd" id="trait"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/lancer.tscn" id="visual"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/elites/twin_link.tscn" id="link"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("trait")
+link_visual = ExtResource("link")
+
+[resource]
+script = ExtResource("def")
+id = &"twin_sentinels"
+display_name = "Twin Sentinels"
+hint = "Each rebuilds the other. Kill both within 3 seconds"
+hp = 24
+score = 1800
+scrap = 14
+speed = 80.0
+fire_interval = 2.2
+fan_shots = 3
+visual_scene = ExtResource("visual")
+visual_scale = 1.7
+tint = Color(0.75, 1.1, 1.25, 1)
+trait_logic = SubResource("trait_logic")

@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/elites/sweep_beam.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/components/hitbox.gd" id="2"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/elites/sweep_beam.tscn" id="3"]
+
+[sub_resource type="RectangleShape2D" id="beam"]
+size = Vector2(14, 1100)
+
+[node name="SweepBeam" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 1
+monitoring = false
+monitorable = false
+script = ExtResource("2")
+
+[node name="Shape" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, 580)
+shape = SubResource("beam")
+
+[node name="Visual" parent="." instance=ExtResource("3")]

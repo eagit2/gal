@@ -4,7 +4,6 @@ extends Node2D
 ## straight at the player every `interval`. Shooting it down ends the swarms. If the carrier dies
 ## first it falls, crushing enemies on the way. Touching it costs a life.
 
-const ENEMY_SCENE := preload("res://scenes/enemies/enemy.tscn")
 const FOLLOW := 2.4
 const FALL_ACCEL := 120.0
 const MAX_FALL := 220.0
@@ -77,14 +76,7 @@ func drop() -> void:
 
 func _hatch() -> void:
 	for i in _swarm:
-		var start := Curve2D.new()
-		start.add_point(position + Vector2((i - (_swarm - 1) / 2.0) * 22.0, 20.0))
-		var enemy: Enemy = ENEMY_SCENE.instantiate()
-		enemy.setup(_swarm_def, elite.difficulty, start, Enemy.NO_SLOT, null)
-		enemy.target = elite.target
-		enemy.entities = get_parent()
-		get_parent().add_child(enemy)
-		enemy.launch(elite.target, 1.3, _swarm_def.brain)
+		EnemySpawner.launch_at(_swarm_def, elite.difficulty, position + Vector2((i - (_swarm - 1) / 2.0) * 22.0, 20.0), elite.target, get_parent())
 
 
 func _on_died() -> void:

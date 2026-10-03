@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EliteDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="def"]
+[ext_resource type="Script" path="res://scenes/enemies/elites/gravity_trait.gd" id="trait"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/moth.tscn" id="visual"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/elites/gravity_well.tscn" id="well"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("trait")
+well_visual = ExtResource("well")
+
+[resource]
+script = ExtResource("def")
+id = &"gravity_well"
+display_name = "Gravity Well"
+hint = "Pulls you in. Its core opens after each pulse"
+hp = 36
+score = 2800
+scrap = 26
+speed = 55.0
+fire_interval = 2.6
+fan_shots = 3
+visual_scene = ExtResource("visual")
+visual_scale = 2.1
+tint = Color(1.05, 0.8, 1.3, 1)
+trait_logic = SubResource("trait_logic")
