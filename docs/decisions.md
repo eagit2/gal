@@ -2,6 +2,8 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: UI font is Press Start 2P (OFL, `assets/fonts/`), set project-wide through `ui/theme.tres` (Eric asked for an arcade font). Imported without antialiasing; use sizes in multiples of 8 so glyphs stay crisp.
+- 2026-10-03: Continue resumes at the start of the last stage reached, with its score, lives and upgrades (a checkpoint `SaveManager.data.run` written as each stage starts, cleared on game over). Mid-stage progress isn't saved: simple, and can't save a doomed state. Dev URL runs never touch the save. Difficulty is picked on the title screen and remembered.
 - 2026-10-03: Music direction (Eric): fast trance/EDM with heavy bass (rolling offbeat bass, gated supersaws, sidechain pump), with chiptune leads in the style of 16-bit RPG battle themes. Melodies stay original.
 - 2026-10-03: All audio is original and generated in the repo (`tools/audio/`, numpy + scipy synthesis, ffmpeg for Vorbis), so there are no licensing questions and sounds are edited as text. SFX are WAV (QOA-compressed on import, low latency on web); music is looping OGG.
 - 2026-10-03: Music follows the art style: `ThemeDef.music` is the track for that style, so a combo mode crossfades to its own track and back (the stage track resumes where it left off). Boss stages (`StageDef.boss`) use `SoundBank.boss_music`; menus use `SoundBank.scene_music` keyed by scene path.

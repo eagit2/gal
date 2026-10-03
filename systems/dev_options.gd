@@ -41,6 +41,11 @@ static func parse(args: PackedStringArray) -> DevOptions:
 	return opts
 
 
+## True when any option is set. Dev runs leave the saved run alone.
+func is_set() -> bool:
+	return not stage.is_empty() or god or repeat or difficulty != &""
+
+
 ## Index into `stages` for the `stage` option, or `fallback` when unset or unknown.
 func stage_index(stages: Array[StageDef], fallback: int) -> int:
 	if stage.is_empty():

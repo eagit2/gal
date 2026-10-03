@@ -44,3 +44,8 @@ func _ready() -> void:
 			event.axis = PAD_AXES[action][0]
 			event.axis_value = PAD_AXES[action][1]
 			InputMap.action_add_event(action, event)
+	# Menus navigate with the ui_* actions; add the game's keys so WASD and Z/J work there too.
+	for pair: Array in [["ui_up", KEY_W], ["ui_down", KEY_S], ["ui_left", KEY_A], ["ui_right", KEY_D], ["ui_accept", KEY_Z], ["ui_accept", KEY_J]]:
+		var event := InputEventKey.new()
+		event.physical_keycode = pair[1]
+		InputMap.action_add_event(pair[0], event)

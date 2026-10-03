@@ -93,7 +93,8 @@ func _build_meters() -> void:
 		var row := HBoxContainer.new()
 		var label := Label.new()
 		label.text = METER_LABELS[combo.id]
-		label.add_theme_font_size_override(&"font_size", 12)
+		label.add_theme_font_size_override(&"font_size", 8)
+		label.add_theme_constant_override(&"outline_size", 2)
 		label.custom_minimum_size.x = 22
 		row.add_child(label)
 		var bar := ProgressBar.new()
