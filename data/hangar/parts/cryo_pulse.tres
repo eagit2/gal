@@ -6,7 +6,7 @@
 script = ExtResource("1")
 id = &"cryo_pulse"
 display_name = "Cryo Pulse"
-category = 2
+category = 4
 tier = 0
 text = "Freeze everything once per stage (C, pad Y, or tap FREEZE)."
 effects = Array[Dictionary]([{
@@ -35,4 +35,6 @@ attributes = Array[Dictionary]([{
 "name": "CHARGES",
 "text": "+1 freeze per stage per level"
 }])
+sockets = 1
+links = 0
 part = &"dish_system"

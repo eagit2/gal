@@ -1,32 +1,37 @@
-[gd_resource type="Resource" script_class="ShipDef" load_steps=16 format=3]
+[gd_resource type="Resource" script_class="ShipDef" load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://resources/ship_def.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/art/dusk_armada/player.png" id="2"]
 [ext_resource type="Script" path="res://resources/tree_node_def.gd" id="tdef"]
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/focus_lens.tres" id="t_focus_lens"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/rail_coil.tres" id="t_rail_coil"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/hunter_core.tres" id="t_hunter_core"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/twin_rail.tres" id="t_twin_rail"]
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/plating.tres" id="t_plating"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/capacitor.tres" id="t_capacitor"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/shock_plate.tres" id="t_shock_plate"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/reserve_hull.tres" id="t_reserve_hull"]
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/afterburn.tres" id="t_afterburn"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/salvage_rig.tres" id="t_salvage_rig"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/chrono_cell.tres" id="t_chrono_cell"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/overdrive_core.tres" id="t_overdrive_core"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/scatter.tres" id="t_scatter"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/rail.tres" id="t_rail"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/reflect.tres" id="t_reflect"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/absorb.tres" id="t_absorb"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/drone_drift.tres" id="t_drone_drift"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/blink.tres" id="t_blink"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/swarm_link.tres" id="t_swarm_link"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/ricochet.tres" id="t_ricochet"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/overflow.tres" id="t_overflow"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/phase_link.tres" id="t_phase_link"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/armada.tres" id="t_armada"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/lone_wolf.tres" id="t_lone_wolf"]
 
 [resource]
 script = ExtResource("1")
 id = &"kestrel"
 display_name = "Kestrel"
-description = "Base ship. One weapon on the nose; a power, a shield and a bonus part on the left, rear and right mounts."
+description = "Base ship. A weapon on the nose; any part on the left, rear and right mounts."
 slots = {
-&"bonus": 1,
-&"power": 1,
+&"engine": 1,
+&"extra": 2,
 &"shield": 1,
-&"weapon": 1
+&"weapon": 2
 }
 mounts = Array[StringName]([&"nose", &"left", &"rear", &"right"])
 sprite = ExtResource("2")
-tree = Array[ExtResource("tdef")]([ExtResource("t_focus_lens"), ExtResource("t_rail_coil"), ExtResource("t_hunter_core"), ExtResource("t_twin_rail"), ExtResource("t_plating"), ExtResource("t_capacitor"), ExtResource("t_shock_plate"), ExtResource("t_reserve_hull"), ExtResource("t_afterburn"), ExtResource("t_salvage_rig"), ExtResource("t_chrono_cell"), ExtResource("t_overdrive_core")])
+tree = Array[ExtResource("tdef")]([ExtResource("t_focus_lens"), ExtResource("t_plating"), ExtResource("t_afterburn"), ExtResource("t_scatter"), ExtResource("t_rail"), ExtResource("t_reflect"), ExtResource("t_absorb"), ExtResource("t_drone_drift"), ExtResource("t_blink"), ExtResource("t_swarm_link"), ExtResource("t_ricochet"), ExtResource("t_overflow"), ExtResource("t_phase_link"), ExtResource("t_armada"), ExtResource("t_lone_wolf")])
+unlock_stage = &""
+unlock_text = ""

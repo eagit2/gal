@@ -49,4 +49,6 @@ attributes = Array[Dictionary]([{
 "name": "SHOCK",
 "text": "Kills burst and hurt nearby enemies; bigger burst per level"
 }])
+sockets = 3
+links = 1
 part = &"lens_support"

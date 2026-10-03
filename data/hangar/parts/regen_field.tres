@@ -35,4 +35,6 @@ attributes = Array[Dictionary]([{
 "name": "LAYERS",
 "text": "Absorbs 1 more hit"
 }])
+sockets = 1
+links = 0
 part = &"fin_hull"

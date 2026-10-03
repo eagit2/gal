@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"rail"
+display_name = "Rail"
+text = "Shots pierce 2 more enemies and fly 30% faster"
+branch = &"offense"
+requires = Array[StringName]([&"focus_lens"])
+needs = 0
+excludes = &"scatter"
+max_rank = 1
+cost = 300
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"pierce",
+"value": 2
+}, {
+"op": &"add",
+"stat": &"projectile_speed",
+"value": 0.3
+}])
+socket_category = -1
+row = 2
+column = 1.0

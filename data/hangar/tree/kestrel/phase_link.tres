@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"phase_link"
+display_name = "Phase Link"
+text = "+1 link socket on your engines"
+branch = &"utility"
+requires = Array[StringName]([&"blink"])
+needs = 0
+excludes = &""
+max_rank = 1
+cost = 500
+effects = Array[Dictionary]([])
+socket_category = 3
+row = 3
+column = 5.0

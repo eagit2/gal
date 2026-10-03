@@ -1,12 +1,12 @@
 class_name ShipTree
 extends RefCounted
 ## Ship skill tree rules on the saved loadout state (state["tree"][ship id][node id] = rank). Each
-## ship has its own tree; nodes need a rank in the node above them. Pure functions so tests can
-## call them directly.
+## ship has its own tree. A node needs ranks in the nodes it hangs from (all of them, or `needs` of
+## them); fork partners close each other. Pure functions so tests can call them directly.
 
-enum Gate { OPEN, NEEDS_NODE, MAXED }
+enum Gate { OPEN, NEEDS_NODE, CLOSED, MAXED }
 
-const BRANCHES: Array[StringName] = [&"offense", &"defense", &"utility"]
+const BRANCHES: Array[StringName] = [&"offense", &"defense", &"utility", &"merge", &"capstone"]
 
 
 static func ranks(state: Dictionary, ship: ShipDef) -> Dictionary:
@@ -25,8 +25,26 @@ static func gate(catalog: HangarCatalog, state: Dictionary, node: TreeNodeDef) -
 	var ship := Loadout.ship_of(catalog, state)
 	if rank(state, ship, node) >= node.max_rank:
 		return Gate.MAXED
-	var parent := ship.node(node.requires) if node.requires != &"" else null
-	return Gate.NEEDS_NODE if parent and rank(state, ship, parent) == 0 else Gate.OPEN
+	var partner := ship.node(node.excludes) if node.excludes != &"" else null
+	if partner and rank(state, ship, partner) > 0:
+		return Gate.CLOSED
+	var owned := 0
+	for id in node.requires:
+		var parent := ship.node(id)
+		if parent and rank(state, ship, parent) > 0:
+			owned += 1
+	var needed := node.needs if node.needs > 0 else node.requires.size()
+	return Gate.OPEN if owned >= needed else Gate.NEEDS_NODE
+
+
+## Names of the nodes `node` hangs from, for "Needs ..." lines.
+static func needs_text(ship: ShipDef, node: TreeNodeDef) -> String:
+	var names: PackedStringArray = []
+	for id in node.requires:
+		names.append(ship.node(id).display_name.to_upper())
+	if node.needs > 0 and node.needs < names.size():
+		return "any %d of %s" % [node.needs, ", ".join(names)]
+	return " + ".join(names)
 
 
 static func price(state: Dictionary, ship: ShipDef, node: TreeNodeDef) -> int:
@@ -42,13 +60,6 @@ static func buy(catalog: HangarCatalog, state: Dictionary, node: TreeNodeDef) ->
 	return true
 
 
-## A branch's nodes from the top down.
-static func branch(ship: ShipDef, name: StringName) -> Array[TreeNodeDef]:
-	var result: Array[TreeNodeDef] = []
-	result.assign(ship.tree.filter(func(n: TreeNodeDef) -> bool: return n.branch == name))
-	return result
-
-
 ## Effects of every owned node on the current ship.
 static func effects(catalog: HangarCatalog, state: Dictionary) -> Array[Dictionary]:
 	var ship := Loadout.ship_of(catalog, state)
@@ -58,3 +69,13 @@ static func effects(catalog: HangarCatalog, state: Dictionary) -> Array[Dictiona
 		if r > 0:
 			result.append_array(PartDef.scaled(node.effects, r))
 	return result
+
+
+## Link sockets the current ship's tree adds to every part of `category`.
+static func extra_sockets(catalog: HangarCatalog, state: Dictionary, category: int) -> int:
+	var ship := Loadout.ship_of(catalog, state)
+	var total := 0
+	for node in ship.tree:
+		if node.socket_category == category:
+			total += rank(state, ship, node)
+	return total

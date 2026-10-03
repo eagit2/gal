@@ -45,6 +45,15 @@ func pilot() -> PilotDef:
 	return Loadout.pilot_of(CATALOG, state())
 
 
+## Flies `def` from now on. Returns false while it is locked.
+func choose_ship(def: ShipDef) -> bool:
+	if not Loadout.unlocked(state(), def):
+		return false
+	state()["ship"] = String(def.id)
+	_changed()
+	return true
+
+
 func owns_pilot(id: StringName) -> bool:
 	return String(id) in (state()["pilots"] as Array)
 
@@ -175,7 +184,10 @@ func _on_stage_started(stage_id: StringName) -> void:
 	_tracker = MedalTracker.new(stage.medal if stage else null)
 
 
-func _on_stage_cleared(_stage_id: StringName) -> void:
+func _on_stage_cleared(stage_id: StringName) -> void:
+	var cleared: Array = state()["cleared"]
+	if not String(stage_id) in cleared:
+		cleared.append(String(stage_id))
 	var medal := _tracker.medal
 	if not _tracker.earned() or medal.id in _paid:
 		SaveManager.save()

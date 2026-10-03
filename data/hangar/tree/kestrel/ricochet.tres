@@ -4,15 +4,20 @@
 
 [resource]
 script = ExtResource("1")
-id = &"capacitor"
-display_name = "Capacitor"
-text = "+1 shield layer"
-branch = &"defense"
-requires = &"plating"
+id = &"ricochet"
+display_name = "Ricochet"
+text = "Reflected shots fire back as rails"
+branch = &"merge"
+requires = Array[StringName]([&"rail", &"reflect"])
+needs = 0
+excludes = &""
 max_rank = 1
-cost = 300
+cost = 600
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"shield_layers",
+"stat": &"ricochet",
 "value": 1
 }])
+socket_category = -1
+row = 3
+column = 1.5

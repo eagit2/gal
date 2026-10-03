@@ -9,12 +9,10 @@ const INK := Color(0.07, 0.08, 0.17, 0.88)
 const DIM := Color(0.6, 0.6, 0.7)
 const GOOD := Color(0.55, 0.9, 0.75)
 ## By PartDef.Category: weapon, shield, power, engine, extra, chip.
-const CATEGORY_COLORS: Array[Color] = [Color("5fe06a"), Color("b98bff"), Color("ffd34f"), Color("4fa6ff"), Color("4fa6ff"), Color("ff8f6b")]
+const CATEGORY_COLORS: Array[Color] = [Color("5fe06a"), Color("b98bff"), Color("ffd34f"), Color("4fa6ff"), Color("ffd34f"), Color("ff8f6b")]
 const CATEGORY_NAMES := ["WEAPONS", "SHIELDS", "POWERS", "ENGINES", "EXTRAS", "CHIPS"]
 const TIER_NAMES := ["STARTER", "COMMON", "UNCOMMON", "RARE", "EPIC"]
 const TIER_COLORS: Array[Color] = [Color("9a9ab3"), Color("f4efe6"), Color("8ce6bf"), Color("6fb8ff"), Color("e58cff")]
-## What a category does from a side or rear mount (%s = the mount), for the slot menu.
-const CATEGORY_HINTS := ["", "Shields on the sides recharge faster.", "Your power button.", "Engines push you: from the %s they change your strafe or speed.", "Drones, magnets and combo boosters.", "Arrive with combos."]
 ## Placement effects in words, by stat. Lower shield_recharge is faster.
 const STAT_WORDS := {&"strafe_right": "strafe right", &"strafe_left": "strafe left", &"move_speed": "speed", &"shield_recharge": "shield recharge"}
 const SHIP_VISUAL := preload("res://assets/art/dusk_armada/player.tscn")
@@ -108,31 +106,6 @@ static func upgrade_card(title: String, level: int, max_level: int, color: Color
 	return button
 
 
-## A ship tree node: name, rank bars, and price or state.
-static func node_card(title: String, rank: int, max_rank: int, color: Color, status: String, status_color: Color) -> Button:
-	var button := Button.new()
-	button.custom_minimum_size = Vector2(0, 108)
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	style(button)
-	button.add_theme_stylebox_override("normal", box(INK, color.darkened(0.2) if rank > 0 else Color(0.3, 0.28, 0.45)))
-	var lines := VBoxContainer.new()
-	lines.set_anchors_preset(Control.PRESET_FULL_RECT)
-	lines.offset_left = 6
-	lines.offset_right = -4
-	lines.offset_top = 10
-	lines.offset_bottom = -10
-	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	lines.add_theme_constant_override("separation", 6)
-	button.add_child(lines)
-	var name := label(title, 16, Color.WHITE if status_color != DIM else DIM)
-	name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	name.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	lines.add_child(name)
-	lines.add_child(bars(rank, max_rank, color))
-	lines.add_child(label(status, 16, status_color))
-	return button
-
-
 ## "+25% strafe right, recharge 20% faster" for placement effects.
 static func effect_words(effects: Array[Dictionary]) -> String:
 	var words: PackedStringArray = []
@@ -170,8 +143,8 @@ static func slot_box(mount_name: String, def: PartDef, state: Dictionary) -> But
 
 
 ## A store card: the ship wearing the part (`preview` state) on the left; name, rarity, category
-## and price on the right.
-static func part_card(def: PartDef, preview: Dictionary, credits: int) -> Button:
+## price and link sockets on the right.
+static func part_card(def: PartDef, preview: Dictionary, credits: int, sockets: Array[int]) -> Button:
 	var card := Button.new()
 	card.custom_minimum_size.y = 112
 	style(card)
@@ -191,9 +164,14 @@ static func part_card(def: PartDef, preview: Dictionary, credits: int) -> Button
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(text)
 	text.add_child(label(def.display_name.to_upper(), 16))
-	text.add_child(label(TIER_NAMES[def.tier], 16, TIER_COLORS[def.tier]))
-	text.add_child(label(CATEGORY_NAMES[def.category], 16, CATEGORY_COLORS[def.category]))
-	text.add_child(label(str(def.price()), 16, GOLD if def.price() <= credits else ROSE))
+	text.add_theme_constant_override("separation", 8)
+	var kind := HBoxContainer.new()
+	kind.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	kind.add_child(label(TIER_NAMES[def.tier], 8, TIER_COLORS[def.tier]))
+	kind.add_child(label(CATEGORY_NAMES[def.category], 8, CATEGORY_COLORS[def.category]))
+	text.add_child(kind)
+	text.add_child(HangarCards.sockets(sockets))
+	row.add_child(label(str(def.price()), 16, GOLD if def.price() <= credits else ROSE, HORIZONTAL_ALIGNMENT_RIGHT))
 	return card
 
 

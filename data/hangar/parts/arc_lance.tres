@@ -53,4 +53,6 @@ attributes = Array[Dictionary]([{
 "name": "ARC",
 "text": "+1 shot per level"
 }])
+sockets = 4
+links = 2
 part = &"lens_weapon"

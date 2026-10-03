@@ -4,15 +4,20 @@
 
 [resource]
 script = ExtResource("1")
-id = &"chrono_cell"
-display_name = "Chrono Cell"
-text = "+1 freeze per stage"
-branch = &"utility"
-requires = &"salvage_rig"
+id = &"absorb"
+display_name = "Absorb"
+text = "Shield hits fill the combo meter"
+branch = &"defense"
+requires = Array[StringName]([&"plating"])
+needs = 0
+excludes = &"reflect"
 max_rank = 1
-cost = 400
+cost = 300
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"freeze_charges",
+"stat": &"shield_combo",
 "value": 1
 }])
+socket_category = -1
+row = 2
+column = 3.0

@@ -4,15 +4,20 @@
 
 [resource]
 script = ExtResource("1")
-id = &"shock_plate"
-display_name = "Shock Plate"
-text = "Kills burst and hurt nearby enemies"
+id = &"reflect"
+display_name = "Reflect"
+text = "Your shield bounces bullets back at enemies"
 branch = &"defense"
-requires = &"capacitor"
+requires = Array[StringName]([&"plating"])
+needs = 0
+excludes = &"absorb"
 max_rank = 1
-cost = 400
+cost = 300
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"explode_radius",
-"value": 20.0
+"stat": &"shield_reflect",
+"value": 1
 }])
+socket_category = -1
+row = 2
+column = 2.0

@@ -4,20 +4,24 @@
 
 [resource]
 script = ExtResource("1")
-id = &"afterburn"
-display_name = "Afterburn"
-text = "+5% speed"
+id = &"drone_drift"
+display_name = "Drone Drift"
+text = "2 drones orbit you, but you fly 10% slower"
 branch = &"utility"
-requires = Array[StringName]([])
+requires = Array[StringName]([&"afterburn"])
 needs = 0
-excludes = &""
-max_rank = 3
-cost = 100
+excludes = &"blink"
+max_rank = 1
+cost = 300
 effects = Array[Dictionary]([{
 "op": &"add",
+"stat": &"drones",
+"value": 2
+}, {
+"op": &"add",
 "stat": &"move_speed",
-"value": 0.05
+"value": -0.1
 }])
 socket_category = -1
-row = 1
-column = 4.5
+row = 2
+column = 4.0

@@ -4,15 +4,20 @@
 
 [resource]
 script = ExtResource("1")
-id = &"twin_rail"
-display_name = "Twin Rail"
-text = "+1 shot"
-branch = &"offense"
-requires = &"hunter_core"
+id = &"blink"
+display_name = "Blink"
+text = "Your dash teleports a short hop"
+branch = &"utility"
+requires = Array[StringName]([&"afterburn"])
+needs = 0
+excludes = &"drone_drift"
 max_rank = 1
-cost = 800
+cost = 300
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"extra_shots",
+"stat": &"blink",
 "value": 1
 }])
+socket_category = -1
+row = 2
+column = 5.0

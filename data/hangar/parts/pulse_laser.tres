@@ -38,7 +38,9 @@ attributes = Array[Dictionary]([{
 }],
 "id": &"thickness",
 "max": 2,
-"name": "THICKNESS",
+"name": "PENETRATION",
 "text": "Pierces 1 more enemy per level"
 }])
+sockets = 1
+links = 0
 part = &"barrel_weapon"

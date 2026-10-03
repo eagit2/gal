@@ -39,4 +39,6 @@ attributes = Array[Dictionary]([{
 "name": "RECHARGE",
 "text": "Recharges 10% faster per level"
 }])
+sockets = 1
+links = 0
 part = &"lens_hull"

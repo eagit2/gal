@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"armada"
+display_name = "Armada"
+text = "Start every stage with a wingman"
+branch = &"capstone"
+requires = Array[StringName]([&"swarm_link", &"ricochet", &"overflow", &"phase_link"])
+needs = 2
+excludes = &"lone_wolf"
+max_rank = 1
+cost = 1000
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"wingman",
+"value": 1
+}])
+socket_category = -1
+row = 4
+column = 1.5

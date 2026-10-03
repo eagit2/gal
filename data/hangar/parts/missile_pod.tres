@@ -45,4 +45,6 @@ attributes = Array[Dictionary]([{
 "name": "HOMING",
 "text": "Your shots curve toward enemies more per level"
 }])
+sockets = 3
+links = 1
 part = &"pod_weapon"
