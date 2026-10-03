@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"twin_rail"
+display_name = "Twin Rail"
+text = "+1 shot"
+mount = &"nose"
+min_tier = 4
+requires = &"hunter_core"
+max_rank = 1
+cost = 800
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"extra_shots",
+"value": 1
+}])

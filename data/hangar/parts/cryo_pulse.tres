@@ -8,20 +8,31 @@ id = &"cryo_pulse"
 display_name = "Cryo Pulse"
 category = 2
 tier = 0
-rank_text = Array[String](["Freeze everything once per stage (C, pad Y, or tap FREEZE)", "Freeze lasts 1s longer", "Twice per stage"])
+text = "Freeze everything once per stage (C, pad Y, or tap FREEZE)."
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"freeze_charges",
 "value": 1
-}, {
+}])
+attributes = Array[Dictionary]([{
+"effects": [{
 "op": &"add",
 "stat": &"freeze_time",
-"value": 1.0,
-"rank": 2
+"value": 0.5
+}],
+"id": &"duration",
+"max": 4,
+"name": "DURATION",
+"text": "Freeze lasts 0.5s longer per level"
 }, {
+"effects": [{
 "op": &"add",
 "stat": &"freeze_charges",
-"value": 1,
-"rank": 3
+"value": 1
+}],
+"id": &"charges",
+"max": 2,
+"name": "CHARGES",
+"text": "+1 freeze per stage per level"
 }])
 part = &"dish_system"

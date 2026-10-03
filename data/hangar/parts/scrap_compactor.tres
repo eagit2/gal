@@ -8,20 +8,21 @@ id = &"scrap_compactor"
 display_name = "Scrap Compactor"
 category = 4
 tier = 1
-rank_text = Array[String](["Scrap worth 20% more", "30% more", "45% more"])
+text = "Scrap worth 20% more."
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"scrap_mult",
 "value": 1.2
-}, {
-"op": &"mul",
-"stat": &"scrap_mult",
-"value": 1.08,
-"rank": 2
-}, {
-"op": &"mul",
-"stat": &"scrap_mult",
-"value": 1.12,
-"rank": 3
 }])
-part = &"dish_support"
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"mul",
+"stat": &"scrap_mult",
+"value": 1.05
+}],
+"id": &"value",
+"max": 5,
+"name": "VALUE",
+"text": "Scrap worth 5% more per level"
+}])
+part = &"bay_support"

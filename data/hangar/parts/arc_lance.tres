@@ -4,15 +4,23 @@
 
 [resource]
 script = ExtResource("1")
-id = &"twin_cannon"
-display_name = "Twin Cannon"
+id = &"arc_lance"
+display_name = "Arc Lance"
 category = 0
-tier = 1
-text = "Two parallel shots."
+tier = 4
+text = "A crackling lance that pierces and seeks."
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"extra_shots",
+"stat": &"damage",
 "value": 1
+}, {
+"op": &"add",
+"stat": &"pierce",
+"value": 1
+}, {
+"op": &"add",
+"stat": &"homing",
+"value": 1.0
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
@@ -28,21 +36,21 @@ attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"mul",
 "stat": &"fire_rate",
-"value": 1.08
+"value": 1.1
 }],
-"id": &"fire_rate",
+"id": &"speed",
 "max": 5,
-"name": "FIRE RATE",
-"text": "+8% fire rate per level"
+"name": "SPEED",
+"text": "+10% fire rate per level"
 }, {
 "effects": [{
 "op": &"add",
 "stat": &"extra_shots",
 "value": 1
 }],
-"id": &"barrels",
+"id": &"arc",
 "max": 2,
-"name": "BARRELS",
-"text": "+1 shot per level"
+"name": "ARC",
+"text": "+1 forked shot per level"
 }])
-part = &"cannon_weapon"
+part = &"lens_weapon"
