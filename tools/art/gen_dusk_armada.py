@@ -367,6 +367,43 @@ PICKUP = [
 PICKUP_PAL = {"a": "#ffe08a", "b": "#2bb5a8", "c": "#ffffff"}
 
 
+def shield_frames() -> tuple:
+    """Bubble (2 shimmer frames) and shatter (4 frames), drawn directly as RGBA images."""
+    size, c, r = 33, 16, 15.0
+    rim, rim_hi, fill, hi = rgba("#2bb5a8"), rgba("#bff6ff"), rgba("#2bb5a8", 46), rgba("#ffffff", 200)
+
+    def bubble(phase: float) -> Image.Image:
+        img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        for y in range(size):
+            for x in range(size):
+                d = math.hypot(x - c, y - c)
+                a = math.atan2(y - c, x - c)
+                if d <= r - 1.5:
+                    img.putpixel((x, y), fill)
+                elif d <= r:
+                    # Rim brightens in a band that slides around the bubble.
+                    lit = math.cos(a - phase) > 0.75
+                    img.putpixel((x, y), rim_hi if lit else rim)
+                if r - 5 <= d <= r - 3.5 and -2.6 < a < -1.9:
+                    img.putpixel((x, y), hi)  # glint, top left
+        return img
+
+    def shatter(k: int) -> Image.Image:
+        big, c = 47, 23  # room for the shards to fly out
+        img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
+        rr = r + k * 1.5
+        for s_ in range(12):
+            a0 = s_ * math.tau / 12 + k * 0.08
+            for t in range(4 - k // 2):  # shards shrink as they fly out
+                a = a0 + t * 0.06
+                x, y = round(c + math.cos(a) * rr), round(c + math.sin(a) * rr)
+                if 0 <= x < big and 0 <= y < big:
+                    img.putpixel((x, y), rim_hi if k < 2 else rim)
+        return img
+
+    return [bubble(-2.2), bubble(-1.4)], [shatter(k) for k in range(4)]
+
+
 def explosion_frames() -> list:
     """Four frames: hot core, flash ring, breaking ring with sparks, fading embers."""
     rnd = random.Random(7)
@@ -509,6 +546,9 @@ def main() -> None:
     sprite("projectiles/enemy_bullet", ENEMY_BULLET, ENEMY_BULLET_PAL, outline=False)
     sprite("projectiles/muzzle_flash", MUZZLE, MUZZLE_PAL, outline=False)
     glow(32, 32).save(OUT / "projectiles" / "glow_round.png")
+    bubble, burst = shield_frames()
+    strip(bubble).save(OUT / "shield.png")
+    strip(burst).save(OUT / "fx" / "shield_pop.png")
     sprite("pickup", PICKUP, PICKUP_PAL)
     sprite("fx/explosion", explosion_frames(), EXPLOSION_PAL, outline=False)
     sky().save(OUT / "background" / "sky.png")
