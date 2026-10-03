@@ -88,7 +88,8 @@ Keyboard (arrows/WASD, Space fire, Shift dash, Esc pause), gamepad, and touch (d
 ### 4.3 Key systems
 - **WaveDirector:** reads a `StageDef`, spawns `WaveDef`s on a timeline, assigns each enemy an entry `Path2D` and a formation slot.
 - **Formation:** grid of slots that sways and breathes; tracks which slots are filled.
-- **DiveController:** picks enemies to dive based on difficulty dive rate, stage pattern, and how many are already diving.
+- **DiveController:** sends squads of formation enemies to attack based on difficulty dive rate, stage aggression, and how many are already attacking; also fires from the formation.
+- **Enemy brains:** each EnemyDef points at an `EnemyBrain` resource (`scenes/enemies/behaviors/`, data in `data/brains/`) that steers the attack live (turn-rate-limited steering, lead aiming, separation). Brains are shared, so per-enemy state lives on the Enemy.
 - **UpgradeSystem:** applies `UpgradeDef` effects to a `PlayerStats` object via modifiers (add, multiply, flag); computes synergies from tags; rolls card choices and drop rarities with the same weights and pool unlocks.
 - **DropSystem:** on `enemy_killed`, rolls the enemy's `DropTable` (with pity bonus and `DifficultyDef.drop_mult`) and spawns a slow-falling pickup the ship collects by flying over it.
 - **MedalTracker:** watches the stage's medal goal (`StageDef.medal`) and pays `medal_currency` into `SaveManager` once per run.
@@ -98,7 +99,7 @@ Keyboard (arrows/WASD, Space fire, Shift dash, Esc pause), gamepad, and touch (d
 
 ### 4.4 Content data types
 ```
-EnemyDef       id, hp, score, speed, visual_scene, shooter, drop_table, behaviors[]
+EnemyDef       id, hp, score, speed, visual_scene, brain, drop_table
 WaveDef        enemy_id, count, entry_path, formation_slots, delay
 StageDef       id, waves[], is_challenge, modifiers[], music_intensity
 SectorDef      id, name, theme, stages[], boss

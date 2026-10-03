@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="HunterBrain" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/behaviors/hunter_brain.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+speed = 260.0
+turn_rate = 2.2
+fire_interval = 1.1
+max_time = 12.0
+escorts = 2
+escort_radius = 110.0
+lead = 0.6
+passes = 2
+spread_shots = 3
+spread_degrees = 14.0

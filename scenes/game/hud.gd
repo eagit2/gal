@@ -7,11 +7,13 @@ extends CanvasLayer
 @onready var _high: Label = $HighScore
 @onready var _message: Label = $Message
 @onready var _banner: Label = $Banner
+@onready var _shield: Label = $Shield
 var _banner_tween: Tween
 
 
 func _ready() -> void:
 	EventBus.score_changed.connect(_on_score_changed)
+	EventBus.shield_changed.connect(_on_shield_changed)
 	_on_score_changed(GameState.score)
 	set_lives(GameState.lives)
 	_high.text = "HI %d" % SaveManager.data["high_score"]
@@ -43,3 +45,8 @@ func show_banner(text: String, duration: float) -> void:
 
 func _on_score_changed(score: int) -> void:
 	_score.text = "%06d" % score
+
+
+func _on_shield_changed(charge: float) -> void:
+	_shield.text = "SHIELD UP" if charge >= 1.0 else "SHIELD %d%%" % floori(charge * 100.0)
+	_shield.modulate.a = 1.0 if charge >= 1.0 else 0.55
