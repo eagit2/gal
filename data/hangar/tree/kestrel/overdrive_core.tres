@@ -7,13 +7,12 @@ script = ExtResource("1")
 id = &"overdrive_core"
 display_name = "Overdrive Core"
 text = "Combo window 25% longer"
-mount = &"rear"
-min_tier = 3
-requires = &"slip_jets"
+branch = &"utility"
+requires = &"chrono_cell"
 max_rank = 1
-cost = 400
+cost = 800
 effects = Array[Dictionary]([{
-"op": &"mul",
+"op": &"add",
 "stat": &"overdrive_window",
-"value": 1.25
+"value": 0.25
 }])

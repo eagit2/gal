@@ -7,11 +7,10 @@ script = ExtResource("1")
 id = &"capacitor"
 display_name = "Capacitor"
 text = "+1 shield layer"
-mount = &"left"
-min_tier = 2
+branch = &"defense"
 requires = &"plating"
 max_rank = 1
-cost = 240
+cost = 300
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"shield_layers",

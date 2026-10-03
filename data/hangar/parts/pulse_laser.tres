@@ -22,9 +22,9 @@ attributes = Array[Dictionary]([{
 "text": "+1 damage per level"
 }, {
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"fire_rate",
-"value": 1.1
+"value": 0.1
 }],
 "id": &"speed",
 "max": 5,
@@ -39,6 +39,6 @@ attributes = Array[Dictionary]([{
 "id": &"thickness",
 "max": 2,
 "name": "THICKNESS",
-"text": "Thicker beam: pierces 1 more enemy per level"
+"text": "Pierces 1 more enemy per level"
 }])
 part = &"barrel_weapon"

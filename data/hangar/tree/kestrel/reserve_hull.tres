@@ -4,16 +4,15 @@
 
 [resource]
 script = ExtResource("1")
-id = &"tractor"
-display_name = "Tractor"
-text = "Pulls scrap from 40 px farther"
-mount = &"right"
-min_tier = 2
-requires = &"salvage_rig"
-max_rank = 2
-cost = 160
+id = &"reserve_hull"
+display_name = "Reserve Hull"
+text = "+1 ship per run"
+branch = &"defense"
+requires = &"shock_plate"
+max_rank = 1
+cost = 800
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"magnet",
-"value": 40.0
+"stat": &"extra_lives",
+"value": 1
 }])

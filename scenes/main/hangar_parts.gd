@@ -3,8 +3,6 @@ extends RefCounted
 ## Hangar part menus, drawn into the hangar's list: a slot's categories, a category's parts, a
 ## part's attributes (upgrade each level with scrap, then fit it), and the rotating store.
 
-const PIPS := 5
-
 var menu: Control  # scenes/main/hangar.gd
 var _catalog: HangarCatalog = preload("res://data/hangar/catalog.tres")
 
@@ -47,7 +45,7 @@ func category(mount: StringName, cat: int, focus_part: PartDef = null) -> void:
 			focus_row = menu.row_count()
 		var right := _status(state, def, mount)
 		var color := HangarUI.GOOD if Loadout.owns(state, def.id) else (HangarUI.GOLD if HangarStock.in_stock(state, def.id) else HangarUI.DIM)
-		menu.add(HangarUI.row(def.display_name.to_upper(), HangarUI.levels_short(state, def), right, HangarUI.TIER_COLORS[def.tier], color), describe(def, mount), part.bind(mount, def, back), _fitted(state, mount, def))
+		menu.add(HangarUI.row(def.display_name.to_upper(), "LV %d" % Loadout.total_levels(state, def.id) if Loadout.owns(state, def.id) else "", right, HangarUI.TIER_COLORS[def.tier], color), describe(def, mount), part.bind(mount, def, back), _fitted(state, mount, def))
 	if list.is_empty():
 		menu.add(HangarUI.row("NONE YET"), "Chips arrive with combos.", back)
 	menu.focus(focus_row)
@@ -59,13 +57,19 @@ func part(mount: StringName, def: PartDef, back: Callable, focus_row := 0) -> vo
 	menu.page(def.display_name.to_upper(), back)
 	var owned := Loadout.owns(state, def.id)
 	var summary := describe(def, mount)
+	var now := _stats(_fitted(state, mount, def))
 	for a in def.attributes:
 		var lv := Loadout.level(state, def.id, a["id"])
 		var price := Loadout.upgrade_price(state, def, a["id"])
-		var right := "MAX" if lv >= int(a["max"]) else ("+ %d" % price if owned else "")
-		var color := HangarUI.GOOD if price < 0 else (HangarUI.GOLD if price <= Hangar.credits() else HangarUI.ROSE)
-		var text := "%s  level %d / %d\n%s.\n%s" % [a["name"], lv, int(a["max"]), a["text"], "Buy the part first." if not owned else ""]
-		menu.add(HangarUI.row(a["name"], HangarUI.pips(lv, int(a["max"]), PIPS), right, HangarUI.CATEGORY_COLORS[def.category], color), text, _upgrade.bind(mount, def, a["id"], back))
+		var maxed := lv >= int(a["max"])
+		var after := _fitted(state, mount, def)
+		if not maxed:
+			after["parts"][String(def.id)][String(a["id"])] = lv + 1
+		var change := StatWords.change(a["effects"], now, _stats(after))
+		var right := "MAX" if maxed else ("%d" % price if owned else "")
+		var color := HangarUI.GOOD if maxed else (HangarUI.GOLD if price <= Hangar.credits() else HangarUI.ROSE)
+		var text := "%s  level %d / %d\n%s.\n%s" % [a["name"], lv, int(a["max"]), a["text"], "Buy the part first." if not owned else ("Maxed." if maxed else "Next level: " + change)]
+		menu.add(HangarUI.upgrade_card(a["name"], lv, int(a["max"]), HangarUI.CATEGORY_COLORS[def.category], change, right, color), text, _upgrade.bind(mount, def, a["id"], back))
 	var where := Loadout.mount_of(state, def.id)
 	if owned and where == mount:
 		menu.add(HangarUI.row("FITTED ON %s" % menu.MOUNT_NAMES[mount], "", "", Color.TRANSPARENT, HangarUI.GOOD), summary, back)
@@ -104,10 +108,11 @@ func describe(def: PartDef, mount: StringName) -> String:
 	var placed := _catalog.placement_effects(def, mount)
 	if not placed.is_empty():
 		text += "\nOn %s: %s." % [menu.MOUNT_NAMES[mount], HangarUI.effect_words(placed)]
-	var nodes := Hangar.ship().tree.filter(func(n: TreeNodeDef) -> bool: return n.mount == mount and def.tier >= n.min_tier)
-	if not nodes.is_empty():
-		text += "\nPowers %d blueprint node%s on %s." % [nodes.size(), "" if nodes.size() == 1 else "s", menu.MOUNT_NAMES[mount]]
 	return text
+
+
+func _stats(state: Dictionary) -> Dictionary:
+	return UpgradeSystem.compute(Loadout.effects(_catalog, state))
 
 
 func _status(state: Dictionary, def: PartDef, mount: StringName) -> String:

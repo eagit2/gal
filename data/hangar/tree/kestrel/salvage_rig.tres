@@ -6,14 +6,13 @@
 script = ExtResource("1")
 id = &"salvage_rig"
 display_name = "Salvage Rig"
-text = "Scrap worth 5% more"
-mount = &"right"
-min_tier = 0
-requires = &""
-max_rank = 3
-cost = 80
+text = "Scrap worth 10% more"
+branch = &"utility"
+requires = &"afterburn"
+max_rank = 2
+cost = 200
 effects = Array[Dictionary]([{
-"op": &"mul",
+"op": &"add",
 "stat": &"scrap_mult",
-"value": 1.05
+"value": 0.1
 }])

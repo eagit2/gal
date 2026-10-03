@@ -8,7 +8,7 @@ id = &"arc_lance"
 display_name = "Arc Lance"
 category = 0
 tier = 4
-text = "A crackling lance that pierces and seeks."
+text = "A lance that hits harder, pierces and seeks."
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"damage",
@@ -34,9 +34,9 @@ attributes = Array[Dictionary]([{
 "text": "+1 damage per level"
 }, {
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"fire_rate",
-"value": 1.1
+"value": 0.1
 }],
 "id": &"speed",
 "max": 5,
@@ -51,6 +51,6 @@ attributes = Array[Dictionary]([{
 "id": &"arc",
 "max": 2,
 "name": "ARC",
-"text": "+1 forked shot per level"
+"text": "+1 shot per level"
 }])
 part = &"lens_weapon"

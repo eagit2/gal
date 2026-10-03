@@ -46,7 +46,7 @@ func test_content_is_valid() -> void:
 				expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "placement %s %s" % [category, mount])
 	for ship in CATALOG.ships:
 		for node in ship.tree:
-			expect_true(node.mount == &"hull" or node.mount in ship.mounts, "%s mount" % node.id)
+			expect_true(node.branch in ShipTree.BRANCHES, "%s branch" % node.id)
 			expect_true(node.requires == &"" or ship.node(node.requires) != null, "%s requires" % node.id)
 			for effect: Dictionary in node.effects:
 				expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "%s: %s" % [node.id, effect["stat"]])
@@ -109,7 +109,7 @@ func test_attributes_level_up_and_cost_more() -> void:
 	expect_true(Loadout.upgrade_price(state, def, &"power") > first, "levels cost more")
 	Loadout.upgrade(state, def, &"speed")
 	Loadout.upgrade(state, def, &"speed")
-	expect_true(is_equal_approx(_stats(state)[&"fire_rate"], 1.21), "SPEED multiplies per level")
+	expect_true(is_equal_approx(_stats(state)[&"fire_rate"], 1.2), "SPEED adds 10% per level")
 	Loadout.upgrade(state, def, &"power")
 	expect_eq(Loadout.upgrade_price(state, def, &"power"), -1, "POWER maxed at 3")
 	expect_eq(Loadout.upgrade_price(state, CATALOG.part(&"twin_cannon"), &"power"), -1, "not owned")
@@ -142,21 +142,29 @@ func test_stock_rotates_unowned_parts() -> void:
 	expect_true(not HangarStock.take(state, CATALOG.part(&"pulse_laser")), "can't buy what isn't stocked")
 
 
-func test_part_rarity_gates_the_blueprint() -> void:
-	var state := _owning(["missile_pod"])
+func test_ship_tree_branches() -> void:
+	var state := Loadout.default_state(CATALOG)
 	var ship := CATALOG.ships[0]
 	var lens := ship.node(&"focus_lens")
 	var coil := ship.node(&"rail_coil")
-	expect_eq(ShipTree.gate(CATALOG, state, coil), ShipTree.Gate.NEEDS_NODE, "needs its parent")
-	expect_true(ShipTree.buy(CATALOG, state, lens), "starter node opens with the starter laser")
-	expect_eq(ShipTree.gate(CATALOG, state, coil), ShipTree.Gate.NEEDS_PART, "uncommon node needs a rarer nose part")
-	Loadout.place(CATALOG, state, &"nose", &"missile_pod")
-	expect_true(ShipTree.buy(CATALOG, state, coil), "rare missile pod opens it")
+	for branch in ShipTree.BRANCHES:
+		expect_true(not ShipTree.branch(ship, branch).is_empty(), "%s branch" % branch)
+	expect_eq(ShipTree.gate(CATALOG, state, coil), ShipTree.Gate.NEEDS_NODE, "needs the node above")
+	expect_true(ShipTree.buy(CATALOG, state, lens), "top node opens")
+	expect_true(ShipTree.buy(CATALOG, state, coil), "then the next")
 	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.1), "node effect applies")
-	Loadout.place(CATALOG, state, &"nose", &"pulse_laser")
-	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.0), "goes dark with a starter part")
-	expect_true(is_equal_approx(_stats(state)[&"fire_rate"], 1.05), "starter node stays lit")
+	Loadout.place(CATALOG, state, &"nose", &"")
+	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.1), "belongs to the ship, not a part")
 	expect_eq(ShipTree.price(state, ship, lens), lens.cost * 2, "rank 2 costs double")
+
+
+func test_stat_words() -> void:
+	var before := UpgradeSystem.BASE_STATS.duplicate()
+	var after := before.duplicate()
+	after[&"damage"] = 1
+	after[&"shield_recharge"] = 0.9
+	expect_eq(StatWords.change([{"stat": &"damage"}], before, after), "Damage 1 → 2")
+	expect_eq(StatWords.change([{"stat": &"shield_recharge"}], before, after), "Recharge 12.0s → 10.8s")
 
 
 func test_old_saves_reset_but_keep_pilots() -> void:

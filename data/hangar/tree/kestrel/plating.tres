@@ -7,11 +7,10 @@ script = ExtResource("1")
 id = &"plating"
 display_name = "Plating"
 text = "Shield recharges 5% faster"
-mount = &"left"
-min_tier = 0
+branch = &"defense"
 requires = &""
 max_rank = 3
-cost = 80
+cost = 100
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"shield_recharge",

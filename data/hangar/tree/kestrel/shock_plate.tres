@@ -7,13 +7,12 @@ script = ExtResource("1")
 id = &"shock_plate"
 display_name = "Shock Plate"
 text = "Kills burst and hurt nearby enemies"
-mount = &"left"
-min_tier = 3
+branch = &"defense"
 requires = &"capacitor"
 max_rank = 1
 cost = 400
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"explode_radius",
-"value": 16.0
+"value": 20.0
 }])

@@ -10,19 +10,19 @@ category = 4
 tier = 1
 text = "Scrap worth 20% more."
 effects = Array[Dictionary]([{
-"op": &"mul",
+"op": &"add",
 "stat": &"scrap_mult",
-"value": 1.2
+"value": 0.2
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"scrap_mult",
-"value": 1.05
+"value": 0.1
 }],
 "id": &"value",
 "max": 5,
 "name": "VALUE",
-"text": "Scrap worth 5% more per level"
+"text": "Scrap worth 10% more per level"
 }])
 part = &"bay_support"

@@ -10,15 +10,15 @@ category = 3
 tier = 0
 text = "+10% speed."
 effects = Array[Dictionary]([{
-"op": &"mul",
+"op": &"add",
 "stat": &"move_speed",
-"value": 1.1
+"value": 0.1
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"move_speed",
-"value": 1.05
+"value": 0.05
 }],
 "id": &"thrust",
 "max": 5,
