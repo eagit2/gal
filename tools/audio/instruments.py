@@ -1,7 +1,7 @@
 """Instrument voices for gen_music.py. Each takes (note, seconds held) and returns a mono array."""
 import numpy as np
 
-from synth import (SR, bandpass, bitcrush, decay, env, highpass, hz, lowpass, osc, sweep,
+from synth import (SR, rng, bandpass, bitcrush, decay, env, highpass, hz, lowpass, osc, sweep,
                    sweep_lowpass, transpose)
 
 QUALITIES = {
@@ -141,6 +141,56 @@ def grit_bass(note: str, held: float) -> np.ndarray:
     return x * 0.4
 
 
+def supersaw(note: str, held: float) -> np.ndarray:
+    """Seven detuned saws with random phases: the trance chord sound."""
+    m = n(held + 0.12)
+    f = hz(note)
+    t = np.arange(m) / SR
+    x = sum(2.0 * ((f * (1 + d) * t + rng.random()) % 1.0) - 1.0
+            for d in (-0.021, -0.013, -0.006, 0.0, 0.006, 0.013, 0.021)) / 7
+    return lowpass(highpass(x, 120), 5200) * env(m, 0.005, 0.25, 0.85, 0.1, held) * 0.4
+
+
+def saw_stab(note: str, held: float) -> np.ndarray:
+    x = supersaw(note, max(held, 0.3))
+    return x * decay(len(x), 0.35) * 1.3
+
+
+def roll_bass(note: str, held: float) -> np.ndarray:
+    """Short, punchy offbeat bass for rolling trance lines."""
+    m = n(held + 0.01)
+    f = hz(note)
+    x = osc("saw", f, m) * 0.7 + osc("square", f / 2, m, 0.5) * 0.5
+    return sweep_lowpass(x, 1800, 350) * env(m, 0.002, 0.06, 0.6, 0.01, held) * 0.75
+
+
+def reese(note: str, held: float) -> np.ndarray:
+    m = n(held + 0.05)
+    f = hz(note)
+    x = osc("saw", f * 0.993, m) + osc("saw", f * 1.007, m)
+    x = np.tanh(lowpass(x, 650) * 2.5) * 0.5 + osc("sine", f / 2, m) * 0.6
+    return x * env(m, 0.01, 0.2, 0.9, 0.05, held) * 0.6
+
+
+def chip_lead(note: str, held: float) -> np.ndarray:
+    """Square lead with a quick pitch blip at the start and fast vibrato, 16-bit RPG style."""
+    m = n(held + 0.06)
+    f = hz(note)
+    t = np.arange(m) / SR
+    blip = 1 + 0.03 * np.exp(-t / 0.012)
+    vib = 1 + 0.01 * np.sin(2 * np.pi * 6.5 * t) * np.clip((t - 0.18) / 0.15, 0, 1)
+    x = osc("square", f * blip * vib, m, 0.5) * 0.6 + osc("square", f * 1.004 * vib, m, 0.25) * 0.4
+    return lowpass(x, 6500) * env(m, 0.003, 0.15, 0.7, 0.05, held) * 0.42
+
+
+def brass(note: str, held: float) -> np.ndarray:
+    """Synth brass for boss stabs: saw swell through an opening filter."""
+    m = n(held + 0.1)
+    f = hz(note)
+    x = (osc("saw", f * 0.997, m) + osc("saw", f * 1.003, m)) / 2
+    return sweep_lowpass(x, 900, 4200) * env(m, 0.03, 0.2, 0.8, 0.08, held) * 0.45
+
+
 # --- drums -------------------------------------------------------------------------------
 
 def kick(_note: str, _held: float) -> np.ndarray:
@@ -148,6 +198,13 @@ def kick(_note: str, _held: float) -> np.ndarray:
     body = osc("sine", sweep(150, 42, m, 0.35), m) * decay(m, 0.3)
     click = highpass(osc("noise", 0, m), 2000) * decay(m, 0.008) * 0.3
     return np.tanh((body + click) * 1.6) * 0.9
+
+
+def trance_kick(_note: str, _held: float) -> np.ndarray:
+    m = n(0.4)
+    body = osc("sine", sweep(180, 46, m, 0.28), m) * decay(m, 0.38)
+    click = highpass(osc("noise", 0, m), 2500) * decay(m, 0.006) * 0.5
+    return np.tanh((body + click) * 2.2) * 0.95
 
 
 def chip_kick(_note: str, _held: float) -> np.ndarray:

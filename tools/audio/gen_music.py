@@ -14,7 +14,7 @@ from pathlib import Path
 import numpy as np
 
 from instruments import INSTRUMENTS, chord_notes
-from synth import SR, bitcrush, echo, highpass, lowpass, normalize, reverb, soft_clip, write_ogg
+from synth import SR, hz, osc, env, bitcrush, echo, highpass, lowpass, normalize, reverb, soft_clip, write_ogg
 from tracks import TRACKS
 
 OUT = Path(__file__).resolve().parents[2] / "assets" / "audio" / "music"
@@ -45,6 +45,8 @@ class Track:
     def _finish(self, bus: np.ndarray, gain: float, pan: float, fx: dict) -> None:
         if fx.get("lowpass"):
             bus = lowpass(bus, fx["lowpass"])
+        if fx.get("gate"):
+            bus = bus * self._gate(fx["gate"])
         if fx.get("pump"):
             bus = bus * self._pump(fx["pump"])
         if fx.get("crush"):
@@ -66,6 +68,35 @@ class Track:
             return
         self.mix[:, 0] += bus * gain * left
         self.mix[:, 1] += bus * gain * right
+
+    def _gate(self, pattern: str) -> np.ndarray:
+        """Trance gate: one char per 16th, 'x' open, 'o' half, '.' closed."""
+        pattern = pattern.replace(" ", "")
+        levels = {"x": 1.0, "o": 0.5, ".": 0.08}
+        curve = np.zeros(len(self.mix))
+        for i in range(2 * self.steps):
+            s, e = self.at(i), min(self.at(i + 1), len(curve))
+            curve[s:e] = levels[pattern[i % len(pattern)]]
+        curve[self.at(2 * self.steps):] = curve[self.at(self.steps)]
+        return lowpass(curve, 120, 1)
+
+    def trill(self, octave: int, rhythm: str, gain: float = 1.0, rate: float = 22.0,
+              duty: float = 0.25, pan: float = 0.0, **fx) -> None:
+        """Chip arpeggio: cycles the bar's triad very fast. rhythm per bar: 'x' start, '-' hold."""
+        rhythm = rhythm.replace(" ", "")
+        bus = np.zeros(len(self.mix))
+        for i in range(self.steps):
+            if rhythm[i % len(rhythm)] != "x":
+                continue
+            length = 1
+            while length < len(rhythm) and rhythm[(i + length) % len(rhythm)] == "-":
+                length += 1
+            tones = [hz(t) for t in chord_notes(self.chord(i // 16), octave, 3)]
+            m = int(length * self.step * SR) + 200
+            idx = (np.arange(m) / SR * rate).astype(int) % 3
+            freq = np.array(tones)[idx]
+            self._place(bus, osc("square", freq, m, duty) * env(m, 0.002, 0.1, 0.7, 0.01) * 0.3, i)
+        self._finish(bus, gain, pan, fx)
 
     def _pump(self, depth: float) -> np.ndarray:
         curve = np.ones(len(self.mix))
@@ -104,7 +135,7 @@ class Track:
             c = pattern[i % len(pattern)]
             if c in "xo":
                 self._place(bus, hit if c == "x" else soft, i)
-                if instrument == "kick" and c == "x":
+                if "kick" in instrument and c == "x":
                     self.kicks.append(i)
         self._finish(bus, gain, pan, fx)
 
