@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1")
 id = &"arc_lance"
-fire_rate = 3.5
+fire_rate = 2.1
 projectile_scene = ExtResource("2")
 projectile_speed = 1100.0
 spread_count = 1

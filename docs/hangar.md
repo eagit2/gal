@@ -67,3 +67,6 @@ Data: `data/hangar/pilots/` (`PilotDef`), run by `scenes/player/pilot_power.gd`.
 
 ## Dev unlock
 During development every ship, part, pilot and chip (8 copies each) is owned, and tapping a ship tree node steps its rank for free (max wraps to off; switching on closes the fork partner, switching off clears the nodes below it). Add `?unlock=0` (desktop: `-- unlock=0`) to play with normal progression. Code: `systems/dev_unlock.gd`. Grants are written into the save slot.
+
+## Fire rate curve
+Guns start at 60% of their old fire rate (Pulse Laser 4.8/s, Twin Cannon 1.8, Needle Gun 6.6, Arc Lance 2.1, Missile Pod 1.2). Each fire-rate level adds +10%, and the last level adds a `final` bonus (+100%) on top, so a maxed gun reaches 2.5x its base (Pulse Laser 12/s). `final` is an optional attribute key in `PartDef.attributes`.

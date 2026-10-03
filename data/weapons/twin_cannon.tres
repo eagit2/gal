@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1")
 id = &"twin_cannon"
-fire_rate = 3.0
+fire_rate = 1.8
 projectile_scene = ExtResource("2")
 projectile_speed = 850.0
 spread_count = 2

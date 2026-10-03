@@ -72,3 +72,4 @@ Newest first. One line per decision with the reason.
 - 2026-10-03: Controls are steering and firing only (Eric). Pilot powers, Cryo Pulse and other extras fire on their own when the moment fits (see docs/hangar.md); the power and special buttons, two-finger tap and FREEZE tap are gone. Supersedes the active-button entries above. Pilots Vega and Nyx renamed Dave and Chere (ids unchanged so saves keep working).
 - 2026-10-03: Dev unlock on by default during development (Eric): everything owned, tree nodes toggle on/off for free; unlock=0 turns it off.
 - 2026-10-03: Elite description banner removed from gameplay; challenge stages taken out of sector 1 for now (data/stages/challenge_1.tres kept) (Eric).
+- 2026-10-03: Gun fire rate starts slower (60% of before); small +10% steps, last level adds +100% (Eric: last step is the big jump).
