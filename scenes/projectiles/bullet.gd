@@ -72,7 +72,7 @@ func _steer(delta: float) -> void:
 func _nearest_enemy() -> Node2D:
 	var best: Node2D = null
 	var best_distance := INF
-	for node in get_tree().get_nodes_in_group(&"enemies"):
+	for node in get_tree().get_nodes_in_group(&"enemies") + get_tree().get_nodes_in_group(&"elites"):
 		var enemy := node as Node2D
 		var distance := enemy.global_position.distance_squared_to(global_position)
 		if distance < best_distance and enemy.global_position.y < global_position.y:

@@ -7,11 +7,13 @@ extends RefCounted
 ##   god         player hits cost no lives
 ##   repeat      replay the same stage instead of advancing
 ##   difficulty  cadet | pilot | ace | nightmare
+##   elite       an elite id (frost_shell, rock_hauler, shield_warden) that joins every stage at 4s
 
 var stage := ""
 var god := false
 var repeat := false
 var difficulty: StringName = &""
+var elite: StringName = &""
 
 
 static func from_environment() -> DevOptions:
@@ -38,12 +40,14 @@ static func parse(args: PackedStringArray) -> DevOptions:
 				opts.repeat = value != "0"
 			"difficulty":
 				opts.difficulty = StringName(value.to_lower())
+			"elite":
+				opts.elite = StringName(value.to_lower())
 	return opts
 
 
 ## True when any option is set. Dev runs leave the saved run alone.
 func is_set() -> bool:
-	return not stage.is_empty() or god or repeat or difficulty != &""
+	return not stage.is_empty() or god or repeat or difficulty != &"" or elite != &""
 
 
 ## Index into `stages` for the `stage` option, or `fallback` when unset or unknown.

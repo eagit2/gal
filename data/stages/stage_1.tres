@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="StageDef" load_steps=18 format=3]
+[gd_resource type="Resource" script_class="StageDef" load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="elite_def_script"]
 [ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
 [ext_resource type="Resource" path="res://data/enemies/bee.tres" id="e_bee"]
 [ext_resource type="Resource" path="res://data/enemies/warden.tres" id="e_warden"]
@@ -10,6 +11,7 @@
 [ext_resource type="Curve2D" path="res://data/paths/swoop_left.tres" id="p_swoop_left"]
 [ext_resource type="Curve2D" path="res://data/paths/swoop_right.tres" id="p_swoop_right"]
 [ext_resource type="Resource" path="res://data/medals/no_damage.tres" id="medal"]
+[ext_resource type="Resource" path="res://data/elites/rock_hauler.tres" id="elite_rock_hauler"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -75,3 +77,4 @@ is_challenge = false
 reinforcements = 3
 style = &""
 medal = ExtResource("medal")
+elites = Array[ExtResource("elite_def_script")]([ExtResource("elite_rock_hauler")])

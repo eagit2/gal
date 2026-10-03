@@ -166,6 +166,12 @@ func predicted_player(lead: float) -> Vector2:
 	return guess.clamp(Vector2(MIN_X, Player.MIN_Y), Vector2(MAX_X, Player.MAX_Y))
 
 
+## A Shield Warden elite protects this enemy: shots pass through it.
+func set_shielded(on: bool) -> void:
+	$Hurtbox.invulnerable = on
+	_visual.modulate = Color(0.85, 0.75, 1.3) if on else Color.WHITE
+
+
 ## Damage from outside a hitbox (kill blasts).
 func damage(amount: int) -> void:
 	_health.take_damage(amount)

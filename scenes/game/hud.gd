@@ -44,6 +44,7 @@ func _ready() -> void:
 		if (e is InputEventMouseButton or e is InputEventScreenTouch) and e.pressed:
 			EventBus.special_requested.emit())
 	EventBus.medal_earned.connect(_on_medal_earned)
+	EventBus.elite_spawned.connect(func(e: EliteDef) -> void: show_banner("ELITE\n%s\n\n%s" % [e.display_name.to_upper(), e.hint.to_upper()], 3.0))
 	EventBus.run_ended.connect(_on_run_ended)
 	EventBus.power_changed.connect(_on_power_changed)
 	EventBus.power_used.connect(func(p: PilotDef) -> void: show_toast(p.power_name, p.color))

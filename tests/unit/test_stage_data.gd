@@ -10,7 +10,7 @@ func test_sector_stages_load() -> void:
 func test_formation_stages_fill_unique_slots() -> void:
 	for id in ["stage_1", "stage_2"]:
 		var stage: StageDef = load("res://data/stages/%s.tres" % id)
-		var queue := StageRunner.build_queue(stage)
+		var queue := StageRunner.build_queue(stage).filter(func(e: Dictionary) -> bool: return not e.has("elite"))
 		expect_eq(queue.size(), 40, "%s enemy count" % id)
 		var seen := {}
 		for entry in queue:
@@ -32,3 +32,18 @@ func test_every_enemy_has_a_visual() -> void:
 	for id in ["bee", "moth", "warden"]:
 		var def: EnemyDef = load("res://data/enemies/%s.tres" % id)
 		expect_true(def.visual_scene != null, id)
+
+
+func test_elites_load_with_a_trait_and_visual() -> void:
+	for file in DirAccess.get_files_at("res://data/elites"):
+		if file.ends_with(".tres"):
+			var def: EliteDef = load("res://data/elites/" + file)
+			expect_true(def.trait_logic != null and def.visual_scene != null and not def.hint.is_empty(), file)
+
+
+func test_dev_elite_joins_the_queue_early() -> void:
+	var stage: StageDef = load("res://data/stages/stage_2.tres")
+	var rock: EliteDef = load("res://data/elites/rock_hauler.tres")
+	var elites := StageRunner.build_queue(stage, rock).filter(func(e: Dictionary) -> bool: return e.has("elite"))
+	expect_eq(elites.size(), stage.elites.size() + 1, "extra elite queued")
+	expect_eq(elites[0]["elite"], rock, "dev elite first")

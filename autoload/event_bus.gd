@@ -46,3 +46,9 @@ signal freeze_ended()
 signal freeze_charges_changed(charges: int)
 ## The ship picked up `amount` scrap (already multiplied) at `at`.
 signal scrap_collected(amount: int, at: Vector2)
+## A loose scrap pile appears at `at` (elite kills, rock chunks).
+signal scrap_dropped(at: Vector2, amount: int)
+signal elite_spawned(elite: EliteDef)
+signal elite_killed(elite: EliteDef, at: Vector2)
+## An elite's trait was beaten for now (an ice layer shattered, a tether cut).
+signal elite_trait_broken(at: Vector2)

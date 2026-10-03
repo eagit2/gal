@@ -74,8 +74,8 @@ func use() -> bool:
 func _nova() -> void:
 	for node in get_tree().get_nodes_in_group(&"enemy_shots"):
 		(node as Bullet).release()
-	for node in get_tree().get_nodes_in_group(&"enemies"):
-		(node as Enemy).damage(_pilot.damage)
+	for node in get_tree().get_nodes_in_group(&"enemies") + get_tree().get_nodes_in_group(&"elites"):
+		node.call("damage", _pilot.damage)
 
 
 func _report() -> void:

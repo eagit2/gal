@@ -16,6 +16,8 @@ var pity := 0.0
 
 func _ready() -> void:
 	EventBus.enemy_killed.connect(_on_enemy_killed)
+	EventBus.scrap_dropped.connect(func(at: Vector2, amount: int) -> void: spawn(at, amount))
+	EventBus.elite_killed.connect(_on_elite_killed)
 
 
 func _on_enemy_killed(node: Node2D, at: Vector2, _score: int) -> void:
@@ -27,6 +29,13 @@ func _on_enemy_killed(node: Node2D, at: Vector2, _score: int) -> void:
 		spawn(at, enemy.def.scrap)
 	else:
 		pity += PITY_STEP
+
+
+## Elites burst into several piles that scatter a little.
+func _on_elite_killed(def: EliteDef, at: Vector2) -> void:
+	var piles := 4
+	for i in piles:
+		spawn(at + Vector2.from_angle(TAU * i / piles) * 22.0, ceili(def.scrap / float(piles)))
 
 
 static func drop_chance(base: float, difficulty_mult: float, stat_mult: float, pity_bonus: float) -> float:
