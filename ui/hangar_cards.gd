@@ -85,6 +85,28 @@ static func status_tag(row: Button, text: String, color: Color, action: Callable
 	return tag
 
 
+## Draws a gold link on a row's left edge: a knob, plus a bar up to the row above (`up`) and/or
+## down to the row below (`down`), so a linked pair of rows reads as one bracket.
+static func link_line(row: Button, up: bool, down: bool) -> void:
+	var mid := HangarUI.ROW_HEIGHT / 2.0
+	var gap := 6.0  # covers the list's row spacing
+	if up:
+		_bar(row, Rect2(6, -gap, 4, mid + gap))
+	if down:
+		_bar(row, Rect2(6, mid, 4, mid + gap))
+	_bar(row, Rect2(2, mid - 6, 12, 12))
+	(row.get_node("Parts") as Control).offset_left = 22
+
+
+static func _bar(row: Button, rect: Rect2) -> void:
+	var bar := ColorRect.new()
+	bar.color = SOCKET_GOLD
+	bar.position = rect.position
+	bar.size = rect.size
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(bar)
+
+
 static func _stat_line(title: String, middle: Control, right: Control, color: Color) -> HBoxContainer:
 	var line := HBoxContainer.new()
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
