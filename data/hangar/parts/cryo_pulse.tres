@@ -5,10 +5,10 @@
 [resource]
 script = ExtResource("1")
 id = &"cryo_pulse"
-display_name = "Cryo Pulse"
+display_name = "Frost Nova"
 category = 4
 tier = 0
-text = "Freeze everything once per stage (C, pad Y, or tap FREEZE)."
+text = "Frost Nova: when enemies crowd you, a bubble drops; catch it to slow every enemy 90%."
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"freeze_charges",
@@ -23,7 +23,7 @@ attributes = Array[Dictionary]([{
 "id": &"duration",
 "max": 4,
 "name": "DURATION",
-"text": "Freeze lasts 0.5s longer per level"
+"text": "Slow lasts 0.5s longer per level"
 }, {
 "effects": [{
 "op": &"add",
@@ -33,7 +33,7 @@ attributes = Array[Dictionary]([{
 "id": &"charges",
 "max": 2,
 "name": "CHARGES",
-"text": "+1 freeze per stage per level"
+"text": "+1 nova per stage per level"
 }])
 sockets = 1
 links = 0

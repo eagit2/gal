@@ -12,7 +12,7 @@ The game runs in the **Dusk Armada** style (P2). Playing in a specific way fills
 
 | Mode | Trigger (what fills the meter) | Art style | Buff while active | Feel |
 |---|---|---|---|---|
-| **Overkill** (id overdrive) | Every 30 kills (no streak window, no decay). | N1 Outrun Grid | Fire rate x1.5, ship speed x1.2 | Aggression |
+| **Overkill** (id overdrive) | Every 100 kills (no streak window, no decay). | N1 Outrun Grid | Fire rate x1.5, ship speed x1.2 | Aggression |
 | **Chain** (id lock_on) | 30 hits in a row with no missed shot; a miss resets it. | N3 Cold Hologram | Every hit arcs big lightning to 5 nearby enemies | Precision |
 | **Chain Reaction** | Multi-kills: 3 or more kills from one shot or explosion, or killing a diver mid-dive. The meter fills at 6 events. | N2 Particle Storm | Kills explode and damage neighbors | Chaos |
 | **Graze** | Near misses: enemy bullets passing within a small radius of the hitbox without hitting. The meter fills at 30. | P3 Pocket Four | Time slows to 0.6x, and grazes give score | Risk |

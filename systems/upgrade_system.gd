@@ -30,7 +30,7 @@ const BASE_STATS := {
 	&"time_scale": 1.0,
 	&"graze_score": 0,
 	&"freeze_charges": 0,  # Cryo Pulse uses per stage
-	&"freeze_time": 3.0,  # seconds enemies stay frozen
+	&"freeze_time": 3.0,  # seconds Frost Nova slows enemies
 	&"scrap_mult": 1.0,  # scrap value
 	&"extra_lives": 0,  # ships added to the difficulty's lives (Spare Hull)
 	&"shield": 0,  # shield parts fitted; no shield bubble without one

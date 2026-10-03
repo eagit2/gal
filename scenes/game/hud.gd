@@ -15,7 +15,6 @@ const METER_LABELS := {&"overdrive": "OK", &"lock_on": "CL", &"chain_reaction": 
 @onready var _shield: Label = $Shield
 @onready var _power: Label = $Power
 @onready var _freeze: Label = $Freeze
-@onready var _freeze_tint: ColorRect = $FreezeTint
 @onready var _meters: VBoxContainer = $Meters
 @onready var _mode: Label = $Mode
 @onready var _mode_bar: ProgressBar = $ModeBar
@@ -36,10 +35,7 @@ func _ready() -> void:
 	EventBus.combo_ended.connect(_on_combo_ended)
 	EventBus.scrap_collected.connect(func(_a: int, _p: Vector2) -> void: _update_scrap())
 	EventBus.freeze_charges_changed.connect(_on_freeze_charges_changed)
-	EventBus.freeze_started.connect(func(_d: float) -> void:
-		_freeze_tint.visible = true
-		show_toast("CRYO PULSE", Color(0.55, 0.9, 1)))
-	EventBus.freeze_ended.connect(_freeze_tint.hide)
+	EventBus.freeze_started.connect(func(_d: float) -> void: show_toast("FROST NOVA", Color(0.55, 0.9, 1)))
 	EventBus.medal_earned.connect(_on_medal_earned)
 	EventBus.player_captured.connect(func(_c: Node2D) -> void: show_toast("SHIP CAPTURED!\nSHOOT ITS CAPTOR\nWHILE IT ATTACKS", Color(1, 0.45, 0.45)))
 	EventBus.ship_rescued.connect(func() -> void: show_toast("SHIP RESCUED!\nDUAL FIGHTER", Color(0.5, 1, 0.75)))

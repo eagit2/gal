@@ -71,6 +71,13 @@ static func apply_hit(enemy: Node2D, burn: int, chill: int, chain: int) -> void:
 		_arc(enemy, chain)
 
 
+## Frost Nova (Cryo Pulse): a deep slow past the chip cap for `time` seconds.
+func nova(time: float, amount: float) -> void:
+	chill_left = maxf(chill_left, time)
+	slow = maxf(slow, amount)
+	_sync_fx()
+
+
 ## The enemy's status node, created on first use.
 static func of(enemy: Node) -> StatusEffects:
 	var status := enemy.get_node_or_null(NodePath(NODE_NAME)) as StatusEffects

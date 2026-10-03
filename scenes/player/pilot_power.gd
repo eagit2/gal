@@ -10,6 +10,8 @@ const CLOSE_RADIUS := 60.0
 ## Nova fires when this many threats are within NOVA_RADIUS.
 const NOVA_COUNT := 6
 const NOVA_RADIUS := 170.0
+## Overclock fires only once this many enemies are diving at once (never just because a stage started).
+const OVERCLOCK_DIVERS := 3
 
 var player: Player
 var _pilot: PilotDef
@@ -52,7 +54,7 @@ func _wanted() -> bool:
 	var pos := player.global_position
 	match _pilot.power:
 		PilotDef.Power.OVERCLOCK:
-			return Threat.any_enemy(tree)
+			return tree.get_nodes_in_group(&"attackers").size() >= OVERCLOCK_DIVERS
 		PilotDef.Power.BULWARK, PilotDef.Power.PHASE_DASH:
 			return Threat.count(tree, pos, CLOSE_RADIUS) > 0
 		PilotDef.Power.NOVA:
