@@ -15,6 +15,10 @@ var velocity := Vector2.ZERO
 var pierce := 0
 ## Turn rate toward the nearest enemy, radians per second.
 var homing := 0.0
+## Chip levels this shot carries (StatusEffects): burn, chill and chain.
+var burn := 0
+var chill := 0
+var chain := 0
 ## Set once the player has grazed this shot.
 var grazed := false
 var _pool_scene: PackedScene
@@ -35,6 +39,9 @@ func launch(parent: Node, from: Vector2, vel: Vector2, dmg: int, pool_scene: Pac
 	damage = dmg
 	pierce = pierces
 	homing = turn_rate
+	burn = 0
+	chill = 0
+	chain = 0
 	grazed = false
 	spent = false
 	_active = true
@@ -81,7 +88,8 @@ func _nearest_enemy() -> Node2D:
 	return best
 
 
-func _on_hit(_hurtbox: Hurtbox) -> void:
+func _on_hit(hurtbox: Hurtbox) -> void:
+	StatusEffects.apply_hit(hurtbox.get_parent() as Node2D, burn, chill, chain)
 	if reports_miss:
 		EventBus.shot_hit.emit()
 	if pierce > 0:

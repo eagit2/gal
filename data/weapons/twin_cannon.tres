@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="WeaponDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/weapon_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/projectiles/cannon_round.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"twin_cannon"
+fire_rate = 3.0
+projectile_scene = ExtResource("2")
+projectile_speed = 850.0
+spread_count = 2
+spread_angle = 0.0
+damage = 2
+spacing = 14.0
+pierce = 0
+homing = 0.0
