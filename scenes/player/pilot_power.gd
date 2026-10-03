@@ -1,9 +1,15 @@
 extends Node
-## Runs the hangar pilot's active power: fire it with the power action (or a two-finger tap),
-## then it recharges over the pilot's cooldown. Starts each life fully charged.
+## Runs the hangar pilot's active power. It fires on its own when the moment fits the power
+## (controls are only steering and firing), then recharges over the pilot's cooldown.
+## Starts each life fully charged.
 
 ## Seconds a dash takes to cover its distance.
 const DASH_TIME := 0.12
+## Bulwark and Phase Dash fire when an enemy or enemy shot gets this close.
+const CLOSE_RADIUS := 60.0
+## Nova fires when this many threats are within NOVA_RADIUS.
+const NOVA_COUNT := 6
+const NOVA_RADIUS := 170.0
 
 var player: Player
 var _pilot: PilotDef
@@ -36,13 +42,22 @@ func _physics_process(delta: float) -> void:
 	if _charge < 1.0:
 		_charge = minf(_charge + real_delta / _pilot.cooldown, 1.0)
 		_report()
-	if Input.is_action_just_pressed("power"):
+	if _charge >= 1.0 and _wanted():
 		use()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventScreenTouch and event.pressed and event.index == 1:
-		use()
+## Whether now is a good moment for this pilot's power.
+func _wanted() -> bool:
+	var tree := get_tree()
+	var pos := player.global_position
+	match _pilot.power:
+		PilotDef.Power.OVERCLOCK:
+			return Threat.any_enemy(tree)
+		PilotDef.Power.BULWARK, PilotDef.Power.PHASE_DASH:
+			return Threat.count(tree, pos, CLOSE_RADIUS) > 0
+		PilotDef.Power.NOVA:
+			return Threat.count(tree, pos, NOVA_RADIUS) >= NOVA_COUNT
+	return false
 
 
 ## Fires the power if it is charged and the ship is flying. Returns true when it fired.
@@ -58,7 +73,7 @@ func use() -> bool:
 			player.shield.restore()
 			player.grant_invulnerability(_pilot.duration)
 		PilotDef.Power.PHASE_DASH:
-			var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+			var direction := Threat.away(get_tree(), player.global_position, CLOSE_RADIUS * 2.0)
 			if direction == Vector2.ZERO:
 				direction = player.velocity.normalized() if player.velocity.length() > 10.0 else Vector2.UP
 			_dash = direction.normalized() * _pilot.distance

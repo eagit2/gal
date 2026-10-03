@@ -62,7 +62,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] M3.9 enemy roster batch 2: Splitter, Plated, Mender, Mine Layer, Mimic, Meteor Caller, Mirror Knight, Gravity Well, Twin Sentinels, Sweeper; per-stage HP multiplier plus a ramp each loop; random elite pools per stage
 ## M4 Difficulty + meta
 - [x] Hangar v2 (materia style): 4 frames with linked slots, 21 modules that level from AP, mastery copies and upgrade chains, ship parts per module, deeper menu (`docs/hangar.md`)
-- [x] Pilots with active powers: Vega (Overclock), Rook (Bulwark), Nyx (Phase Dash), Juno (Nova)
+- [x] Pilots with powers: Dave (Overclock), Rook (Bulwark), Chere (Phase Dash), Juno (Nova)
+- [x] Pilot powers and Cryo Pulse fire on their own; controls are steer and fire only
 - [x] Hangar v3 step 1: typed slots on nose/left/rear/right mounts, placement effects, 14 ranked parts, categorized store with ship previews (`docs/hangar.md`)
 - [x] Hangar v3 slot menus (Eric picked mockups A and T3): slot > category > part > attribute upgrades, rotating store stock, Kestrel blueprint tree gated by part rarity, 18 parts (`docs/hangar.md`)
 - [x] Hangar cleanup: round upgrade numbers shown in real units, ship-specific skill tree (3 branches), cleaner cards on every hangar screen

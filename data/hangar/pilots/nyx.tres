@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1")
 id = &"nyx"
-display_name = "Nyx"
+display_name = "Chere"
 bio = "Test pilot. Flies through gaps that aren't there."
 cost = 400
 color = Color(0.31, 0.651, 1, 1)

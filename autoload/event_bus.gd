@@ -38,8 +38,7 @@ signal hangar_changed()
 ## The pilot power recharged to `charge` (0..1), reported in 10% steps.
 signal power_changed(charge: float)
 signal power_used(pilot: PilotDef)
-## The player asked for their special (Cryo Pulse): key, gamepad, or tapping FREEZE on the HUD.
-signal special_requested()
+## Cryo Pulse fired (on its own) and froze the field for `duration` seconds.
 signal freeze_started(duration: float)
 signal freeze_ended()
 ## Cryo Pulse uses left this stage.

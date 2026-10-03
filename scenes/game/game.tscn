@@ -54,8 +54,9 @@ script = ExtResource("14")
 [node name="ComboTracker" type="Node" parent="Entities"]
 script = ExtResource("15")
 
-[node name="FreezeSystem" type="Node" parent="Entities"]
+[node name="FreezeSystem" type="Node" parent="Entities" node_paths=PackedStringArray("player")]
 script = ExtResource("17")
+player = NodePath("../Player")
 
 [node name="CaptureSystem" type="Node" parent="Entities"]
 script = ExtResource("18")

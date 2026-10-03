@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1")
 id = &"vega"
-display_name = "Vega"
+display_name = "Dave"
 bio = "Ace gunner. Never lets go of the trigger."
 cost = 0
 color = Color(1, 0.624, 0.29, 1)

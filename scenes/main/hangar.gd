@@ -223,4 +223,4 @@ func _pick_pilot(pilot: PilotDef, index: int) -> void:
 		say("Needs %d more scrap." % (pilot.cost - Hangar.credits()))
 		return
 	_pilots(index)
-	say("%s is flying. Power: SHIFT, gamepad B, or a two-finger tap." % pilot.display_name.to_upper())
+	say("%s is flying. The power fires on its own." % pilot.display_name.to_upper())
