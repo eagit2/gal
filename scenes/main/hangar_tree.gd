@@ -145,6 +145,8 @@ func _badge(map: Control, at: Vector2, text: String, color: Color) -> void:
 func _text(state: Dictionary, ship: ShipDef, node: TreeNodeDef) -> String:
 	var rank := ShipTree.rank(state, ship, node)
 	var text := "%s  %d / %d\n%s." % [node.display_name.to_upper(), rank, node.max_rank, node.text]
+	if Hangar.dev_unlock:
+		return text + "\nDev: tap to switch on or off."
 	match ShipTree.gate(_catalog, state, node):
 		ShipTree.Gate.NEEDS_NODE:
 			text += "\nNeeds %s." % ShipTree.needs_text(ship, node)
@@ -158,6 +160,10 @@ func _text(state: Dictionary, ship: ShipDef, node: TreeNodeDef) -> String:
 
 
 func _buy(node: TreeNodeDef) -> void:
+	if Hangar.dev_unlock:
+		Hangar.toggle_node(node)
+		open(node.id)
+		return
 	var state := Hangar.state()
 	match ShipTree.gate(_catalog, state, node):
 		ShipTree.Gate.MAXED:

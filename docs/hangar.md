@@ -64,3 +64,6 @@ Data: `data/hangar/pilots/` (`PilotDef`), run by `scenes/player/pilot_power.gd`.
 
 ## Chips and link combos
 8 chips (`data/hangar/chips/`, 150 scrap each, bought from the store, owned as counts): Power, Rapid, Split, Seeker, Pierce, Ember (burn), Frost (chill), Volt (chain). Each socketed chip adds its effects. Two specific chips in a linked socket pair make a combo (`data/hangar/combos/`, 10 of them, e.g. Ember + Power = Inferno) that adds its own effects. Combos show only when active.
+
+## Dev unlock
+During development every ship, part, pilot and chip (8 copies each) is owned, and tapping a ship tree node steps its rank for free (max wraps to off; switching on closes the fork partner, switching off clears the nodes below it). Add `?unlock=0` (desktop: `-- unlock=0`) to play with normal progression. Code: `systems/dev_unlock.gd`. Grants are written into the save slot.
