@@ -5,6 +5,9 @@ extends Control
 ## so new content needs only data. Keyboard, gamepad (focus) and touch all work; cancel goes back.
 
 const TITLE_SCENE := "res://scenes/main/title.tscn"
+## Home layout: the area holding the ship and its slot boxes, and each box's top-left corner.
+const SLOT_AREA := Vector2(484, 360)
+const SLOT_SPOTS := {&"nose": Vector2(157, 0), &"left": Vector2(0, 130), &"right": Vector2(314, 130), &"rear": Vector2(157, 268)}
 const MOUNT_NAMES := {&"nose": "NOSE", &"left": "LEFT", &"rear": "REAR", &"right": "RIGHT", &"hull": "HULL"}
 
 var catalog: HangarCatalog = preload("res://data/hangar/catalog.tres")
@@ -82,6 +85,7 @@ func page(title: String, back: Callable, as_blueprint := false) -> void:
 	_title.text = title
 	_back = back
 	_detail.text = ""
+	_preview_box.custom_minimum_size.y = 170
 	show_ship({}, as_blueprint)
 	for child in _list.get_children():
 		_list.remove_child(child)
@@ -119,18 +123,31 @@ func home(focus_row := 0) -> void:
 	page("HANGAR", SceneRouter.go_to.bind(TITLE_SCENE))
 	var ship := Hangar.ship()
 	var state := Hangar.state()
-	for mount in ship.mounts:
-		var def := Loadout.part_at(catalog, state, mount)
-		var dot := HangarUI.CATEGORY_COLORS[def.category] if def else Color.TRANSPARENT
-		var name := def.display_name.to_upper() if def else "- EMPTY -"
-		var detail := parts.describe(def, mount) if def else "Empty. Pick it to fit a part."
-		add(HangarUI.row("%s  %s" % [MOUNT_NAMES[mount], name], "", HangarUI.levels_short(state, def) if def else "", dot), detail, parts.slot.bind(mount))
+	_slot_boxes(ship, state)
 	var stock := (state["stock"] as Array).size()
 	add(HangarUI.row("STORE", "", "%d FOR SALE" % stock), "New parts for scrap. The stock changes after every run.", parts.store)
 	add(HangarUI.row("BLUEPRINT"), "The %s tree. Rarer parts on a mount open deeper nodes there." % ship.display_name.to_upper(), blueprint.open)
 	add(HangarUI.row("PILOT", "", Hangar.pilot().display_name.to_upper(), Color.TRANSPARENT, Hangar.pilot().color), "Pick your pilot. Each one brings an active power.", _pilots)
 	add(HangarUI.row("BACK"), "Back to the title screen.", SceneRouter.go_to.bind(TITLE_SCENE))
-	focus(focus_row)
+	var boxes := _preview_box.get_children().filter(func(c: Node) -> bool: return c is Button and not c.is_queued_for_deletion())
+	if focus_row < boxes.size():
+		(boxes[focus_row] as Button).grab_focus()
+	else:
+		focus(focus_row - boxes.size())
+
+
+## The ship with a box per slot around it (nose above, sides beside, rear below). Each box shows
+## the part and its attribute levels and opens the slot's menu.
+func _slot_boxes(ship: ShipDef, state: Dictionary) -> void:
+	_preview_box.custom_minimum_size.y = SLOT_AREA.y
+	for mount in ship.mounts:
+		var def := Loadout.part_at(catalog, state, mount)
+		var box := HangarUI.slot_box(MOUNT_NAMES[mount], def, state)
+		box.position = SLOT_SPOTS.get(mount, Vector2.ZERO)
+		box.focus_entered.connect(say.bind(parts.describe(def, mount) if def else "Empty. Pick it to fit a part."))
+		box.mouse_entered.connect(say.bind(parts.describe(def, mount) if def else "Empty. Pick it to fit a part."))
+		box.pressed.connect(parts.slot.bind(mount))
+		_preview_box.add_child(box)
 
 
 func _pilots(focus_row := 0) -> void:

@@ -92,6 +92,29 @@ static func effect_words(effects: Array[Dictionary]) -> String:
 	return ", ".join(words)
 
 
+## A slot box for the hangar home: mount name in the part's color, the part, its attribute levels.
+static func slot_box(mount_name: String, def: PartDef, state: Dictionary) -> Button:
+	var button := Button.new()
+	button.size = Vector2(170, 92)
+	style(button)
+	var color := CATEGORY_COLORS[def.category] if def else DIM
+	button.add_theme_stylebox_override("normal", box(INK, color))
+	var lines := VBoxContainer.new()
+	lines.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lines.offset_left = 8
+	lines.offset_right = -6
+	lines.offset_top = 6
+	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_theme_constant_override("separation", 6)
+	button.add_child(lines)
+	lines.add_child(label(mount_name, 8, color))
+	var name := label(def.display_name.to_upper() if def else "- EMPTY -", 16)
+	name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lines.add_child(name)
+	lines.add_child(label(levels_short(state, def) if def else "", 8, GOOD))
+	return button
+
+
 ## A store card: the ship wearing the part (`preview` state) on the left; name, rarity, category
 ## and price on the right.
 static func part_card(def: PartDef, preview: Dictionary, credits: int) -> Button:
