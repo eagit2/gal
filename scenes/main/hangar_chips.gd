@@ -22,8 +22,8 @@ func fills(def: PartDef) -> Array[Color]:
 	return result
 
 
-## Lists the part's sockets (linked pairs have gold borders and a gold bridge), then the combos your chips can
-## make; the ones active on this part are lit. `back` returns to the part.
+## Lists the part's sockets (linked pairs have gold borders and a gold bridge), then the combos
+## its socketed chips make. `back` returns to the part.
 func open(def: PartDef, back: Callable, focus_row := 0) -> void:
 	var state := Hangar.state()
 	menu.page("%s  LINKS" % def.display_name.to_upper(), back)
@@ -38,23 +38,21 @@ func open(def: PartDef, back: Callable, focus_row := 0) -> void:
 		menu.add(row, chip.text + "." if chip else "Pick a chip for this socket.", pick.bind(def, i, back))
 	menu.add(HangarUI.row("< BACK"), "", back)
 	var active := Loadout.part_combos(_catalog, state, def)
-	var unlocked := _catalog.combos.filter(func(c: LinkComboDef) -> bool: return c.chips.all(func(id: StringName) -> bool: return int(state["chips"].get(String(id), 0)) > 0))
-	if not unlocked.is_empty():
+	if not active.is_empty():
 		menu.add_body(HangarUI.label("COMBOS", 12, HangarUI.GOLD, HORIZONTAL_ALIGNMENT_CENTER))
-	for combo: LinkComboDef in unlocked:
-		var on := combo in active
+	for combo in active:
 		var names := " + ".join(combo.chips.map(func(id: StringName) -> String: return _catalog.chip(id).display_name.to_upper()))
-		menu.add_body(_combo_line(combo.display_name.to_upper(), names, on))
+		menu.add_body(_combo_line(combo.display_name.to_upper(), names))
 	menu.focus(focus_row)
 
 
-func _combo_line(title: String, chips_text: String, on: bool) -> Control:
+func _combo_line(title: String, chips_text: String) -> Control:
 	var line := HBoxContainer.new()
 	line.add_theme_constant_override("separation", 10)
-	var name := HangarUI.label(("* " if on else "  ") + title, 12, HangarUI.GOLD if on else HangarUI.DIM)
+	var name := HangarUI.label(title, 12, HangarUI.GOLD)
 	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	line.add_child(name)
-	line.add_child(HangarUI.label(chips_text, 12, HangarUI.GOOD if on else HangarUI.DIM, HORIZONTAL_ALIGNMENT_RIGHT))
+	line.add_child(HangarUI.label(chips_text, 12, HangarUI.GOOD, HORIZONTAL_ALIGNMENT_RIGHT))
 	return line
 
 
