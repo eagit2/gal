@@ -27,7 +27,7 @@ func slot(mount: StringName) -> void:
 		var all := _catalog.parts.filter(func(p: PartDef) -> bool: return p.category == cat)
 		var owned := all.filter(func(p: PartDef) -> bool: return Loadout.owns(state, p.id))
 		var right := "%d / %d" % [owned.size(), all.size()] if not all.is_empty() else "SOON"
-		var text: String = HangarUI.CATEGORY_HINTS[cat] % menu.MOUNT_NAMES[mount].to_lower()
+		var text: String = HangarUI.CATEGORY_HINTS[cat].replace("%s", menu.MOUNT_NAMES[mount].to_lower())
 		menu.add(HangarUI.row(HangarUI.CATEGORY_NAMES[cat], "", right, HangarUI.CATEGORY_COLORS[cat]), text, category.bind(mount, cat))
 	menu.add(HangarUI.row("- EMPTY -"), "Take the part off this slot.", _fit.bind(mount, &""), empty)
 	menu.say(describe(current, mount) if current else "Empty slot. Pick what kind of part goes here.")

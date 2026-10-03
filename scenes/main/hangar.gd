@@ -104,7 +104,7 @@ func add(button: Button, detail: String, action: Callable, preview := {}) -> But
 func focus(index := 0) -> void:
 	var rows := _list.get_children()
 	if not rows.is_empty():
-		(rows[clampi(index, 0, rows.size() - 1)] as Button).grab_focus()
+		(rows[clampi(index, 0, rows.size() - 1)] as Control).grab_focus()
 
 
 func row_count() -> int:
