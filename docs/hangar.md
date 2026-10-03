@@ -24,7 +24,7 @@ Where a part sits adds the effects in `HangarCatalog.placement`:
 Stats: `strafe_left` / `strafe_right` scale horizontal speed in `Player` (keyboard and touch).
 
 ## Parts (PartDef)
-Categories in the slot menu: weapons (green), shields (purple), engines (blue), extras (yellow). Powers folded into extras (Cryo Pulse is an extra now; `Category.POWER` stays only so saved numbers keep meaning). Chips come with combos. Base `effects` apply while fitted; each **attribute** levels on its own. Every part has **link sockets** (`sockets`, `links` = linked pairs): Starter and Common 1, Uncommon 2 (linked), Rare 3 (a linked pair + 1), Epic 4 (two linked pairs). Chips go in them once combos land; the ship tree can add more (`Loadout.sockets`).
+Categories in the slot menu: weapons (green), shields (purple), engines (blue), extras (yellow). Powers folded into extras (Cryo Pulse is an extra now and fires on its own when 4 enemies or shots are within 110 px; `Category.POWER` stays only so saved numbers keep meaning). Chips come with combos. Base `effects` apply while fitted; each **attribute** levels on its own. Every part has **link sockets** (`sockets`, `links` = linked pairs): Starter and Common 1, Uncommon 2 (linked), Rare 3 (a linked pair + 1), Epic 4 (two linked pairs). Chips go in them once combos land; the ship tree can add more (`Loadout.sockets`).
 
 | Category | Parts (rarity) and attributes |
 |---|---|
@@ -46,13 +46,13 @@ Every fitted part draws its pixel sprite at its mount, sticking out past the hul
 Title (or game over) > SHIPS (locked ships greyed with their unlock) > the ship's HANGAR: the ship with a box per slot around it, then STORE, SHIP TREE, PILOT, < SHIPS, then (after a gap) RESTART LEVEL (flies the saved stage). A slot opens WEAPONS / SHIELDS / ENGINES / EXTRAS / < BACK (the nose goes straight to weapons). A category lists only owned parts; a click opens one in place with level bars, final numbers and filled link sockets, and its EQUIPPED / UNEQUIPPED tag (or E) equips or removes it on that mount; clicking the open part opens it. The part screen says EQUIPPED ON <mount> / NOT EQUIPPED, then attribute upgrade cards, LINKS (opens the chip screen, `hangar_chips.gd`: pick a socket, pick an owned chip), and a COMBO row for each active combo. Store cards show rarity, category, sockets and price. Code: `scenes/main/hangar.gd`, `hangar_parts.gd`, `hangar_tree.gd`, `ui/hangar_cards.gd`. Cancel goes back one level.
 
 ## Pilots
-Picked on the hangar's PILOT page. Each pilot brings one active power on its own button (SHIFT/X/K, gamepad B/X, or a two-finger tap), separate from the ship's Power slot (Eric kept two buttons).
+Picked on the hangar's PILOT page. Each pilot brings one power that fires on its own when the moment fits (Overclock when enemies are up, Bulwark and Phase Dash when a threat gets within 60 px, Nova when 6 threats are within 170 px). Controls are only steering and firing.
 
 | Pilot | Power | Effect | Recharge | Cost |
 |---|---|---|---|---|
-| Vega | Overclock | 2.5x fire rate and +1 shot for 5s | 20s | free |
+| Dave | Overclock | 2.5x fire rate and +1 shot for 5s | 20s | free |
 | Rook | Bulwark | shield back up, untouchable for 3s | 25s | 250 |
-| Nyx | Phase Dash | blink 170 px in the move direction, untouchable mid-dash | 6s | 400 |
+| Chere | Phase Dash | blink 170 px away from the closest threat, untouchable mid-dash | 6s | 400 |
 | Juno | Nova | clears enemy shots, 2 damage to every enemy | 30s | 600 |
 
 Data: `data/hangar/pilots/` (`PilotDef`), run by `scenes/player/pilot_power.gd`.

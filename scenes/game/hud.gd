@@ -40,10 +40,6 @@ func _ready() -> void:
 		_freeze_tint.visible = true
 		show_toast("CRYO PULSE", Color(0.55, 0.9, 1)))
 	EventBus.freeze_ended.connect(_freeze_tint.hide)
-	# Tapping the label fires Cryo Pulse on touch screens (two fingers belong to the pilot power).
-	_freeze.gui_input.connect(func(e: InputEvent) -> void:
-		if (e is InputEventMouseButton or e is InputEventScreenTouch) and e.pressed:
-			EventBus.special_requested.emit())
 	EventBus.medal_earned.connect(_on_medal_earned)
 	EventBus.player_captured.connect(func(_c: Node2D) -> void: show_toast("SHIP CAPTURED!\nSHOOT ITS CAPTOR\nWHILE IT ATTACKS", Color(1, 0.45, 0.45)))
 	EventBus.ship_rescued.connect(func() -> void: show_toast("SHIP RESCUED!\nDUAL FIGHTER", Color(0.5, 1, 0.75)))
@@ -103,7 +99,7 @@ func _on_power_changed(charge: float) -> void:
 	_power.modulate = pilot.color if charge >= 1.0 else Color(1, 1, 1, 0.55)
 func _on_freeze_charges_changed(charges: int) -> void:
 	_freeze.visible = GameState.stats[&"freeze_charges"] > 0
-	_freeze.text = "FREEZE x%d  [C]" % charges
+	_freeze.text = "FREEZE x%d" % charges
 	_freeze.modulate.a = 1.0 if charges > 0 else 0.4
 
 
