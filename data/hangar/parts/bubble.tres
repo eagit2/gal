@@ -9,7 +9,11 @@ display_name = "Bubble"
 category = 1
 tier = 0
 text = "Absorbs a hit, then recharges."
-effects = Array[Dictionary]([])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"shield",
+"value": 1
+}])
 attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"mul",

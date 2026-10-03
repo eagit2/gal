@@ -5,6 +5,8 @@ extends Resource
 
 @export var ships: Array[ShipDef] = []
 @export var parts: Array[PartDef] = []
+@export var chips: Array[ChipDef] = []
+@export var combos: Array[LinkComboDef] = []
 ## The first pilot is free and owned by a new save.
 @export var pilots: Array[PilotDef] = []
 ## Parts a new save owns at rank 1, and where they start: {mount: part id}.
@@ -17,6 +19,21 @@ func part(id: StringName) -> PartDef:
 	for p in parts:
 		if p.id == id:
 			return p
+	return null
+
+
+func chip(id: StringName) -> ChipDef:
+	for c in chips:
+		if c.id == id:
+			return c
+	return null
+
+
+## The combo two chips make in a linked pair, or null.
+func combo_for(a: StringName, b: StringName) -> LinkComboDef:
+	for c in combos:
+		if c.matches(a, b):
+			return c
 	return null
 
 

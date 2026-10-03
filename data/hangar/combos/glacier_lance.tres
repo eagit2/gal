@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="LinkComboDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/link_combo_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"glacier_lance"
+display_name = "Glacier Lance"
+text = "Frozen shots pierce 2 more enemies"
+chips = Array[StringName]([&"frost_chip", &"pierce_chip"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"pierce",
+"value": 2
+}, {
+"op": &"add",
+"stat": &"chill",
+"value": 1
+}])

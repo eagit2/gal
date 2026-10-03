@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="LinkComboDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/link_combo_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"plasma_arc"
+display_name = "Plasma Arc"
+text = "Burning arcs: +1 chain, hotter burn"
+chips = Array[StringName]([&"ember_chip", &"volt_chip"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"chain",
+"value": 1
+}, {
+"op": &"add",
+"stat": &"burn",
+"value": 1
+}])

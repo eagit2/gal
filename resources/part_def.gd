@@ -33,6 +33,8 @@ const SLOT_OF: Array[StringName] = [&"weapon", &"shield", &"extra", &"engine", &
 ## combo. Linked pairs come first.
 @export var sockets := 1
 @export var links := 0
+## Weapons only: the shot this weapon fires.
+@export var weapon: WeaponDef
 ## Ship part sprite (assets/art/dusk_armada/parts/<part>.png), e.g. cannon_weapon.
 @export var part: StringName = &"pod_weapon"
 
