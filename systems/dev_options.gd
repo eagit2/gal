@@ -3,7 +3,7 @@ extends RefCounted
 ## Playtest shortcuts, so a level can be tested without playing up to it.
 ## Web: URL query, e.g. https://eagit2.github.io/gal/?stage=3&god=1&repeat=1&difficulty=ace
 ## Desktop: user args after `--`, e.g. godot -- stage=3 god=1
-##   stage       1-based stage number, or a stage id (challenge_1)
+##   stage       1-based stage number, or a stage id (stage_2)
 ##   god         player hits cost no lives
 ##   repeat      replay the same stage instead of advancing
 ##   difficulty  cadet | pilot | ace | nightmare

@@ -20,7 +20,7 @@ func test_defaults_when_empty() -> void:
 func test_stage_by_number_or_id() -> void:
 	var sector: SectorDef = load("res://data/sectors/sector_1.tres")
 	expect_eq(DevOptions.parse(PackedStringArray(["--stage=2"])).stage_index(sector.stages, 0), 1, "number")
-	expect_eq(DevOptions.parse(PackedStringArray(["stage=challenge_1"])).stage_index(sector.stages, 0), 2, "id")
+	expect_eq(DevOptions.parse(PackedStringArray(["stage=stage_2"])).stage_index(sector.stages, 0), 1, "id")
 	expect_eq(DevOptions.parse(PackedStringArray(["stage=nope"])).stage_index(sector.stages, 0), 0, "unknown")
 
 
