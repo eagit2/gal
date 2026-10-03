@@ -15,12 +15,20 @@ const TOUCH_OFFSET := Vector2(0, -90)
 const SHIELD_SCENE := preload("res://scenes/player/shield.tscn")
 const SECONDARY_SCENE := preload("res://scenes/player/secondary_weapons.tscn")
 const PILOT_POWER := preload("res://scenes/player/pilot_power.gd")
+const WINGMAN_SCENE := preload("res://scenes/player/wingman.tscn")
+## Where the rescued wingman flies, relative to the ship (dual fighter).
+const WINGMAN_OFFSET := Vector2(38, 0)
+const CAPTURE_TIME := 1.1
 ## Enemy shots passing within this distance (but missing) count as grazes.
 const GRAZE_RADIUS := 30.0
 
 @export var weapon: WeaponDef
 var entities: Node
 var alive := true
+## Dual fighter: a rescued wingman flies alongside, doubling fire. A hit takes the wingman instead
+## of a life.
+var dual := false
+var _wingman: Node2D
 ## Pixels per second this frame; enemies lead their aim with it.
 var velocity := Vector2.ZERO
 var shield: Shield
@@ -57,7 +65,8 @@ func _physics_process(delta: float) -> void:
 	if _touch_target != null:
 		motion = ((_touch_target as Vector2) - position).limit_length(speed * 1.5 * real_delta)
 	var before := position
-	position = (position + motion).clamp(Vector2(MARGIN, MIN_Y), Vector2(540 - MARGIN, MAX_Y))
+	var max_x := 540 - MARGIN - (WINGMAN_OFFSET.x if dual else 0.0)
+	position = (position + motion).clamp(Vector2(MARGIN, MIN_Y), Vector2(max_x, MAX_Y))
 	velocity = (position - before) / delta
 
 	_cooldown -= real_delta
@@ -74,6 +83,8 @@ func _physics_process(delta: float) -> void:
 		_check_grazes()
 	# The bubble takes hits first; the core is safe while it is up.
 	_hurtbox.invulnerable = _invuln > 0.0 or shield.up
+	if dual:
+		(_wingman.get_node("Hurtbox") as Hurtbox).invulnerable = _invuln > 0.0
 	shield.invulnerable = not shield.up or _invuln > 0.0
 
 
@@ -93,6 +104,47 @@ func grant_invulnerability(seconds: float) -> void:
 	_invuln = maxf(_invuln, seconds)
 
 
+## A copy of the ship's look (with its hangar parts), for the captured ship and the wingman.
+func make_ship_copy() -> Node2D:
+	var copy := _visual.duplicate() as Node2D
+	copy.visible = true
+	return copy
+
+
+func set_dual(on: bool) -> void:
+	if on == dual:
+		return
+	dual = on
+	if on:
+		_wingman = WINGMAN_SCENE.instantiate()
+		_wingman.position = WINGMAN_OFFSET
+		_wingman.add_child(make_ship_copy())
+		add_child(_wingman)
+		(_wingman.get_node("Hurtbox") as Hurtbox).hurt.connect(func(_h: Hitbox) -> void: _lose_wingman())
+		_invuln = maxf(_invuln, 1.5)
+	elif is_instance_valid(_wingman):
+		_wingman.queue_free()
+
+
+## Pulled up into a tractor beam: drift to the captor and vanish (the game takes the life).
+func capture(captor: Node2D) -> void:
+	alive = false
+	_hurtbox.invulnerable = true
+	shield.invulnerable = true
+	_touch_target = null
+	var tween := create_tween()
+	tween.tween_property(self, "global_position", captor.global_position + Vector2(0, 30), CAPTURE_TIME)
+	tween.tween_callback(func() -> void: visible = false)
+
+
+func _lose_wingman() -> void:
+	if not dual:
+		return
+	EventBus.wingman_lost.emit(_wingman.global_position)
+	set_dual(false)
+	_invuln = maxf(_invuln, 1.0)
+
+
 func respawn(at: Vector2) -> void:
 	position = at
 	alive = true
@@ -110,6 +162,8 @@ func _fire() -> void:
 	var angle: float = weapon.spread_angle + stats[&"spread"]
 	for degrees in WeaponDef.fan(count, angle):
 		fire_shot(global_position + Vector2(0, -26), degrees)
+		if dual:
+			fire_shot(global_position + WINGMAN_OFFSET + Vector2(0, -26), degrees)
 	EventBus.shot_fired.emit()
 
 
@@ -138,6 +192,9 @@ func _check_grazes() -> void:
 
 
 func _on_hurt(_hitbox: Hitbox) -> void:
+	if dual:
+		_lose_wingman()
+		return
 	alive = false
 	shield.invulnerable = true
 	visible = false

@@ -6,7 +6,7 @@
 script = ExtResource("1")
 id = &"lock_on"
 display_name = "LOCK-ON"
-style = &"cold_hologram"
+style = &""
 threshold = 25.0
 decay_delay = 2.0
 decay_rate = 0.1

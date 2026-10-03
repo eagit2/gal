@@ -15,8 +15,8 @@
 [ext_resource type="Script" path="res://systems/drop_system.gd" id="13"]
 [ext_resource type="Script" path="res://systems/kill_blast.gd" id="14"]
 [ext_resource type="Script" path="res://systems/combo_tracker.gd" id="15"]
-[ext_resource type="PackedScene" path="res://scenes/game/upgrade_pick.tscn" id="16"]
 [ext_resource type="Script" path="res://systems/freeze_system.gd" id="17"]
+[ext_resource type="Script" path="res://systems/capture_system.gd" id="18"]
 
 [node name="Game" type="Node2D"]
 process_mode = 3
@@ -57,8 +57,9 @@ script = ExtResource("15")
 [node name="FreezeSystem" type="Node" parent="Entities"]
 script = ExtResource("17")
 
+[node name="CaptureSystem" type="Node" parent="Entities"]
+script = ExtResource("18")
+
 [node name="Player" parent="Entities" instance=ExtResource("4")]
 
 [node name="HUD" parent="." instance=ExtResource("5")]
-
-[node name="UpgradePick" parent="." instance=ExtResource("16")]

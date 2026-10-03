@@ -1,13 +1,13 @@
 extends Node
-## Meta progress: hangar credits, owned frames, modules and pilots, and the loadout (stored in the meta save
-## beside the run checkpoint), the permanent effects they give every run, module AP from kills, and
-## stage medal payouts.
+## Meta progress: scrap (the hangar currency, saved as "currency"), owned frames, modules and pilots,
+## and the loadout (stored in the meta save beside the run checkpoint), the permanent effects they give
+## every run, module AP from kills, scrap pickups and stage medal payouts.
 
 const CATALOG: ModuleCatalog = preload("res://data/hangar/catalog.tres")
 ## AP every equipped module earns per kill.
 const AP_PER_KILL := 1
 
-## Credits earned by medals in the current run (for the game over screen).
+## Scrap earned in the current run, from piles and medals (for the game over screen).
 var run_earned := 0
 var _paid: Array[StringName] = []  # medal ids already paid this run
 var _tracker := MedalTracker.new()
@@ -21,6 +21,7 @@ func _ready() -> void:
 	EventBus.run_ended.connect(func(_v: bool) -> void: _grant_ap())
 	EventBus.stage_started.connect(_on_stage_started)
 	EventBus.stage_cleared.connect(_on_stage_cleared)
+	EventBus.run_ended.connect(func(_v: bool) -> void: SaveManager.save())
 	EventBus.enemy_killed.connect(func(_e: Node2D, _p: Vector2, _s: int) -> void: _kills += 1)
 	EventBus.shot_fired.connect(func() -> void: _tracker.shots += 1)
 	EventBus.shot_hit.connect(func() -> void: _tracker.hits += 1)
@@ -117,6 +118,15 @@ func _changed() -> void:
 	EventBus.hangar_changed.emit()
 
 
+## A scrap pile was collected: scales it by difficulty and scrap_mult and banks it. Saved at stage
+## clear and run end, not on every pile.
+func add_scrap(amount: int, at := Vector2.ZERO) -> void:
+	var scaled := maxi(1, roundi(amount * _currency_mult()))
+	run_earned += scaled
+	_add_credits(scaled)
+	EventBus.scrap_collected.emit(scaled, at)
+
+
 func _add_credits(amount: int) -> void:
 	SaveManager.data["currency"] = credits() + amount
 	EventBus.credits_changed.emit(credits())
@@ -150,6 +160,7 @@ func _on_stage_cleared(_stage_id: StringName) -> void:
 	_grant_ap()
 	var medal := _tracker.medal
 	if not _tracker.earned() or medal.id in _paid:
+		SaveManager.save()
 		return
 	_paid.append(medal.id)
 	var amount := roundi(medal.currency * _currency_mult())
@@ -159,8 +170,8 @@ func _on_stage_cleared(_stage_id: StringName) -> void:
 	EventBus.medal_earned.emit(medal, amount)
 
 
-## Difficulty multiplier times the run's credit_mult stat (Salvage Contract).
+## Difficulty multiplier times the scrap_mult stat.
 func _currency_mult() -> float:
 	var path := "res://data/difficulty/%s.tres" % GameState.difficulty_id
 	var difficulty := (load(path) as DifficultyDef).score_multiplier if ResourceLoader.exists(path) else 1.0
-	return difficulty * GameState.stats[&"credit_mult"]
+	return difficulty * GameState.stats[&"scrap_mult"]

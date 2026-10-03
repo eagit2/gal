@@ -16,8 +16,6 @@ func _initialize() -> void:
 func _process(_d: float) -> bool:
 	f += 1
 	if not "--nofire" in OS.get_cmdline_user_args(): Input.action_press("fire")
-	var pick: Node = g.get_node("UpgradePick")
-	if pick.call("is_open") and f % 60 == 0: pick.call("choose", 0)
 	if shots.has(f):
 		root.get_texture().get_image().save_png("%s_%d.png" % [out, f / 60])
 	if f > shots.keys().max():

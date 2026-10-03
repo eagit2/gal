@@ -23,6 +23,15 @@ theme_override_font_sizes/font_size = 16
 text = "HI 0"
 horizontal_alignment = 1
 
+[node name="Scrap" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 928.0
+offset_right = 216.0
+offset_bottom = 952.0
+theme_override_colors/font_color = Color(0.85, 0.78, 0.66, 1)
+theme_override_font_sizes/font_size = 16
+text = "SCRAP 0"
+
 [node name="Lives" type="Label" parent="."]
 offset_left = 324.0
 offset_top = 12.0

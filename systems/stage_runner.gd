@@ -7,6 +7,7 @@ signal waves_done
 signal finished(kills: int, total: int)
 
 const ENEMY_SCENE := preload("res://scenes/enemies/enemy.tscn")
+const ELITE_SCENE := preload("res://scenes/enemies/elite.tscn")
 const SPAWN_INTERVAL := 0.14
 const REINFORCE_COOLDOWN := 2.5
 
@@ -14,6 +15,8 @@ var formation: Formation
 var target: Player
 var entities: Node2D
 var stage: StageDef
+## Dev option: an extra elite for every stage (DevOptions `elite=<id>`).
+var extra_elite: EliteDef
 var _difficulty: DifficultyDef
 var _queue: Array[Dictionary] = []
 var _time := 0.0
@@ -31,7 +34,7 @@ func _ready() -> void:
 func start(stage_def: StageDef, difficulty: DifficultyDef) -> void:
 	stage = stage_def
 	_difficulty = difficulty
-	_queue = build_queue(stage_def)
+	_queue = build_queue(stage_def, extra_elite)
 	_total = _queue.size()
 	_time = 0.0
 	_kills = 0
@@ -42,8 +45,13 @@ func start(stage_def: StageDef, difficulty: DifficultyDef) -> void:
 
 
 ## Flattens waves into a spawn list sorted by time. Static so tests can check stage data.
-static func build_queue(stage_def: StageDef) -> Array[Dictionary]:
+static func build_queue(stage_def: StageDef, extra_elite: EliteDef = null) -> Array[Dictionary]:
 	var queue: Array[Dictionary] = []
+	var elites := stage_def.elites.duplicate()
+	if extra_elite and not stage_def.is_challenge:
+		elites.push_front(extra_elite)
+	for i in elites.size():
+		queue.append({"time": (4.0 if extra_elite and i == 0 else stage_def.elite_delay) + i * stage_def.elite_gap, "elite": elites[i]})
 	for wave in stage_def.waves:
 		for i in wave.count:
 			var slot := wave.formation_slots[i] if i < wave.formation_slots.size() else Vector2i(-1, -1)
@@ -69,7 +77,8 @@ func _physics_process(delta: float) -> void:
 		_reinforce_timer -= delta
 		if _reinforce_timer <= 0.0 and get_tree().get_nodes_in_group(&"enemies").size() < stage.reinforce_below:
 			_reinforce()
-	if _queue.is_empty() and _reinforcements_left == 0 and get_tree().get_nodes_in_group(&"enemies").is_empty():
+	if _queue.is_empty() and _reinforcements_left == 0 and get_tree().get_nodes_in_group(&"enemies").is_empty() \
+			and get_tree().get_nodes_in_group(&"elites").is_empty():
 		_running = false
 		finished.emit(_kills, _total)
 
@@ -100,6 +109,11 @@ static func free_slots(occupied: Array[Vector2i]) -> Array[Vector2i]:
 
 
 func _spawn(entry: Dictionary) -> void:
+	if entry.has("elite"):
+		var elite: Elite = ELITE_SCENE.instantiate()
+		elite.setup(entry["elite"], _difficulty, target, entities)
+		entities.add_child(elite)
+		return
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
 	enemy.setup(entry["enemy"], _difficulty, entry["path"], entry["slot"], formation)
 	enemy.target = target

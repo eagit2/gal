@@ -3,7 +3,7 @@
 Status: v2 built 2026-10-03 (Ship upgrade hangar thread). Eric asked for a deeper, materia-style menu with upgrade chains, and a visible change on the ship for every upgrade. All numbers are data in `data/hangar/` and `data/medals/`.
 
 ## Economy
-- **Credits** come from **stage medals** (one optional goal per stage, `StageDef.medal`), paid once per run and scaled by `DifficultyDef.score_multiplier`. They're saved right away, so dying never loses them.
+- **Scrap** is the currency (shown as SCRAP; saved as `currency`). Destroyed ships leave scrap piles, and **stage medals** (one optional goal per stage, `StageDef.medal`) pay a scrap bonus once per run. Both scale by `DifficultyDef.score_multiplier` and the `scrap_mult` stat. Scrap banks on pickup and saves at stage clear and run end.
 - Credits buy **modules** and **frames** in the shop.
 - **AP:** every equipped module earns 1 AP per kill (granted at stage clear and run end). AP raises its level.
 

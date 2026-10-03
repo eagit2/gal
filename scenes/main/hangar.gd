@@ -20,8 +20,8 @@ var _preview: Control
 
 func _ready() -> void:
 	_build()
-	EventBus.credits_changed.connect(func(_c: int) -> void: _credits.text = "CREDITS  %d" % Hangar.credits())
-	_credits.text = "CREDITS  %d" % Hangar.credits()
+	EventBus.credits_changed.connect(func(_c: int) -> void: _credits.text = "SCRAP  %d" % Hangar.credits())
+	_credits.text = "SCRAP  %d" % Hangar.credits()
 	_home()
 
 
@@ -115,7 +115,7 @@ func _home(focus := 0) -> void:
 	_add(HangarUI.row("PILOT", "", Hangar.pilot().display_name.to_upper(), Color.TRANSPARENT, Hangar.pilot().color), "Pick your pilot. Each one brings an active power.", _pilots)
 	_add(HangarUI.row("LOADOUT", "", "%d / %d" % [used, frame.slots]), "Slot modules into your frame. Linked slots let blue support modules boost their partner.", _loadout)
 	_add(HangarUI.row("MODULES", "", str((state["modules"] as Array).size())), "Your modules. Equipped modules earn AP from kills and level up. A mastered module spawns a fresh copy.", _modules)
-	_add(HangarUI.row("SHOP", "", ""), "Buy modules with medal credits. Mastering a module unlocks its upgrade in the shop.", _shop)
+	_add(HangarUI.row("SHOP", "", ""), "Buy modules with scrap. Mastering a module unlocks its upgrade in the shop.", _shop)
 	_add(HangarUI.row("FRAMES", "", frame.display_name.to_upper()), "Frames set how many slots and linked pairs your ship has.", _frames)
 	_add(HangarUI.row("BACK"), "Back to the title screen.", SceneRouter.go_to.bind(TITLE_SCENE))
 	_focus(focus)
@@ -194,7 +194,7 @@ func _buy_module(def: ModuleDef) -> void:
 		_shop(index)
 		_detail.text = "Bought %s. Equip it in LOADOUT." % def.display_name.to_upper()
 	else:
-		_detail.text = "Needs %d more credits. Earn medals in stages." % (def.cost - Hangar.credits())
+		_detail.text = "Needs %d more scrap. Destroyed ships drop it." % (def.cost - Hangar.credits())
 
 
 func _frames(focus := 0) -> void:
@@ -211,7 +211,7 @@ func _pick_frame(frame: FrameDef, index: int) -> void:
 	if Hangar.owns_frame(frame.id):
 		Hangar.use_frame(frame.id)
 	elif not Hangar.buy_frame(frame):
-		_detail.text = "Needs %d more credits." % (frame.cost - Hangar.credits())
+		_detail.text = "Needs %d more scrap." % (frame.cost - Hangar.credits())
 		return
 	_frames(index)
 
@@ -229,7 +229,7 @@ func _pilots(focus := 0) -> void:
 
 func _pick_pilot(pilot: PilotDef, index: int) -> void:
 	if not Hangar.choose_pilot(pilot):
-		_detail.text = "Needs %d more credits." % (pilot.cost - Hangar.credits())
+		_detail.text = "Needs %d more scrap." % (pilot.cost - Hangar.credits())
 		return
 	_pilots(index)
 	_detail.text = "%s is flying. Power: SHIFT, gamepad B, or a two-finger tap." % pilot.display_name.to_upper()

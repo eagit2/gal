@@ -1,6 +1,6 @@
 class_name Hud
 extends CanvasLayer
-## Score, lives, high score, shield, combo meters and the active combo mode, upgrade toasts,
+## Score, lives, high score, scrap, shield, combo meters and the active combo mode, toasts,
 ## and center messages (pause, game over).
 
 const METER_SIZE := Vector2(74, 7)
@@ -9,6 +9,7 @@ const METER_LABELS := {&"overdrive": "OD", &"lock_on": "LK", &"chain_reaction": 
 @onready var _score: Label = $Score
 @onready var _lives: Label = $Lives
 @onready var _high: Label = $HighScore
+@onready var _scrap: Label = $Scrap
 @onready var _message: Label = $Message
 @onready var _banner: Label = $Banner
 @onready var _shield: Label = $Shield
@@ -32,7 +33,7 @@ func _ready() -> void:
 	EventBus.combo_meter_changed.connect(_on_meter_changed)
 	EventBus.combo_started.connect(_on_combo_started)
 	EventBus.combo_ended.connect(_on_combo_ended)
-	EventBus.upgrade_picked.connect(_on_upgrade_picked)
+	EventBus.scrap_collected.connect(func(_a: int, _p: Vector2) -> void: _update_scrap())
 	EventBus.freeze_charges_changed.connect(_on_freeze_charges_changed)
 	EventBus.freeze_started.connect(func(_d: float) -> void:
 		_freeze_tint.visible = true
@@ -42,8 +43,11 @@ func _ready() -> void:
 	_freeze.gui_input.connect(func(e: InputEvent) -> void:
 		if (e is InputEventMouseButton or e is InputEventScreenTouch) and e.pressed:
 			EventBus.special_requested.emit())
-	EventBus.synergy_activated.connect(func(s: SynergyDef) -> void: show_toast("SYNERGY: %s" % s.display_name.to_upper(), Color(1, 0.55, 0.95)))
-	EventBus.medal_earned.connect(func(m: MedalDef, credits: int) -> void: show_toast("MEDAL: %s  +%d CREDITS" % [m.display_name.to_upper(), credits], Color(0.95, 0.77, 0.43)))
+	EventBus.medal_earned.connect(_on_medal_earned)
+	EventBus.player_captured.connect(func(_c: Node2D) -> void: show_toast("SHIP CAPTURED!\nSHOOT ITS CAPTOR\nWHILE IT ATTACKS", Color(1, 0.45, 0.45)))
+	EventBus.ship_rescued.connect(func() -> void: show_toast("SHIP RESCUED!\nDUAL FIGHTER", Color(0.5, 1, 0.75)))
+	EventBus.captive_lost.connect(func() -> void: show_toast("CAPTURED SHIP LOST", Color(1, 0.45, 0.45)))
+	EventBus.elite_spawned.connect(func(e: EliteDef) -> void: show_banner("ELITE\n%s\n\n%s" % [e.display_name.to_upper(), e.hint.to_upper()], 3.0))
 	EventBus.run_ended.connect(_on_run_ended)
 	EventBus.power_changed.connect(_on_power_changed)
 	EventBus.power_used.connect(func(p: PilotDef) -> void: show_toast(p.power_name, p.color))
@@ -56,6 +60,7 @@ func _ready() -> void:
 	_on_score_changed(GameState.score)
 	set_lives(GameState.lives)
 	_high.text = "HI %d" % SaveManager.data["high_score"]
+	_update_scrap()
 	show_message("")
 	_banner.visible = false
 
@@ -101,7 +106,7 @@ func _on_freeze_charges_changed(charges: int) -> void:
 	_freeze.modulate.a = 1.0 if charges > 0 else 0.4
 
 
-## Short notice mid-screen (upgrade gained, synergy unlocked).
+## Short notice mid-screen (medal, power, freeze).
 func show_toast(text: String, color := Color.WHITE) -> void:
 	if _toast_tween:
 		_toast_tween.kill()
@@ -164,12 +169,15 @@ func _on_combo_ended(_combo: ComboDef) -> void:
 	_mode_bar.visible = false
 
 
-func _on_upgrade_picked(id: StringName) -> void:
-	var upgrade := GameState.POOL.find(id)
-	if upgrade:
-		show_toast("+ " + upgrade.display_name.to_upper(), UpgradePick.RARITY_COLORS[upgrade.rarity])
+func _update_scrap() -> void:
+	_scrap.text = "SCRAP %d" % Hangar.run_earned
+
+
+func _on_medal_earned(medal: MedalDef, scrap: int) -> void:
+	show_toast("MEDAL: %s  +%d SCRAP" % [medal.display_name.to_upper(), scrap], Color(0.95, 0.77, 0.43))
+	_update_scrap()
 
 
 func _on_run_ended(_victory: bool) -> void:
 	if Hangar.run_earned > 0:
-		show_toast("+%d HANGAR CREDITS" % Hangar.run_earned, Color(0.95, 0.77, 0.43))
+		show_toast("+%d SCRAP" % Hangar.run_earned, Color(0.95, 0.77, 0.43))

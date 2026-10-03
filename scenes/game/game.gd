@@ -10,8 +10,9 @@ const ATTACK_DELAY := 2.0
 const BANNER_TIME := 2.0
 const CHALLENGE_HIT_BONUS := 100
 const CHALLENGE_PERFECT_BONUS := 10000
-## Where the guaranteed pickup for a perfect challenge stage appears.
+## Where the guaranteed scrap pile for a perfect challenge stage appears.
 const PERFECT_DROP_AT := Vector2(270, 240)
+const PERFECT_SCRAP := 25
 
 @export var difficulty: DifficultyDef
 @export var sector: SectorDef
@@ -29,8 +30,8 @@ var _dev := DevOptions.from_environment()
 @onready var _dives: DiveController = $Entities/DiveController
 @onready var _drops: DropSystem = $Entities/DropSystem
 @onready var _combos: ComboTracker = $Entities/ComboTracker
+@onready var _capture: CaptureSystem = $Entities/CaptureSystem
 @onready var _hud: Hud = $HUD
-@onready var _pick: UpgradePick = $UpgradePick
 
 
 func _ready() -> void:
@@ -48,6 +49,8 @@ func _ready() -> void:
 	_runner.formation = _formation
 	_runner.target = _player
 	_runner.entities = _entities
+	if _dev.elite != &"" and ResourceLoader.exists("res://data/elites/%s.tres" % _dev.elite):
+		_runner.extra_elite = load("res://data/elites/%s.tres" % _dev.elite)
 	_runner.finished.connect(_on_stage_finished)
 	_dives.difficulty = difficulty
 	_dives.target = _player
@@ -55,8 +58,13 @@ func _ready() -> void:
 	_drops.difficulty = difficulty
 	_drops.player = _player
 	_drops.entities = _entities
+	_capture.dives = _dives
+	_capture.player = _player
+	if _dev.capture:
+		_capture.first_delay = 3.0
+		_capture.interval = Vector2(4.0, 6.0)
+	EventBus.player_captured.connect(_on_player_captured)
 	_combos.difficulty = difficulty
-	_pick.picked.connect(_on_upgrade_picked)
 	_hud.set_lives(GameState.lives)
 	stage_number = _dev.stage_index(sector.stages, int(run.get("stage", first_stage)))
 	_start_stage()
@@ -114,7 +122,7 @@ func _on_stage_finished(kills: int, total: int) -> void:
 		var bonus := kills * CHALLENGE_HIT_BONUS
 		if kills == total:
 			bonus += CHALLENGE_PERFECT_BONUS
-			_drops.spawn(PERFECT_DROP_AT, 0)
+			_drops.spawn(PERFECT_DROP_AT, PERFECT_SCRAP)
 		GameState.add_score(roundi(bonus * _score_multiplier()))
 		_hud.show_banner("%sHITS %d / %d\nBONUS %d" % ["PERFECT!\n" if kills == total else "", kills, total, bonus], STAGE_DELAY)
 	if not _dev.repeat:
@@ -125,17 +133,7 @@ func _on_stage_finished(kills: int, total: int) -> void:
 func _on_stage_delay_done() -> void:
 	if game_over:
 		return
-	var choices := GameState.roll_choices(difficulty.upgrade_choices)
-	if choices.is_empty():
-		_start_stage()
-	else:
-		_pick.open(choices)
-
-
-func _on_upgrade_picked(upgrade: UpgradeDef) -> void:
-	GameState.gain_upgrade(upgrade)
-	if not game_over:
-		_start_stage()
+	_start_stage()
 
 
 func _score_multiplier() -> float:
@@ -155,6 +153,16 @@ func _on_player_hit() -> void:
 		return
 	# Connect instead of await: the connection drops cleanly if the scene is reloaded meanwhile.
 	get_tree().create_timer(RESPAWN_DELAY, false).timeout.connect(_player.respawn.bind(PLAYER_START))
+
+
+func _on_player_captured(captor: Node2D) -> void:
+	_player.capture(captor)
+	var run_over := false if _dev.god else GameState.lose_life()
+	_hud.set_lives(GameState.lives)
+	if run_over:
+		_end_run()
+		return
+	get_tree().create_timer(RESPAWN_DELAY + Player.CAPTURE_TIME, false).timeout.connect(_player.respawn.bind(PLAYER_START))
 
 
 func _end_run() -> void:

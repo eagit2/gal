@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EliteDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="def"]
+[ext_resource type="Script" path="res://scenes/enemies/elites/frost_shell.gd" id="trait"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/moth.tscn" id="visual"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/elites/ice_shell.tscn" id="shell"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("trait")
+shell_visual = ExtResource("shell")
+
+[resource]
+script = ExtResource("def")
+id = &"frost_shell"
+display_name = "Frost Shell"
+hint = "Ice soaks hits and regrows. Keep firing!"
+hp = 36
+score = 2500
+scrap = 24
+speed = 80.0
+fire_interval = 1.9
+fan_shots = 3
+visual_scene = ExtResource("visual")
+visual_scale = 1.9
+tint = Color(0.75, 0.95, 1.2, 1)
+trait_logic = SubResource("trait_logic")

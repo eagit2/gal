@@ -87,12 +87,14 @@ func _physics_process(delta: float) -> void:
 
 # --- Attacks ---------------------------------------------------------------------------------
 
-func start_attack(player: Player, stage_aggression: float) -> void:
-	if state != State.IN_FORMATION or def.brain == null:
+## Leaves formation to attack with the type's brain, or `attack_brain` (capture runs).
+func start_attack(player: Player, stage_aggression: float, attack_brain: EnemyBrain = null) -> void:
+	var chosen := attack_brain if attack_brain else def.brain
+	if state != State.IN_FORMATION or chosen == null:
 		return
 	target = player
 	aggression = stage_aggression
-	_begin_attack(def.brain)
+	_begin_attack(chosen)
 
 
 ## Called by a squad leader's brain: fly alongside `squad_leader` at `offset`.
@@ -164,6 +166,12 @@ func predicted_player(lead: float) -> Vector2:
 		return Vector2(270, 860)
 	var guess := target.global_position + target.velocity * lead
 	return guess.clamp(Vector2(MIN_X, Player.MIN_Y), Vector2(MAX_X, Player.MAX_Y))
+
+
+## A Shield Warden elite protects this enemy: shots pass through it.
+func set_shielded(on: bool) -> void:
+	$Hurtbox.invulnerable = on
+	_visual.modulate = Color(0.85, 0.75, 1.3) if on else Color.WHITE
 
 
 ## Damage from outside a hitbox (kill blasts).

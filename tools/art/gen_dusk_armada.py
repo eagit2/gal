@@ -584,7 +584,6 @@ def main() -> None:
     bubble, burst = shield_frames()
     strip(bubble).save(OUT / "shield.png")
     strip(burst).save(OUT / "fx" / "shield_pop.png")
-    sprite("pickup", PICKUP, PICKUP_PAL)
     sprite("fx/explosion", explosion_frames(), EXPLOSION_PAL, outline=False)
     sky().save(OUT / "background" / "sky.png")
     clouds(11, 5, "#8f7591", "#5d5072", 255).save(OUT / "background" / "clouds_far.png")

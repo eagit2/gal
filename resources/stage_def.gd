@@ -16,5 +16,10 @@ extends Resource
 @export_range(0, 3) var music_intensity: int = 1
 ## Optional goal that pays hangar credits once per run (see MedalTracker).
 @export var medal: MedalDef
+## Elites that join this stage, `elite_delay` seconds in and `elite_gap` apart. The stage isn't
+## cleared while one lives.
+@export var elites: Array[EliteDef] = []
+@export var elite_delay: float = 9.0
+@export var elite_gap: float = 12.0
 ## Boss stage: plays SoundBank.boss_music instead of the style's music.
 @export var boss: bool = false

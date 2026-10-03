@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EliteDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="def"]
+[ext_resource type="Script" path="res://scenes/enemies/elites/shield_link.gd" id="trait"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/warden.tscn" id="visual"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/elites/shield_beams.tscn" id="beams"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("trait")
+beam_visual = ExtResource("beams")
+
+[resource]
+script = ExtResource("def")
+id = &"shield_warden"
+display_name = "Shield Warden"
+hint = "Shields its escorts. Take it out first"
+hp = 45
+score = 2500
+scrap = 24
+speed = 75.0
+fire_interval = 1.7
+fan_shots = 5
+visual_scene = ExtResource("visual")
+visual_scale = 1.8
+tint = Color(0.9, 0.8, 1.25, 1)
+trait_logic = SubResource("trait_logic")

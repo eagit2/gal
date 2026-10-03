@@ -22,10 +22,8 @@ signal ship_rescued()
 signal player_died(lives_left: int)
 signal lives_changed(lives: int)
 signal score_changed(score: int)
-signal upgrade_picked(upgrade_id: StringName)
-## Run stats were recomputed (upgrade gained, synergy, combo started or ended).
+## Run stats were recomputed (hangar loadout, pilot power, combo started or ended).
 signal stats_changed()
-signal synergy_activated(synergy: SynergyDef)
 signal combo_started(combo: ComboDef, chain: int)
 signal combo_ended(combo: ComboDef)
 ## Meter fill in 0..1 for each combo id, sent when it changes.
@@ -46,3 +44,17 @@ signal freeze_started(duration: float)
 signal freeze_ended()
 ## Cryo Pulse uses left this stage.
 signal freeze_charges_changed(charges: int)
+## The ship picked up `amount` scrap (already multiplied) at `at`.
+signal scrap_collected(amount: int, at: Vector2)
+## A loose scrap pile appears at `at` (elite kills, rock chunks).
+signal scrap_dropped(at: Vector2, amount: int)
+signal elite_spawned(elite: EliteDef)
+signal elite_killed(elite: EliteDef, at: Vector2)
+## An elite's trait was beaten for now (an ice layer shattered, a tether cut).
+signal elite_trait_broken(at: Vector2)
+## A tractor beam caught the player's ship (costs a life; the ship rides above `captor`).
+signal player_captured(captor: Node2D)
+## The captor died in formation, so the captured ship is gone.
+signal captive_lost()
+## The dual fighter's wingman took a hit and is gone.
+signal wingman_lost(at: Vector2)

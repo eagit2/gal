@@ -7,14 +7,19 @@ extends Node
 const STAGES_DIR := "res://data/stages/%s.tres"
 ## Every sound id this script plays directly (tests check they exist in the bank).
 const CUES: Array[StringName] = [&"shot", &"player_hit", &"shield_pop", &"shield_restore",
-		&"stage_start", &"stage_clear", &"game_over", &"upgrade_pick", &"ui_move", &"ui_confirm"]
-## M3 signals (combos, grazes, synergies). Connected only if EventBus has them.
+		&"stage_start", &"stage_clear", &"game_over", &"ui_move", &"ui_confirm"]
+## M3 signals (combos, grazes, scrap). Connected only if EventBus has them.
 const OPTIONAL_CUES := {
 	&"shot_hit": &"shot_hit",
 	&"bullet_grazed": &"graze",
 	&"combo_started": &"combo_start",
 	&"combo_ended": &"combo_end",
-	&"synergy_activated": &"synergy",
+	&"scrap_collected": &"pickup",
+	&"elite_spawned": &"stage_start",
+	&"elite_killed": &"explode_big",
+	&"elite_trait_broken": &"shield_pop",
+	&"player_captured": &"player_hit",
+	&"wingman_lost": &"explode_small",
 	&"power_used": &"combo_start",
 	&"medal_earned": &"pickup",
 	&"module_mastered": &"synergy",
@@ -34,7 +39,6 @@ func _ready() -> void:
 	EventBus.stage_cleared.connect(_cue.bind(&"stage_clear").unbind(1))
 	EventBus.run_started.connect(_on_run_started.unbind(1))
 	EventBus.run_ended.connect(_on_run_ended)
-	EventBus.upgrade_picked.connect(_cue.bind(&"upgrade_pick").unbind(1))
 	for signal_name: StringName in OPTIONAL_CUES:
 		if EventBus.has_signal(signal_name):
 			var cue: Callable = _cue.bind(OPTIONAL_CUES[signal_name])

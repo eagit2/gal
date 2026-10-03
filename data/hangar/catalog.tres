@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ModuleCatalog" load_steps=34 format=3]
+[gd_resource type="Resource" script_class="ModuleCatalog" load_steps=36 format=3]
 
 [ext_resource type="Script" path="res://resources/module_catalog.gd" id="1"]
 [ext_resource type="Script" path="res://resources/frame_def.gd" id="fdef"]
@@ -33,10 +33,12 @@
 [ext_resource type="Resource" path="res://data/hangar/modules/thrusters.tres" id="m_thrusters"]
 [ext_resource type="Resource" path="res://data/hangar/modules/capacitor.tres" id="m_capacitor"]
 [ext_resource type="Resource" path="res://data/hangar/modules/bubble_layer.tres" id="m_bubble_layer"]
+[ext_resource type="Resource" path="res://data/hangar/modules/cryo_pulse.tres" id="m_cryo_pulse"]
+[ext_resource type="Resource" path="res://data/hangar/modules/scrap_compactor.tres" id="m_scrap_compactor"]
 
 [resource]
 script = ExtResource("1")
 frames = Array[ExtResource("fdef")]([ExtResource("f_kestrel"), ExtResource("f_talon"), ExtResource("f_bastion"), ExtResource("f_seraph")])
-modules = Array[ExtResource("mdef")]([ExtResource("m_twin_cannon"), ExtResource("m_heavy_rounds"), ExtResource("m_pierce_lens"), ExtResource("m_missile_pod"), ExtResource("m_drone_bay"), ExtResource("m_spread_cannon"), ExtResource("m_swarm_rack"), ExtResource("m_amplifier"), ExtResource("m_overlink"), ExtResource("m_seeker"), ExtResource("m_volatile"), ExtResource("m_rapid_link"), ExtResource("m_magnet_coil"), ExtResource("m_salvage_scanner"), ExtResource("m_score_uplink"), ExtResource("m_jackpot_uplink"), ExtResource("m_graze_coil"), ExtResource("m_combo_primer"), ExtResource("m_thrusters"), ExtResource("m_capacitor"), ExtResource("m_bubble_layer")])
+modules = Array[ExtResource("mdef")]([ExtResource("m_twin_cannon"), ExtResource("m_heavy_rounds"), ExtResource("m_pierce_lens"), ExtResource("m_missile_pod"), ExtResource("m_drone_bay"), ExtResource("m_spread_cannon"), ExtResource("m_swarm_rack"), ExtResource("m_amplifier"), ExtResource("m_overlink"), ExtResource("m_seeker"), ExtResource("m_volatile"), ExtResource("m_rapid_link"), ExtResource("m_magnet_coil"), ExtResource("m_salvage_scanner"), ExtResource("m_score_uplink"), ExtResource("m_jackpot_uplink"), ExtResource("m_graze_coil"), ExtResource("m_combo_primer"), ExtResource("m_thrusters"), ExtResource("m_capacitor"), ExtResource("m_bubble_layer"), ExtResource("m_cryo_pulse"), ExtResource("m_scrap_compactor")])
 starter_modules = Array[StringName]([&"thrusters", &"magnet_coil"])
 pilots = Array[ExtResource("pdef")]([ExtResource("p_vega"), ExtResource("p_rook"), ExtResource("p_nyx"), ExtResource("p_juno")])

@@ -6,7 +6,7 @@
 script = ExtResource("1")
 id = &"salvage_scanner"
 display_name = "Salvage Scanner"
-description = "Upgrade drops 15% more likely, more per level."
+description = "Ships leave scrap 15% more often, more per level."
 kind = 2
 cost = 90
 effects = Array[Dictionary]([{
