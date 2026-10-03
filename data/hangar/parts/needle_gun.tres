@@ -8,24 +8,45 @@ id = &"needle_gun"
 display_name = "Needle Gun"
 category = 0
 tier = 2
-rank_text = Array[String](["Very fast darts", "+30% fire rate", "Darts pierce 1 enemy"])
+text = "Very fast darts."
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"fire_rate",
-"value": 1.8
-}, {
-"op": &"mul",
-"stat": &"projectile_speed",
 "value": 1.3
 }, {
 "op": &"mul",
-"stat": &"fire_rate",
-"value": 1.3,
-"rank": 2
+"stat": &"projectile_speed",
+"value": 1.4
+}])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"damage",
+"value": 1
+}],
+"id": &"power",
+"max": 2,
+"name": "POWER",
+"text": "+1 damage per level"
 }, {
+"effects": [{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.1
+}],
+"id": &"fire_rate",
+"max": 5,
+"name": "FIRE RATE",
+"text": "+10% fire rate per level"
+}, {
+"effects": [{
 "op": &"add",
 "stat": &"pierce",
-"value": 1,
-"rank": 3
+"value": 1
+}],
+"id": &"pierce",
+"max": 3,
+"name": "PIERCE",
+"text": "Darts pass through 1 more enemy per level"
 }])
 part = &"coil_weapon"

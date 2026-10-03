@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"chrono_cell"
+display_name = "Chrono Cell"
+text = "+1 freeze per stage"
+mount = &"right"
+min_tier = 3
+requires = &"tractor"
+max_rank = 1
+cost = 400
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"freeze_charges",
+"value": 1
+}])

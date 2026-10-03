@@ -4,15 +4,19 @@
 
 [resource]
 script = ExtResource("1")
-id = &"ion_thruster"
-display_name = "Ion Thruster"
+id = &"phase_engine"
+display_name = "Phase Engine"
 category = 3
-tier = 0
-text = "+10% speed."
+tier = 3
+text = "+15% speed and a longer combo window."
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"move_speed",
-"value": 1.1
+"value": 1.15
+}, {
+"op": &"mul",
+"stat": &"overdrive_window",
+"value": 1.15
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
@@ -24,5 +28,15 @@ attributes = Array[Dictionary]([{
 "max": 5,
 "name": "THRUST",
 "text": "+5% speed per level"
+}, {
+"effects": [{
+"op": &"mul",
+"stat": &"overdrive_window",
+"value": 1.1
+}],
+"id": &"window",
+"max": 3,
+"name": "WINDOW",
+"text": "Combo window 10% longer per level"
 }])
-part = &"booster_support"
+part = &"coil_hull"

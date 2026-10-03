@@ -43,10 +43,13 @@ Scrap: `EnemyDef.scrap_chance` and `scrap`; `DifficultyDef.drop_mult`; pity step
 `data/combos/<id>.tres` (`ComboDef`): style (theme id), threshold, decay_delay, decay_rate, duration, effects (same format as upgrades), HUD color. What fills each meter is in `systems/combo_tracker.gd`; thresholds scale with `DifficultyDef.combo_threshold`.
 
 ## Hangar part
-`data/hangar/parts/<id>.tres` (`PartDef`): category (weapon, shield, power, engine, extra, chip), tier (sets the scrap price per rank), rank_text (3 lines for the store), effects (each with an optional "rank" it starts at), and part (sprite in `assets/art/dusk_armada/parts/`). Register it in `data/hangar/catalog.tres` (a test fails if you forget). Placement bonuses by category and mount are `placement` in the catalog.
+`data/hangar/parts/<id>.tres` (`PartDef`): category (weapon, shield, power, engine, extra, chip), tier (rarity: sets the buy price, the price per attribute level, how often the store stocks it, and which blueprint nodes it powers on its mount), text (one line), effects (always on while fitted), attributes ({"id", "name", "text", "max", "effects"}: each level applies the effects once more), and part (sprite in `assets/art/dusk_armada/parts/`). Register it in `data/hangar/catalog.tres` (a test fails if you forget). Placement bonuses by category and mount are `placement` in the catalog.
+
+## Blueprint node
+`data/hangar/tree/<ship>/<id>.tres` (`TreeNodeDef`): mount (nose, left, rear, right or hull), min_tier (rarity the part on that mount needs), requires (parent node), max_rank, cost (rank N costs N times this), text, effects (once per rank). List it in the ship's `tree` (a test fails if you forget).
 
 ## Hangar ship
-`data/hangar/ships/<id>.tres` (`ShipDef`): slots per type (weapon, shield, power, bonus), mounts, sprite. Register it in the catalog. Hull palettes are `FRAME_PALS` in `tools/art/gen_dusk_armada.py`.
+`data/hangar/ships/<id>.tres` (`ShipDef`): slots per type (weapon, shield, power, bonus), mounts, sprite, and tree (its blueprint nodes). Register it in the catalog. Hull palettes are `FRAME_PALS` in `tools/art/gen_dusk_armada.py`.
 
 ## Pilot
 `data/hangar/pilots/<id>.tres` (`PilotDef`): bio, cost, color, power (Overclock, Bulwark, Phase Dash, Nova), power_name, power_text, cooldown, duration, effects (Overclock), distance (dash), damage (Nova). Register it in the catalog's `pilots`; the first one is free.

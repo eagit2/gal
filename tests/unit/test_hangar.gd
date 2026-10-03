@@ -1,5 +1,6 @@
 extends TestCase
-## Hangar loadout rules (typed slots, mounts, placement, ranks, store previews) and medal goals.
+## Hangar loadout rules (typed slots, mounts, placement, attribute levels, store stock, blueprint
+## tree) and medal goals.
 
 const CATALOG: HangarCatalog = preload("res://data/hangar/catalog.tres")
 
@@ -11,7 +12,7 @@ func _stats(state: Dictionary) -> Dictionary:
 func _owning(ids: Array) -> Dictionary:
 	var state := Loadout.default_state(CATALOG)
 	for id: String in ids:
-		state["parts"][id] = 1
+		state["parts"][id] = {}
 	return state
 
 
@@ -25,18 +26,30 @@ func _medal(goal: MedalDef.Goal, target := 0.0) -> MedalDef:
 func test_every_file_is_in_the_catalog() -> void:
 	expect_eq(DirAccess.get_files_at("res://data/hangar/parts").size(), CATALOG.parts.size(), "parts registered")
 	expect_eq(DirAccess.get_files_at("res://data/hangar/ships").size(), CATALOG.ships.size(), "ships registered")
+	for ship in CATALOG.ships:
+		expect_eq(DirAccess.get_files_at("res://data/hangar/tree/%s" % ship.id).size(), ship.tree.size(), "%s tree registered" % ship.id)
 
 
 func test_content_is_valid() -> void:
 	for def in CATALOG.parts:
-		expect_eq(def.rank_text.size(), PartDef.MAX_RANK, "%s rank texts" % def.id)
-		for effect: Dictionary in def.effects:
+		expect_true(def.text != "" and not def.attributes.is_empty(), "%s text and attributes" % def.id)
+		var effects: Array[Dictionary] = def.effects.duplicate()
+		for a in def.attributes:
+			expect_true(int(a["max"]) >= 1 and a["name"] != "" and a["text"] != "", "%s.%s" % [def.id, a["id"]])
+			effects.append_array(a["effects"])
+		for effect: Dictionary in effects:
 			expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "%s: %s" % [def.id, effect["stat"]])
 		expect_true(ResourceLoader.exists("res://assets/art/dusk_armada/parts/%s.png" % def.part), "%s part" % def.id)
 	for category: String in CATALOG.placement:
 		for mount: String in CATALOG.placement[category]:
 			for effect: Dictionary in CATALOG.placement[category][mount]:
 				expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "placement %s %s" % [category, mount])
+	for ship in CATALOG.ships:
+		for node in ship.tree:
+			expect_true(node.mount == &"hull" or node.mount in ship.mounts, "%s mount" % node.id)
+			expect_true(node.requires == &"" or ship.node(node.requires) != null, "%s requires" % node.id)
+			for effect: Dictionary in node.effects:
+				expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "%s: %s" % [node.id, effect["stat"]])
 	for mount in CATALOG.starter_mounts:
 		var def := CATALOG.part(StringName(CATALOG.starter_mounts[mount]))
 		expect_true(def != null and CATALOG.ships[0].accepts(StringName(mount), def), "starter on %s" % mount)
@@ -85,29 +98,65 @@ func test_placement_changes_handling() -> void:
 	expect_true(is_equal_approx(_stats(state)[&"shield_recharge"], 0.8), "side shield recharges faster")
 
 
-func test_ranks_add_effects_and_cost_more() -> void:
-	var def := CATALOG.part(&"twin_cannon")
-	var state := _owning(["twin_cannon"])
-	Loadout.place(CATALOG, state, &"nose", &"twin_cannon")
-	expect_eq(_stats(state)[&"damage"], 0, "rank 1")
-	Loadout.rank_up(state, def)
-	expect_eq(_stats(state)[&"damage"], 1, "rank 2")
-	Loadout.rank_up(state, def)
-	expect_eq(_stats(state)[&"extra_shots"], 2, "rank 3")
-	expect_eq(Loadout.next_price(state, def), -1, "maxed")
-	expect_true(def.price(3) > def.price(2) and def.price(2) > 0, "ranks cost more")
-	expect_eq(CATALOG.part(&"pulse_laser").price(1), 0, "starter parts are free")
+func test_attributes_level_up_and_cost_more() -> void:
+	var def := CATALOG.part(&"pulse_laser")
+	var state := Loadout.default_state(CATALOG)
+	expect_eq(_stats(state)[&"damage"], 0, "level 0")
+	var first := Loadout.upgrade_price(state, def, &"power")
+	Loadout.upgrade(state, def, &"power")
+	Loadout.upgrade(state, def, &"power")
+	expect_eq(_stats(state)[&"damage"], 2, "two POWER levels")
+	expect_true(Loadout.upgrade_price(state, def, &"power") > first, "levels cost more")
+	Loadout.upgrade(state, def, &"speed")
+	Loadout.upgrade(state, def, &"speed")
+	expect_true(is_equal_approx(_stats(state)[&"fire_rate"], 1.21), "SPEED multiplies per level")
+	Loadout.upgrade(state, def, &"power")
+	expect_eq(Loadout.upgrade_price(state, def, &"power"), -1, "POWER maxed at 3")
+	expect_eq(Loadout.upgrade_price(state, CATALOG.part(&"twin_cannon"), &"power"), -1, "not owned")
+	expect_eq(Loadout.look(state, def.id), 2, "5 levels glow")
 
 
 func test_store_preview_fits_without_touching_the_save() -> void:
 	var state := Loadout.default_state(CATALOG)
 	var before := state.duplicate(true)
-	var cannon := Loadout.preview(CATALOG, state, CATALOG.part(&"twin_cannon"), 2)
+	var cannon := Loadout.preview(CATALOG, state, CATALOG.part(&"twin_cannon"))
 	expect_eq(String(cannon["mounts"]["nose"]), "twin_cannon", "weapon previews on the nose")
-	expect_eq(Loadout.rank_of(cannon, &"twin_cannon"), 2)
-	var regen := Loadout.preview(CATALOG, state, CATALOG.part(&"regen_field"), 1)
+	var regen := Loadout.preview(CATALOG, state, CATALOG.part(&"regen_field"))
 	expect_eq(String(regen["mounts"]["left"]), "regen_field", "swaps the fitted shield")
 	expect_eq(state, before, "save untouched")
+
+
+func test_stock_rotates_unowned_parts() -> void:
+	var state := Loadout.default_state(CATALOG)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	HangarStock.roll(CATALOG, state, rng)
+	var stock: Array = state["stock"]
+	expect_eq(stock.size(), HangarStock.SIZE, "full stock")
+	for id: String in stock:
+		expect_true(not Loadout.owns(state, StringName(id)), "%s not owned" % id)
+		expect_eq(stock.count(id), 1, "%s once" % id)
+	var def := CATALOG.part(StringName(stock[0]))
+	expect_true(HangarStock.take(state, def), "buy from stock")
+	expect_true(Loadout.owns(state, def.id) and not HangarStock.in_stock(state, def.id), "owned, gone from stock")
+	expect_true(not HangarStock.take(state, CATALOG.part(&"pulse_laser")), "can't buy what isn't stocked")
+
+
+func test_part_rarity_gates_the_blueprint() -> void:
+	var state := _owning(["missile_pod"])
+	var ship := CATALOG.ships[0]
+	var lens := ship.node(&"focus_lens")
+	var coil := ship.node(&"rail_coil")
+	expect_eq(ShipTree.gate(CATALOG, state, coil), ShipTree.Gate.NEEDS_NODE, "needs its parent")
+	expect_true(ShipTree.buy(CATALOG, state, lens), "starter node opens with the starter laser")
+	expect_eq(ShipTree.gate(CATALOG, state, coil), ShipTree.Gate.NEEDS_PART, "uncommon node needs a rarer nose part")
+	Loadout.place(CATALOG, state, &"nose", &"missile_pod")
+	expect_true(ShipTree.buy(CATALOG, state, coil), "rare missile pod opens it")
+	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.1), "node effect applies")
+	Loadout.place(CATALOG, state, &"nose", &"pulse_laser")
+	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.0), "goes dark with a starter part")
+	expect_true(is_equal_approx(_stats(state)[&"fire_rate"], 1.05), "starter node stays lit")
+	expect_eq(ShipTree.price(state, ship, lens), lens.cost * 2, "rank 2 costs double")
 
 
 func test_old_saves_reset_but_keep_pilots() -> void:
@@ -116,10 +165,17 @@ func test_old_saves_reset_but_keep_pilots() -> void:
 	expect_eq(state["pilot"], "rook")
 	expect_true(Loadout.part_at(CATALOG, state, &"nose") != null, "fresh loadout")
 	var broken := Loadout.default_state(CATALOG)
-	broken["parts"]["gone"] = 2
+	broken["parts"]["gone"] = {}
 	broken["mounts"]["rear"] = "gone"
 	broken = Loadout.normalize(broken, CATALOG)
 	expect_true(not broken["parts"].has("gone") and broken["mounts"]["rear"] == "", "unknown parts dropped")
+	var ranked := Loadout.default_state(CATALOG)
+	ranked["parts"]["pulse_laser"] = 3
+	ranked.erase("stock")
+	ranked.erase("tree")
+	ranked = Loadout.normalize(ranked, CATALOG)
+	expect_eq(ranked["parts"]["pulse_laser"], {}, "ranked parts kept at level 0")
+	expect_true(ranked["stock"] is Array and ranked["tree"] is Dictionary, "stock and tree added")
 
 
 func test_medal_goals() -> void:

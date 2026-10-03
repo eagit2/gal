@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"shock_plate"
+display_name = "Shock Plate"
+text = "Kills burst and hurt nearby enemies"
+mount = &"left"
+min_tier = 3
+requires = &"capacitor"
+max_rank = 1
+cost = 400
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"explode_radius",
+"value": 16.0
+}])

@@ -59,3 +59,6 @@ Newest first. One line per decision with the reason.
 - 2026-10-02: 540x960 portrait internal resolution as a placeholder until art style is chosen.
 - 2026-10-02: Architecture accepted (docs/architecture.md); GitHub repo + Pages for builds.
 - 2026-10-02: Browser target, Godot with web export.
+- 2026-10-03: Hangar menus are slot first (Eric picked mockup A): slot, then category, then part, then its attributes. Parts no longer have ranks; each has 1-3 attributes (e.g. Pulse Laser POWER, SPEED, THICKNESS) upgraded level by level with scrap. Old ranked saves keep their parts at level 0.
+- 2026-10-03: The store sells a rotating stock of 5 unowned parts, rarer ones rolled less often; it restocks after every run or for a 40 scrap reroll. (Eric: "the store having different items that can change".)
+- 2026-10-03: The ship tree is a blueprint (Eric picked T3): nodes sit on a mount, and the rarity of the part fitted there decides which nodes open ("rarity impacting the skill tree options"). Swapping in a lower-rarity part turns those nodes dark; ranks are kept. Nodes cost scrap.

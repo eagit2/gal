@@ -8,7 +8,7 @@ id = &"vector_jet"
 display_name = "Vector Jet"
 category = 3
 tier = 1
-rank_text = Array[String](["Strafe 30% faster", "Strafe 45% faster", "+10% speed"])
+text = "Strafe 30% faster."
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"strafe_left",
@@ -17,20 +17,30 @@ effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"strafe_right",
 "value": 1.3
-}, {
+}])
+attributes = Array[Dictionary]([{
+"effects": [{
 "op": &"mul",
 "stat": &"strafe_left",
-"value": 1.12,
-"rank": 2
+"value": 1.07
 }, {
 "op": &"mul",
 "stat": &"strafe_right",
-"value": 1.12,
-"rank": 2
+"value": 1.07
+}],
+"id": &"strafe",
+"max": 5,
+"name": "STRAFE",
+"text": "Strafe 7% faster per level"
 }, {
+"effects": [{
 "op": &"mul",
 "stat": &"move_speed",
-"value": 1.1,
-"rank": 3
+"value": 1.04
+}],
+"id": &"thrust",
+"max": 3,
+"name": "THRUST",
+"text": "+4% speed per level"
 }])
 part = &"fin_support"

@@ -8,7 +8,7 @@ id = &"combo_amp"
 display_name = "Combo Amp"
 category = 4
 tier = 2
-rank_text = Array[String](["Combo meter fills 20% faster", "35% faster", "Longer combo window"])
+text = "Combo meter fills 20% faster."
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"chain_gain",
@@ -17,20 +17,30 @@ effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"graze_gain",
 "value": 1.2
-}, {
+}])
+attributes = Array[Dictionary]([{
+"effects": [{
 "op": &"mul",
 "stat": &"chain_gain",
-"value": 1.12,
-"rank": 2
+"value": 1.07
 }, {
 "op": &"mul",
 "stat": &"graze_gain",
-"value": 1.12,
-"rank": 2
+"value": 1.07
+}],
+"id": &"gain",
+"max": 5,
+"name": "GAIN",
+"text": "Meter fills 7% faster per level"
 }, {
+"effects": [{
 "op": &"mul",
 "stat": &"overdrive_window",
-"value": 1.25,
-"rank": 3
+"value": 1.1
+}],
+"id": &"window",
+"max": 3,
+"name": "WINDOW",
+"text": "Combo window 10% longer per level"
 }])
-part = &"antenna_support"
+part = &"dish_support"
