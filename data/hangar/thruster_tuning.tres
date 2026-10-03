@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HangarNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/hangar_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"thruster_tuning"
+display_name = "Thruster Tuning"
+description = "+5% move speed per rank."
+branch = 0
+costs = Array[int]([30, 60, 100])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"move_speed",
+"value": 1.05
+}])
+requires = Array[StringName]([])

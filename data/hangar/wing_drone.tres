@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HangarNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/hangar_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"wing_drone"
+display_name = "Wing Drone"
+description = "Start every run with a drone that fires with you."
+branch = 1
+costs = Array[int]([300])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"drones",
+"value": 1
+}])
+requires = Array[StringName]([&"trigger_tuning"])

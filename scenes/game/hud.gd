@@ -31,6 +31,8 @@ func _ready() -> void:
 	EventBus.combo_ended.connect(_on_combo_ended)
 	EventBus.upgrade_picked.connect(_on_upgrade_picked)
 	EventBus.synergy_activated.connect(func(s: SynergyDef) -> void: show_toast("SYNERGY: %s" % s.display_name.to_upper(), Color(1, 0.55, 0.95)))
+	EventBus.medal_earned.connect(func(m: MedalDef, credits: int) -> void: show_toast("MEDAL: %s  +%d CREDITS" % [m.display_name.to_upper(), credits], Color(0.95, 0.77, 0.43)))
+	EventBus.run_ended.connect(_on_run_ended)
 	_build_meters()
 	_mode.visible = false
 	_mode_bar.visible = false
@@ -139,3 +141,8 @@ func _on_upgrade_picked(id: StringName) -> void:
 	var upgrade := GameState.POOL.find(id)
 	if upgrade:
 		show_toast("+ " + upgrade.display_name.to_upper(), UpgradePick.RARITY_COLORS[upgrade.rarity])
+
+
+func _on_run_ended(_victory: bool) -> void:
+	if Hangar.run_earned > 0:
+		show_toast("+%d HANGAR CREDITS" % Hangar.run_earned, Color(0.95, 0.77, 0.43))

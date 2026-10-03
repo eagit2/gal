@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="HangarNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/hangar_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"combo_primer"
+display_name = "Combo Primer"
+description = "Combo meters fill 10% faster per rank."
+branch = 2
+costs = Array[int]([50, 100])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"overdrive_window",
+"value": 1.1
+}, {
+"op": &"mul",
+"stat": &"chain_gain",
+"value": 1.1
+}, {
+"op": &"mul",
+"stat": &"graze_gain",
+"value": 1.1
+}])
+requires = Array[StringName]([&"salvage_scanner"])

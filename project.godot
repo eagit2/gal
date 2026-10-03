@@ -17,6 +17,7 @@ AudioManager="*res://autoload/audio_manager.gd"
 SceneRouter="*res://autoload/scene_router.gd"
 Pools="*res://autoload/pools.gd"
 StyleDirector="*res://autoload/style_director.gd"
+Hangar="*res://autoload/hangar.gd"
 
 [display]
 

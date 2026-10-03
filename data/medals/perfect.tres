@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MedalDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/medal_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perfect"
+display_name = "Perfect"
+description = "Let no enemy escape."
+goal = 1
+target = 0.0
+currency = 40

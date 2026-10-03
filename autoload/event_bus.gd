@@ -30,3 +30,8 @@ signal combo_started(combo: ComboDef, chain: int)
 signal combo_ended(combo: ComboDef)
 ## Meter fill in 0..1 for each combo id, sent when it changes.
 signal combo_meter_changed(combo_id: StringName, fill: float)
+## A stage medal was earned and paid `credits` hangar credits.
+signal medal_earned(medal: MedalDef, credits: int)
+signal credits_changed(credits: int)
+## A hangar node rank was bought.
+signal hangar_changed()

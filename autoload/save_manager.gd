@@ -14,9 +14,10 @@ func _ready() -> void:
 static func default_data() -> Dictionary:
 	return {
 		"version": SCHEMA_VERSION,
-		"currency": 0,
+		"currency": 0,  # hangar credits
 		"high_score": 0,
 		"unlocks": [],
+		"hangar": {},  # hangar node id -> rank
 		"settings": {"music_volume": 0.8, "sfx_volume": 0.8, "auto_fire": false},
 	}
 

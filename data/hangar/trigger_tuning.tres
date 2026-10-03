@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="HangarNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/hangar_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"trigger_tuning"
+display_name = "Trigger Tuning"
+description = "+5% fire rate per rank."
+branch = 1
+costs = Array[int]([40, 80, 120])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.05
+}])
+requires = Array[StringName]([])
