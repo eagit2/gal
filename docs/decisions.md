@@ -2,6 +2,11 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: M3 run stats are one Dictionary (`GameState.stats`) recomputed from owned upgrades + synergies + the active combo whenever any of them changes. Systems read stats; nothing applies deltas in place, so stacking and expiring buffs can't drift.
+- 2026-10-03: Card pick after every stage, including challenge stages. A perfect challenge also drops a guaranteed pickup. Pickups roll their upgrade on collect; once everything is maxed they pay 1000 points.
+- 2026-10-03: Combo modes are all on from the start (hangar unlocks arrive with M4 meta). Chain Reaction counts multi-kills (3 within 0.25s) as 1 point and diver kills as 0.5. Graze counts a shot that enters 30px of the ship and leaves without hitting. Slow-mo (Graze) slows the world but not the ship, its fire rate, or mode timers.
+- 2026-10-03: Stage-forced styles beat combo styles (combo-styles.md rule), so the challenge stage stays Outrun while a combo still gives its buff.
+
 - 2026-10-03: Level playtesting uses URL options on the live build (`?stage=&god=&repeat=&difficulty=`) instead of a debug menu: works on any device, shareable links, no UI to maintain. A title-screen stage select can come later if needed.
 - 2026-10-03: Pacing must feel frantic (Eric's M2 playtest). Enemy attacks are steered live by per-type brains (`EnemyBrain` resources in `data/brains/`) instead of fixed dive curves; entries still fly in on data paths. Squads attack from 2s into a stage, formation fires, and reinforcement squads refill the formation.
 - 2026-10-03: The player shield is an always-on bubble that absorbs one hit (shot or ram, the rammer dies) and recharges (Eric picked "Auto bubble"). Recharge time is a DifficultyDef value.

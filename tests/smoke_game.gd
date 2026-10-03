@@ -1,6 +1,7 @@
 extends SceneTree
 ## Headless playthrough: holds fire and sweeps left/right, then checks the game loop works.
-## godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd [-- --stage=N --seconds=S]
+## godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd [-- --seconds=S stage=N]
+## stage (and the other DevOptions) is read by the game itself: N is 1-based or a stage id.
 
 var _game: Node
 var _frame := 0
@@ -15,14 +16,10 @@ var _pick_wait := 0
 
 
 func _initialize() -> void:
-	var first_stage := 0
 	for arg in OS.get_cmdline_user_args():
-		if arg.begins_with("--stage="):
-			first_stage = int(arg.get_slice("=", 1))
-		elif arg.begins_with("--seconds="):
+		if arg.begins_with("--seconds="):
 			_frames = int(arg.get_slice("=", 1)) * 60
 	_game = load("res://scenes/game/game.tscn").instantiate()
-	_game.first_stage = first_stage
 	root.add_child(_game)
 	var bus := root.get_node("EventBus")
 	bus.enemy_killed.connect(func(_e: Node2D, _p: Vector2, _s: int) -> void: _kills += 1)
