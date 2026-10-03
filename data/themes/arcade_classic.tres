@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ThemeDef" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/theme_def.gd" id="1"]
+[ext_resource type="Shader" path="res://assets/shaders/arcade_classic.gdshader" id="2"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/arcade_classic.ogg" id="music"]
+
+[resource]
+script = ExtResource("1")
+id = &"arcade_classic"
+display_name = "Arcade Classic+"
+family = &"pixel"
+palette = Array[Color]([Color(0, 0, 0, 1), Color(1, 0.9, 0.2, 1), Color(0.9, 0.1, 0.1, 1), Color(0.2, 0.4, 1, 1)])
+post_shader = ExtResource("2")
+music = ExtResource("music")

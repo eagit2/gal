@@ -12,7 +12,7 @@ Arrows/WASD move, Space/Z fire, Esc/P pause, F2 cycles art styles (debug). Gamep
 ```
 godot --headless -s res://tests/run_tests.gd
 godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd -- --seconds=45      # simulated playthrough
-godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd -- --stage=2 --seconds=25  # challenge stage
+godot --headless --fixed-fps 60 -s res://tests/smoke_game.gd -- --seconds=25 stage=challenge_1  # challenge stage
 ```
 Tests live in `tests/unit/test_*.gd`, extend `TestCase`, and use `expect_*` helpers.
 

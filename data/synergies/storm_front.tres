@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SynergyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/synergy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"storm_front"
+display_name = "Storm Front"
+required_tags = Array[StringName]([&"spread", &"rapid"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"extra_shots",
+"value": 1
+}, {
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.1
+}])

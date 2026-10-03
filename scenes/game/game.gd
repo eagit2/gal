@@ -1,6 +1,6 @@
 extends Node2D
-## Game loop: plays the sector's stages in order (looping with rising aggression), handles lives,
-## challenge bonuses, game over and restart. Root runs while paused (to read the pause key); Entities pause.
+## Game loop: plays the sector's stages in order (looping with rising aggression) with an upgrade
+## card pick between stages, and handles score multipliers, lives, challenge bonuses, game over and restart. Root runs while paused (to read the pause key); Entities pause.
 
 const PLAYER_START := Vector2(270, 860)
 const RESPAWN_DELAY := 1.2
@@ -10,6 +10,8 @@ const ATTACK_DELAY := 2.0
 const BANNER_TIME := 2.0
 const CHALLENGE_HIT_BONUS := 100
 const CHALLENGE_PERFECT_BONUS := 10000
+## Where the guaranteed pickup for a perfect challenge stage appears.
+const PERFECT_DROP_AT := Vector2(270, 240)
 
 @export var difficulty: DifficultyDef
 @export var sector: SectorDef
@@ -25,7 +27,10 @@ var _dev := DevOptions.from_environment()
 @onready var _formation: Formation = $Entities/Formation
 @onready var _runner: StageRunner = $Entities/StageRunner
 @onready var _dives: DiveController = $Entities/DiveController
+@onready var _drops: DropSystem = $Entities/DropSystem
+@onready var _combos: ComboTracker = $Entities/ComboTracker
 @onready var _hud: Hud = $HUD
+@onready var _pick: UpgradePick = $UpgradePick
 
 
 func _ready() -> void:
@@ -43,6 +48,11 @@ func _ready() -> void:
 	_dives.difficulty = difficulty
 	_dives.target = _player
 	_player.shield.recharge_time = difficulty.shield_recharge
+	_drops.difficulty = difficulty
+	_drops.player = _player
+	_drops.entities = _entities
+	_combos.difficulty = difficulty
+	_pick.picked.connect(_on_upgrade_picked)
 	_hud.set_lives(GameState.lives)
 	stage_number = _dev.stage_index(sector.stages, first_stage)
 	_start_stage()
@@ -71,6 +81,7 @@ func _start_stage() -> void:
 	_dives.active = false
 	_dives.aggression = 1.0 + 0.25 * loop + 0.1 * (stage_number % sector.stages.size())
 	StyleDirector.set_stage_style(stage.style)
+	_drops.enabled = not stage.is_challenge
 	_hud.show_banner("CHALLENGING STAGE" if stage.is_challenge else "STAGE %d" % (stage_number + 1), BANNER_TIME)
 	EventBus.stage_started.emit(stage.id)
 	_runner.start(stage, difficulty)
@@ -90,7 +101,8 @@ func _on_stage_finished(kills: int, total: int) -> void:
 		var bonus := kills * CHALLENGE_HIT_BONUS
 		if kills == total:
 			bonus += CHALLENGE_PERFECT_BONUS
-		GameState.add_score(roundi(bonus * difficulty.score_multiplier))
+			_drops.spawn(PERFECT_DROP_AT, 0)
+		GameState.add_score(roundi(bonus * _score_multiplier()))
 		_hud.show_banner("%sHITS %d / %d\nBONUS %d" % ["PERFECT!\n" if kills == total else "", kills, total, bonus], STAGE_DELAY)
 	if not _dev.repeat:
 		stage_number += 1
@@ -98,12 +110,27 @@ func _on_stage_finished(kills: int, total: int) -> void:
 
 
 func _on_stage_delay_done() -> void:
+	if game_over:
+		return
+	var choices := GameState.roll_choices(difficulty.upgrade_choices)
+	if choices.is_empty():
+		_start_stage()
+	else:
+		_pick.open(choices)
+
+
+func _on_upgrade_picked(upgrade: UpgradeDef) -> void:
+	GameState.gain_upgrade(upgrade)
 	if not game_over:
 		_start_stage()
 
 
+func _score_multiplier() -> float:
+	return difficulty.score_multiplier * GameState.stats[&"score_mult"] * _combos.multiplier()
+
+
 func _on_enemy_killed(_enemy: Node2D, _position: Vector2, score: int) -> void:
-	GameState.add_score(roundi(score * difficulty.score_multiplier))
+	GameState.add_score(roundi(score * _score_multiplier()))
 
 
 func _on_player_hit() -> void:
@@ -120,6 +147,7 @@ func _on_player_hit() -> void:
 func _end_run() -> void:
 	game_over = true
 	_dives.active = false
+	_combos.stop()
 	EventBus.run_ended.emit(false)
 	if GameState.score > SaveManager.data["high_score"]:
 		SaveManager.data["high_score"] = GameState.score

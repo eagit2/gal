@@ -40,8 +40,9 @@ func test_music_loops() -> void:
 	var bank: SoundBank = load(BANK_PATH)
 	var tracks: Array[AudioStream] = [bank.boss_music]
 	tracks.append_array(bank.scene_music.values())
-	for theme in ["dusk_armada", "outrun_grid"]:
-		tracks.append((load("res://data/themes/%s.tres" % theme) as ThemeDef).music)
+	for file in DirAccess.get_files_at("res://data/themes"):
+		if file.ends_with(".tres"):
+			tracks.append((load("res://data/themes/" + file) as ThemeDef).music)
 	for track in tracks:
 		expect_true(track is AudioStreamOggVorbis and (track as AudioStreamOggVorbis).loop,
 				"%s loops" % (track.resource_path if track else "missing track"))

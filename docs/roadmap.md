@@ -41,14 +41,20 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Squad attacks start 2s into a stage, up to 3 at once; cap scales with difficulty and aggression (3 to 12); formation fire
 - [x] More volume: waves arrive ~45% faster; reinforcement squads fill empty slots (stage 1: +3, stage 2: +4)
 - [x] Auto shield bubble: absorbs one shot or ram, recharges (DifficultyDef.shield_recharge, 9 to 16s)
-- [ ] Playtest and tune numbers in `data/brains/` and `data/difficulty/`
+- [x] Playtest (Eric, 2026-10-03): speed, shield and enemy logic all good as is
 
 - [x] Playtest shortcuts: URL options to start on any stage, god mode, repeat, difficulty
 
 ## M3 Upgrades v1
-- [ ] Upgrade drops: DropTable per enemy, pity bonus, falling pickup (adds to the card pick)
-- [ ] ComboTracker + ComboDef: Overdrive mode end to end (meter, buff, N1 style switch)
-- [ ] Remaining combo modes (Lock-On, Chain Reaction, Graze), Style Chain, Arcade '81 on rescue
+- [x] Run stats from upgrades + synergies + active combo (`UpgradeSystem`, `GameState.stats`)
+- [x] 19 upgrades across 4 categories, stacking, requirements; 3 synergies (Swarm, Storm Front, Detonator)
+- [x] Card pick (1 of N per difficulty) after every stage; keyboard, gamepad, touch
+- [x] Weapon stats: extra shots, spread, pierce, homing, damage, shot speed; missiles and wing drones; layered shield
+- [x] Upgrade drops: per-enemy chance, pity bonus, rarity bonus, falling pickup, magnet; perfect challenge drop
+- [x] ComboTracker + ComboDefs: Overdrive, Lock-On, Chain Reaction (kill blasts), Graze (slow-mo + graze score), Arcade '81 (fires on `ship_rescued`, which M5 capture emits)
+- [x] Style Chain multiplier, meter decay, HUD meters and mode timer
+- [x] Styles: Cold Hologram, Particle Storm, Pocket Four (post shader), Arcade Classic+ (post shader + starfield)
+- [ ] Playtest and tune: drop rate, meter thresholds, upgrade values
 ## M4 Difficulty + meta
 - [ ] Stage medals (goal per stage) pay meta currency, scaled by difficulty
 ## M5 Sector 1 complete
@@ -67,7 +73,7 @@ Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
 - [ ] Combo style treatments: P1 and P3 palette shaders, N2 and N3 vector looks
 - [x] Audio system: SoundBank data, AudioManager crossfades and voice priority, AudioCues on EventBus, mute key
 - [x] 19 generated SFX (shots, hits, explosions, shield pop/restore, graze, combos, jingles, UI) and 8 music loops (title, stage, boss, 5 combo styles) (`tools/audio/`)
-- [ ] Wire combo-style tracks into the M3 ThemeDefs once PR #6 merges
+- [x] Combo-style tracks wired into the M3 ThemeDefs
 - [ ] Adaptive music layers (stems by intensity), classic SFX set for Arcade '81
 ## M7 Content scale
 - [ ] Consider: in-game level editor scene (place waves visually, press play to test)

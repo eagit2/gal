@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scenes/components/styled_visual.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/art/dusk_armada/background/sky.png" id="2"]
@@ -6,9 +6,21 @@
 [ext_resource type="Texture2D" path="res://assets/art/dusk_armada/background/clouds_near.png" id="5"]
 [ext_resource type="Script" path="res://assets/art/dusk_armada/scroll_layer.gd" id="6"]
 [ext_resource type="Shader" path="res://assets/shaders/outrun_grid.gdshader" id="3"]
+[ext_resource type="Shader" path="res://assets/shaders/cold_hologram.gdshader" id="7"]
+[ext_resource type="Shader" path="res://assets/shaders/particle_storm.gdshader" id="8"]
+[ext_resource type="Shader" path="res://assets/shaders/arcade_starfield.gdshader" id="9"]
 
 [sub_resource type="ShaderMaterial" id="outrun"]
 shader = ExtResource("3")
+
+[sub_resource type="ShaderMaterial" id="hologram"]
+shader = ExtResource("7")
+
+[sub_resource type="ShaderMaterial" id="storm"]
+shader = ExtResource("8")
+
+[sub_resource type="ShaderMaterial" id="stars"]
+shader = ExtResource("9")
 
 [node name="Background" type="Node2D"]
 z_index = -10
@@ -54,6 +66,27 @@ centered = false
 
 [node name="outrun_grid" type="ColorRect" parent="."]
 material = SubResource("outrun")
+offset_right = 540.0
+offset_bottom = 960.0
+mouse_filter = 2
+
+[node name="cold_hologram" type="ColorRect" parent="."]
+visible = false
+material = SubResource("hologram")
+offset_right = 540.0
+offset_bottom = 960.0
+mouse_filter = 2
+
+[node name="particle_storm" type="ColorRect" parent="."]
+visible = false
+material = SubResource("storm")
+offset_right = 540.0
+offset_bottom = 960.0
+mouse_filter = 2
+
+[node name="arcade_classic" type="ColorRect" parent="."]
+visible = false
+material = SubResource("stars")
 offset_right = 540.0
 offset_bottom = 960.0
 mouse_filter = 2

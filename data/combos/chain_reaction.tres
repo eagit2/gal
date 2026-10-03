@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ComboDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combo_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"chain_reaction"
+display_name = "CHAIN REACTION"
+style = &"particle_storm"
+threshold = 6.0
+decay_delay = 2.0
+decay_rate = 0.1
+duration = 8.0
+effects = Array[Dictionary]([{
+"op": &"max",
+"stat": &"explode_radius",
+"value": 75.0
+}])
+color = Color(1, 0.62, 0.24, 1)
