@@ -66,4 +66,5 @@ Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
 - [ ] The Matriarch boss art
 - [ ] Combo style treatments: P1 and P3 palette shaders, N2 and N3 vector looks
 ## M7 Content scale
+- [ ] Consider: in-game level editor scene (place waves visually, press play to test)
 ## M8 Release polish
