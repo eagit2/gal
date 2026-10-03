@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"score_booster"
+display_name = "Score Booster"
+description = "+15% score."
+category = 3
+rarity = 0
+tags = Array[StringName]([&"score"])
+max_stacks = 3
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"score_mult",
+"value": 1.15
+}])
+requires = Array[StringName]([])

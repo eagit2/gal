@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SynergyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/synergy_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"detonator"
+display_name = "Detonator"
+required_tags = Array[StringName]([&"pierce", &"chain"])
+effects = Array[Dictionary]([{
+"op": &"max",
+"stat": &"explode_radius",
+"value": 45.0
+}])

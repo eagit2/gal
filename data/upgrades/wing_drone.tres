@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"wing_drone"
+display_name = "Wing Drone"
+description = "A drone flies beside you and fires with you."
+category = 1
+rarity = 1
+tags = Array[StringName]([&"drone"])
+max_stacks = 2
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"drones",
+"value": 1
+}])
+requires = Array[StringName]([])

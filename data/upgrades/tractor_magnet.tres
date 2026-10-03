@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"tractor_magnet"
+display_name = "Tractor Magnet"
+description = "Pull upgrade pickups toward you."
+category = 3
+rarity = 0
+tags = Array[StringName]([&"magnet"])
+max_stacks = 1
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"magnet",
+"value": 150.0
+}])
+requires = Array[StringName]([])

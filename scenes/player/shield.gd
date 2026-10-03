@@ -1,15 +1,18 @@
 class_name Shield
 extends Hurtbox
-## Auto bubble around the player: always up, absorbs one hit (a shot or a ram), then recharges.
-## The player keeps its own hurtbox invulnerable while the bubble is up.
+## Auto bubble around the player: always up, absorbs hits (one per layer; a shot or a ram), and
+## recharges one layer at a time. The player keeps its own hurtbox invulnerable while it is up.
 
 ## The bubble absorbed a hit and is down (visuals can play a pop effect).
 signal popped
 ## The bubble is back up.
 signal restored
 
+## Base seconds per layer; GameState.stats[&"shield_recharge"] scales it.
 var recharge_time := 12.0
 var up := true
+var layers := 1
+var _max_layers := 1
 var _recharge := 0.0
 var _reported := -1
 

@@ -21,6 +21,8 @@ func apply_theme(theme: ThemeDef) -> void:
 	for child in get_children():
 		if child is CanvasItem:
 			child.visible = child == shown
+	if _wireframe and shown == _wireframe:
+		_wireframe.modulate = theme.wire_tint
 
 
 func _get_wireframe() -> Node2D:

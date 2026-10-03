@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ComboDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/combo_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"graze"
+display_name = "GRAZE"
+style = &"pocket_four"
+threshold = 30.0
+decay_delay = 2.0
+decay_rate = 0.1
+duration = 8.0
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"time_scale",
+"value": 0.6
+}, {
+"op": &"add",
+"stat": &"graze_score",
+"value": 50
+}])
+color = Color(0.61, 0.74, 0.06, 1)

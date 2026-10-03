@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lucky_charm"
+display_name = "Lucky Charm"
+description = "Enemies drop upgrades 40% more often."
+category = 3
+rarity = 1
+tags = Array[StringName]([&"luck"])
+max_stacks = 2
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"drop_mult",
+"value": 1.4
+}])
+requires = Array[StringName]([])

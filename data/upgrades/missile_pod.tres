@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"missile_pod"
+display_name = "Missile Pod"
+description = "Launch a homing missile every 2 seconds. Stacks add missiles."
+category = 1
+rarity = 1
+tags = Array[StringName]([&"missile"])
+max_stacks = 3
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"missiles",
+"value": 1
+}])
+requires = Array[StringName]([])
