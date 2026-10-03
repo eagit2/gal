@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scenes/main/title.gd" id="1"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/game/background.tscn" id="3"]
 
 [node name="Title" type="Control"]
 layout_mode = 3
@@ -9,27 +11,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2")
 script = ExtResource("1")
 
-[node name="Logo" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 300.0
-offset_bottom = 360.0
-theme_override_font_sizes/font_size = 48
-text = "MODERN GALAGA"
-horizontal_alignment = 1
-
-[node name="Prompt" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 560.0
-offset_bottom = 600.0
-theme_override_font_sizes/font_size = 24
-text = "PRESS ANY KEY"
-horizontal_alignment = 1
+[node name="Background" parent="." instance=ExtResource("3")]
 
 [node name="HighScore" type="Label" parent="."]
 layout_mode = 1
@@ -40,3 +25,66 @@ offset_bottom = 70.0
 theme_override_font_sizes/font_size = 20
 text = "HIGH SCORE  0"
 horizontal_alignment = 1
+
+[node name="Logo" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 200.0
+offset_bottom = 340.0
+theme_override_colors/font_color = Color(1, 0.8, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0.2, 0.06, 0.18, 1)
+theme_override_constants/outline_size = 12
+theme_override_constants/line_spacing = -8
+theme_override_font_sizes/font_size = 60
+text = "MODERN
+GALAGA"
+horizontal_alignment = 1
+
+[node name="Menu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_top = 470.0
+offset_right = 170.0
+offset_bottom = 760.0
+grow_horizontal = 2
+theme_override_constants/separation = 14
+
+[node name="Confirm" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 470.0
+offset_right = 200.0
+offset_bottom = 640.0
+grow_horizontal = 2
+
+[node name="Box" type="VBoxContainer" parent="Confirm"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Question" type="Label" parent="Confirm/Box"]
+layout_mode = 2
+text = "START A NEW GAME?
+YOUR SAVED RUN WILL BE LOST."
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="Confirm/Box"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="Yes" type="Button" parent="Confirm/Box/Buttons"]
+custom_minimum_size = Vector2(130, 52)
+layout_mode = 2
+text = "YES"
+
+[node name="No" type="Button" parent="Confirm/Box/Buttons"]
+custom_minimum_size = Vector2(130, 52)
+layout_mode = 2
+text = "NO"

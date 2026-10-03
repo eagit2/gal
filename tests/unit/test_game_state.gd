@@ -20,3 +20,32 @@ func test_difficulty_data_loads() -> void:
 	for id in ["cadet", "pilot", "ace", "nightmare"]:
 		var d: DifficultyDef = load("res://data/difficulty/%s.tres" % id)
 		expect_eq(d.id, StringName(id), id)
+
+
+func test_snapshot_survives_json_and_restores() -> void:
+	GameState.start_run(&"ace", 3)
+	GameState.gain_upgrade(GameState.POOL.upgrades[0])
+	GameState.score = 1234
+	GameState.stage_index = 4
+	var run: Dictionary = JSON.parse_string(JSON.stringify(GameState.snapshot()))
+	var lives := GameState.lives
+	GameState.start_run(&"pilot", 1)
+	GameState.restore(run)
+	expect_eq(GameState.difficulty_id, &"ace", "difficulty")
+	expect_eq(GameState.stage_index, 4, "stage")
+	expect_eq(GameState.score, 1234, "score")
+	expect_eq(GameState.lives, lives, "lives")
+	expect_eq(GameState.upgrades, [GameState.POOL.upgrades[0].id] as Array[StringName], "upgrades")
+	expect_eq(GameState.owned.size(), 1, "owned")
+
+
+func test_title_lists_difficulties_easiest_first() -> void:
+	var ids: Array[StringName] = []
+	for def in preload("res://scenes/main/title.gd").load_difficulties():
+		ids.append(def.id)
+	expect_eq(ids, [&"cadet", &"pilot", &"ace", &"nightmare"] as Array[StringName], "order")
+
+
+func test_dev_options_set_only_when_given() -> void:
+	expect_eq(DevOptions.parse(PackedStringArray()).is_set(), false, "empty")
+	expect_eq(DevOptions.parse(PackedStringArray(["god=1"])).is_set(), true, "god")

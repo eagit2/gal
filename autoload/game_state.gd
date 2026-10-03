@@ -9,6 +9,8 @@ var lives: int = 3
 var sector_index: int = 0
 var stage_index: int = 0
 var upgrades: Array[StringName] = []
+## Set by the title screen's Continue; the game scene resumes the saved run and clears it.
+var resume_requested := false
 var owned: Array[UpgradeDef] = []
 ## Current run stats (see UpgradeSystem.BASE_STATS): upgrades + synergies + active combo.
 var stats: Dictionary = UpgradeSystem.BASE_STATS.duplicate()
@@ -32,6 +34,33 @@ func start_run(difficulty: StringName, starting_lives: int) -> void:
 	rng.randomize()
 	_recompute()
 	EventBus.run_started.emit(difficulty)
+
+
+## Saveable checkpoint of the run (JSON-safe). Taken at the start of each stage.
+func snapshot() -> Dictionary:
+	return {
+		"difficulty": String(difficulty_id),
+		"sector": sector_index,
+		"stage": stage_index,
+		"score": score,
+		"lives": lives,
+		"upgrades": upgrades.map(func(id: StringName) -> String: return String(id)),
+	}
+
+
+## Resumes a run from `snapshot()` data. Unknown upgrade ids (removed content) are skipped.
+func restore(run: Dictionary) -> void:
+	start_run(StringName(run.get("difficulty", "pilot")), int(run.get("lives", 3)))
+	sector_index = int(run.get("sector", 0))
+	stage_index = int(run.get("stage", 0))
+	score = int(run.get("score", 0))
+	for id: Variant in run.get("upgrades", []):
+		var upgrade := POOL.find(StringName(id))
+		if upgrade:
+			owned.append(upgrade)
+			upgrades.append(upgrade.id)
+	_recompute()
+	EventBus.score_changed.emit(score)
 
 
 func add_score(amount: int) -> void:
