@@ -43,6 +43,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Auto shield bubble: absorbs one shot or ram, recharges (DifficultyDef.shield_recharge, 9 to 16s)
 - [ ] Playtest and tune numbers in `data/brains/` and `data/difficulty/`
 
+- [x] Playtest shortcuts: URL options to start on any stage, god mode, repeat, difficulty
+
 ## M3 Upgrades v1
 - [ ] Upgrade drops: DropTable per enemy, pity bonus, falling pickup (adds to the card pick)
 - [ ] ComboTracker + ComboDef: Overdrive mode end to end (meter, buff, N1 style switch)
@@ -64,4 +66,5 @@ Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
 - [ ] The Matriarch boss art
 - [ ] Combo style treatments: P1 and P3 palette shaders, N2 and N3 vector looks
 ## M7 Content scale
+- [ ] Consider: in-game level editor scene (place waves visually, press play to test)
 ## M8 Release polish

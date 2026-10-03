@@ -2,6 +2,7 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: Level playtesting uses URL options on the live build (`?stage=&god=&repeat=&difficulty=`) instead of a debug menu: works on any device, shareable links, no UI to maintain. A title-screen stage select can come later if needed.
 - 2026-10-03: Pacing must feel frantic (Eric's M2 playtest). Enemy attacks are steered live by per-type brains (`EnemyBrain` resources in `data/brains/`) instead of fixed dive curves; entries still fly in on data paths. Squads attack from 2s into a stage, formation fires, and reinforcement squads refill the formation.
 - 2026-10-03: The player shield is an always-on bubble that absorbs one hit (shot or ram, the rammer dies) and recharges (Eric picked "Auto bubble"). Recharge time is a DifficultyDef value.
 - 2026-10-03: Hit feedback lives in the visual (`DamageFx`), driven by the entity's `Health.damaged` signal. Gameplay scripts don't tint or flash sprites, so movement code can change freely. Ships with more than 1 HP get damaged frames and smoke at half health or below. (Eric asked for damage animations.)
