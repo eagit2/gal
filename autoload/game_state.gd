@@ -14,6 +14,8 @@ var owned: Array[UpgradeDef] = []
 var stats: Dictionary = UpgradeSystem.BASE_STATS.duplicate()
 var rng := RandomNumberGenerator.new()
 var _combo_effects: Array[Dictionary] = []
+## Permanent bonuses (hangar, M4) in UpgradeDef effect format. Kept across runs.
+var _meta_effects: Array[Dictionary] = []
 var _synergies: Array[SynergyDef] = []
 
 
@@ -64,13 +66,19 @@ func roll_drop(rarity_bonus: int) -> UpgradeDef:
 	return UpgradeSystem.roll_drop(POOL, owned, rarity_bonus, rng)
 
 
+## Hangar purchases call this; the effects apply under every run's upgrades.
+func set_meta_effects(effects: Array[Dictionary]) -> void:
+	_meta_effects = effects
+	_recompute()
+
+
 func set_combo_effects(effects: Array[Dictionary]) -> void:
 	_combo_effects = effects
 	_recompute()
 
 
 func _recompute() -> void:
-	stats = UpgradeSystem.compute(owned, POOL.synergies, _combo_effects)
+	stats = UpgradeSystem.compute(owned, POOL.synergies, _meta_effects + _combo_effects)
 	var tags: Array[StringName] = []
 	for upgrade in owned:
 		tags.append_array(upgrade.tags)
