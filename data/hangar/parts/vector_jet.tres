@@ -10,37 +10,37 @@ category = 3
 tier = 1
 text = "Strafe 30% faster."
 effects = Array[Dictionary]([{
-"op": &"mul",
+"op": &"add",
 "stat": &"strafe_left",
-"value": 1.3
+"value": 0.3
 }, {
-"op": &"mul",
+"op": &"add",
 "stat": &"strafe_right",
-"value": 1.3
+"value": 0.3
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"strafe_left",
-"value": 1.07
+"value": 0.1
 }, {
-"op": &"mul",
+"op": &"add",
 "stat": &"strafe_right",
-"value": 1.07
+"value": 0.1
 }],
 "id": &"strafe",
 "max": 5,
 "name": "STRAFE",
-"text": "Strafe 7% faster per level"
+"text": "Strafe 10% faster per level"
 }, {
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"move_speed",
-"value": 1.04
+"value": 0.05
 }],
 "id": &"thrust",
 "max": 3,
 "name": "THRUST",
-"text": "+4% speed per level"
+"text": "+5% speed per level"
 }])
 part = &"fin_support"

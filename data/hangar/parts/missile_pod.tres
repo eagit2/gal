@@ -16,14 +16,14 @@ effects = Array[Dictionary]([{
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"missile_rate",
-"value": 1.15
+"value": 0.2
 }],
 "id": &"reload",
 "max": 5,
 "name": "RELOAD",
-"text": "Missiles 15% more often per level"
+"text": "+20% missile rate per level"
 }, {
 "effects": [{
 "op": &"add",
@@ -43,6 +43,6 @@ attributes = Array[Dictionary]([{
 "id": &"homing",
 "max": 3,
 "name": "HOMING",
-"text": "Your shots curve toward enemies"
+"text": "Your shots curve toward enemies more per level"
 }])
 part = &"pod_weapon"

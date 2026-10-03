@@ -8,21 +8,21 @@ id = &"phase_engine"
 display_name = "Phase Engine"
 category = 3
 tier = 3
-text = "+15% speed and a longer combo window."
+text = "+15% speed and a 20% longer combo window."
 effects = Array[Dictionary]([{
-"op": &"mul",
+"op": &"add",
 "stat": &"move_speed",
-"value": 1.15
+"value": 0.15
 }, {
-"op": &"mul",
+"op": &"add",
 "stat": &"overdrive_window",
-"value": 1.15
+"value": 0.2
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"move_speed",
-"value": 1.05
+"value": 0.05
 }],
 "id": &"thrust",
 "max": 5,
@@ -30,9 +30,9 @@ attributes = Array[Dictionary]([{
 "text": "+5% speed per level"
 }, {
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"overdrive_window",
-"value": 1.1
+"value": 0.1
 }],
 "id": &"window",
 "max": 3,

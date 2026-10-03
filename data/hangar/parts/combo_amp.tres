@@ -8,35 +8,35 @@ id = &"combo_amp"
 display_name = "Combo Amp"
 category = 4
 tier = 2
-text = "Combo meter fills 20% faster."
+text = "Combo meters fill 20% faster."
 effects = Array[Dictionary]([{
-"op": &"mul",
+"op": &"add",
 "stat": &"chain_gain",
-"value": 1.2
+"value": 0.2
 }, {
-"op": &"mul",
+"op": &"add",
 "stat": &"graze_gain",
-"value": 1.2
+"value": 0.2
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"chain_gain",
-"value": 1.07
+"value": 0.1
 }, {
-"op": &"mul",
+"op": &"add",
 "stat": &"graze_gain",
-"value": 1.07
+"value": 0.1
 }],
 "id": &"gain",
 "max": 5,
 "name": "GAIN",
-"text": "Meter fills 7% faster per level"
+"text": "Meters fill 10% faster per level"
 }, {
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"overdrive_window",
-"value": 1.1
+"value": 0.1
 }],
 "id": &"window",
 "max": 3,

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ShipDef" load_steps=18 format=3]
+[gd_resource type="Resource" script_class="ShipDef" load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://resources/ship_def.gd" id="1"]
 [ext_resource type="Texture2D" path="res://assets/art/dusk_armada/player.png" id="2"]
@@ -10,13 +10,11 @@
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/plating.tres" id="t_plating"]
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/capacitor.tres" id="t_capacitor"]
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/shock_plate.tres" id="t_shock_plate"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/reserve_hull.tres" id="t_reserve_hull"]
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/afterburn.tres" id="t_afterburn"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/slip_jets.tres" id="t_slip_jets"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/overdrive_core.tres" id="t_overdrive_core"]
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/salvage_rig.tres" id="t_salvage_rig"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/tractor.tres" id="t_tractor"]
 [ext_resource type="Resource" path="res://data/hangar/tree/kestrel/chrono_cell.tres" id="t_chrono_cell"]
-[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/combo_wiring.tres" id="t_combo_wiring"]
+[ext_resource type="Resource" path="res://data/hangar/tree/kestrel/overdrive_core.tres" id="t_overdrive_core"]
 
 [resource]
 script = ExtResource("1")
@@ -31,4 +29,4 @@ slots = {
 }
 mounts = Array[StringName]([&"nose", &"left", &"rear", &"right"])
 sprite = ExtResource("2")
-tree = Array[ExtResource("tdef")]([ExtResource("t_focus_lens"), ExtResource("t_rail_coil"), ExtResource("t_hunter_core"), ExtResource("t_twin_rail"), ExtResource("t_plating"), ExtResource("t_capacitor"), ExtResource("t_shock_plate"), ExtResource("t_afterburn"), ExtResource("t_slip_jets"), ExtResource("t_overdrive_core"), ExtResource("t_salvage_rig"), ExtResource("t_tractor"), ExtResource("t_chrono_cell"), ExtResource("t_combo_wiring")])
+tree = Array[ExtResource("tdef")]([ExtResource("t_focus_lens"), ExtResource("t_rail_coil"), ExtResource("t_hunter_core"), ExtResource("t_twin_rail"), ExtResource("t_plating"), ExtResource("t_capacitor"), ExtResource("t_shock_plate"), ExtResource("t_reserve_hull"), ExtResource("t_afterburn"), ExtResource("t_salvage_rig"), ExtResource("t_chrono_cell"), ExtResource("t_overdrive_core")])

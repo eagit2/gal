@@ -17,7 +17,6 @@ const TIER_COLORS: Array[Color] = [Color("9a9ab3"), Color("f4efe6"), Color("8ce6
 const CATEGORY_HINTS := ["", "Shields on the sides recharge faster.", "Your power button.", "Engines push you: from the %s they change your strafe or speed.", "Drones, magnets and combo boosters.", "Arrive with combos."]
 ## Placement effects in words, by stat. Lower shield_recharge is faster.
 const STAT_WORDS := {&"strafe_right": "strafe right", &"strafe_left": "strafe left", &"move_speed": "speed", &"shield_recharge": "shield recharge"}
-const BLUEPRINT_INK := Color(0.06, 0.13, 0.25, 0.9)
 const SHIP_VISUAL := preload("res://assets/art/dusk_armada/player.tscn")
 const SHIP_PARTS := preload("res://assets/art/dusk_armada/ship_parts.gd")
 const ROW_HEIGHT := 44
@@ -64,19 +63,74 @@ static func row(left: String, mid := "", right := "", dot := Color.TRANSPARENT, 
 	return button
 
 
-## Level pips for an attribute: filled up to `level`, hollow up to `max_level`, padded to `width`.
-static func pips(level: int, max_level: int, width: int) -> String:
-	return "■".repeat(level) + "□".repeat(maxi(max_level - level, 0)) + " ".repeat(maxi(width - max_level, 0))
+## Level bars: one small block per level, filled up to `level`.
+static func bars(level: int, max_level: int, color: Color) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 3)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for i in max_level:
+		var bar := ColorRect.new()
+		bar.custom_minimum_size = Vector2(18, 10)
+		bar.color = color if i < level else Color(0.24, 0.22, 0.39)
+		bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(bar)
+	return row
 
 
-## "P3 S2 T1": each attribute's first letter and level.
-static func levels_short(state: Dictionary, def: PartDef) -> String:
-	if not Loadout.owns(state, def.id):
-		return ""
-	var words: PackedStringArray = []
-	for a in def.attributes:
-		words.append("%s%d" % [String(a["name"]).left(1), Loadout.level(state, def.id, a["id"])])
-	return " ".join(words)
+## A two-line upgrade card: name and level bars, then what the next level changes and its price.
+static func upgrade_card(title: String, level: int, max_level: int, color: Color, change: String, price: String, price_color: Color) -> Button:
+	var button := Button.new()
+	button.custom_minimum_size.y = 84
+	style(button)
+	var lines := VBoxContainer.new()
+	lines.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lines.offset_left = 12
+	lines.offset_right = -12
+	lines.offset_top = 12
+	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_theme_constant_override("separation", 14)
+	button.add_child(lines)
+	var top := HBoxContainer.new()
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var name := label(title, 16, color)
+	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(name)
+	top.add_child(bars(level, max_level, color))
+	lines.add_child(top)
+	var bottom := HBoxContainer.new()
+	bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var what := label(change, 16, Color.WHITE)
+	what.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	what.clip_text = true
+	bottom.add_child(what)
+	bottom.add_child(label(price, 16, price_color, HORIZONTAL_ALIGNMENT_RIGHT))
+	lines.add_child(bottom)
+	return button
+
+
+## A ship tree node: name, rank bars, and price or state.
+static func node_card(title: String, rank: int, max_rank: int, color: Color, status: String, status_color: Color) -> Button:
+	var button := Button.new()
+	button.custom_minimum_size = Vector2(0, 108)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	style(button)
+	button.add_theme_stylebox_override("normal", box(INK, color.darkened(0.2) if rank > 0 else Color(0.3, 0.28, 0.45)))
+	var lines := VBoxContainer.new()
+	lines.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lines.offset_left = 6
+	lines.offset_right = -4
+	lines.offset_top = 10
+	lines.offset_bottom = -10
+	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_theme_constant_override("separation", 6)
+	button.add_child(lines)
+	var name := label(title, 16, Color.WHITE if status_color != DIM else DIM)
+	name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	lines.add_child(name)
+	lines.add_child(bars(rank, max_rank, color))
+	lines.add_child(label(status, 16, status_color))
+	return button
 
 
 ## "+25% strafe right, recharge 20% faster" for placement effects.
@@ -95,15 +149,15 @@ static func effect_words(effects: Array[Dictionary]) -> String:
 ## A slot box for the hangar home: mount name in the part's color, the part, its attribute levels.
 static func slot_box(mount_name: String, def: PartDef, state: Dictionary) -> Button:
 	var button := Button.new()
-	button.size = Vector2(170, 92)
+	button.size = Vector2(170, 104)
 	style(button)
 	var color := CATEGORY_COLORS[def.category] if def else DIM
 	button.add_theme_stylebox_override("normal", box(INK, color))
 	var lines := VBoxContainer.new()
 	lines.set_anchors_preset(Control.PRESET_FULL_RECT)
-	lines.offset_left = 8
-	lines.offset_right = -6
-	lines.offset_top = 6
+	lines.offset_left = 10
+	lines.offset_right = -8
+	lines.offset_top = 10
 	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lines.add_theme_constant_override("separation", 6)
 	button.add_child(lines)
@@ -111,7 +165,7 @@ static func slot_box(mount_name: String, def: PartDef, state: Dictionary) -> But
 	var name := label(def.display_name.to_upper() if def else "- EMPTY -", 16)
 	name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lines.add_child(name)
-	lines.add_child(label(levels_short(state, def) if def else "", 8, GOOD))
+	lines.add_child(label("LV %d" % Loadout.total_levels(state, def.id) if def else "", 16, GOOD))
 	return button
 
 
@@ -157,49 +211,6 @@ static func ship_preview(state: Dictionary, zoom: float, height: float) -> Contr
 	ship.get_node("dusk_armada").add_child(parts)
 	holder.add_child(ship)
 	holder.resized.connect(func() -> void: ship.position = holder.size / 2)
-	return holder
-
-
-## The saved ship on a blueprint grid, with a marker on each mount and the hull: gold when a tree
-## node there is bought and powered, and "owned/total" ranks beside it.
-static func blueprint(zoom: float, height: float) -> Control:
-	var holder := Control.new()
-	holder.custom_minimum_size.y = height
-	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var back := ColorRect.new()
-	back.color = BLUEPRINT_INK
-	back.set_anchors_preset(Control.PRESET_FULL_RECT)
-	holder.add_child(back)
-	var ship := ship_preview({}, zoom, height)
-	ship.set_anchors_preset(Control.PRESET_FULL_RECT)
-	ship.modulate = Color(0.6, 0.8, 1.0, 0.55)
-	holder.add_child(ship)
-	var catalog := Hangar.CATALOG
-	var state := Hangar.state()
-	var def := Loadout.ship_of(catalog, state)
-	var anchors := ShipDef.ANCHORS.duplicate()
-	anchors[&"hull"] = Vector2(0, 0)
-	var markers := {}
-	for mount: StringName in anchors:
-		var owned := 0
-		var total := 0
-		var lit := false
-		for node in def.tree:
-			if node.mount == mount:
-				total += node.max_rank
-				owned += ShipTree.rank(state, def, node)
-				lit = lit or (ShipTree.rank(state, def, node) > 0 and ShipTree.powered(catalog, state, node))
-		if total == 0:
-			continue
-		var marker := label("%d/%d" % [owned, total], 8, GOLD if lit else Color(0.55, 0.7, 0.95), HORIZONTAL_ALIGNMENT_CENTER)
-		marker.custom_minimum_size = Vector2(48, 16)
-		var b := box(Color(0.05, 0.1, 0.2, 0.9), GOLD if lit else Color(0.35, 0.5, 0.75))
-		marker.add_theme_stylebox_override("normal", b)
-		holder.add_child(marker)
-		markers[marker] = anchors[mount]
-	holder.resized.connect(func() -> void:
-		for marker: Label in markers:
-			marker.position = holder.size / 2 + (markers[marker] as Vector2) * 2.0 * zoom - marker.custom_minimum_size / 2)
 	return holder
 
 

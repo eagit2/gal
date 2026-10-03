@@ -65,8 +65,9 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Pilots with active powers: Vega (Overclock), Rook (Bulwark), Nyx (Phase Dash), Juno (Nova)
 - [x] Hangar v3 step 1: typed slots on nose/left/rear/right mounts, placement effects, 14 ranked parts, categorized store with ship previews (`docs/hangar.md`)
 - [x] Hangar v3 slot menus (Eric picked mockups A and T3): slot > category > part > attribute upgrades, rotating store stock, Kestrel blueprint tree gated by part rarity, 18 parts (`docs/hangar.md`)
+- [x] Hangar cleanup: round upgrade numbers shown in real units, ship-specific skill tree (3 branches), cleaner cards on every hangar screen
 - [ ] Hangar v3 step 2: chips and FF7-style combos, combo sockets, rest of the parts catalog
-- [ ] Hangar v3 step 3: blueprint trees for Talon, Bastion and Seraph, and tree capstones that unlock ships and a 5th slot
+- [ ] Hangar v3 step 3: ship trees for Talon, Bastion and Seraph, and tree capstones that unlock ships and a 5th slot
 - [x] Title screen: Continue (resumes the saved run at its last stage), New Game with difficulty pick and an overwrite confirm. Hangar button hook in `title.gd`.
 - [x] Stage medals (goal per stage) pay meta currency, scaled by difficulty (v1 goals on stages 1, 2 and challenge 1)
 ## M5 Sector 1 complete

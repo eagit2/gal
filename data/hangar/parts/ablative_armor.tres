@@ -8,7 +8,7 @@ id = &"ablative_armor"
 display_name = "Ablative Armor"
 category = 1
 tier = 1
-text = "2 extra layers, slow recharge."
+text = "2 extra layers, but recharges 50% slower."
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"shield_layers",

@@ -26,14 +26,14 @@ attributes = Array[Dictionary]([{
 "text": "+1 damage per level"
 }, {
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"fire_rate",
-"value": 1.08
+"value": 0.1
 }],
 "id": &"fire_rate",
 "max": 5,
 "name": "FIRE RATE",
-"text": "+8% fire rate per level"
+"text": "+10% fire rate per level"
 }, {
 "effects": [{
 "op": &"add",

@@ -1,17 +1,16 @@
 class_name TreeNodeDef
 extends Resource
-## A node on a ship's blueprint tree. It sits on a mount (or the hull) and opens only when the
-## part fitted there is at least `min_tier` rare; swap in a lower-rarity part and the node goes
-## dark until a rare enough part is back. Bought rank by rank with scrap.
+## A node on a ship's skill tree. Nodes sit in branches (offense, defense, utility); each needs a
+## rank in the node above it. Bought rank by rank with scrap; the effects belong to the ship, not
+## to any part.
 
 @export var id: StringName
 @export var display_name: String
 ## What one rank does.
 @export var text: String
-## nose, left, rear, right, or hull (no part needed).
-@export var mount: StringName = &"hull"
-@export var min_tier: PartDef.Tier = PartDef.Tier.STARTER
-## Node that needs at least one rank first; empty for a root.
+## offense, defense or utility (a column in the tree).
+@export var branch: StringName = &"offense"
+## Node that needs at least one rank first; empty for the top of a branch.
 @export var requires: StringName
 @export var max_rank := 1
 ## Scrap for rank 1; rank N costs N times this.

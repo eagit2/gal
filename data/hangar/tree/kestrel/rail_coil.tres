@@ -7,13 +7,12 @@ script = ExtResource("1")
 id = &"rail_coil"
 display_name = "Rail Coil"
 text = "+10% shot speed"
-mount = &"nose"
-min_tier = 2
+branch = &"offense"
 requires = &"focus_lens"
 max_rank = 2
-cost = 160
+cost = 200
 effects = Array[Dictionary]([{
-"op": &"mul",
+"op": &"add",
 "stat": &"projectile_speed",
-"value": 1.1
+"value": 0.1
 }])

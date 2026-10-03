@@ -1,18 +1,18 @@
 extends Control
 ## Hangar menus. Home shows the ship and its slots; picking a slot opens its categories, then the
 ## parts of one category, then the part's attributes to upgrade and fit (HangarParts). Also the
-## rotating store, the blueprint tree (HangarBlueprint) and pilots. Built in code from the catalog,
+## rotating store, the ship tree (HangarTree) and pilots. Built in code from the catalog,
 ## so new content needs only data. Keyboard, gamepad (focus) and touch all work; cancel goes back.
 
 const TITLE_SCENE := "res://scenes/main/title.tscn"
 ## Home layout: the area holding the ship and its slot boxes, and each box's top-left corner.
-const SLOT_AREA := Vector2(484, 360)
-const SLOT_SPOTS := {&"nose": Vector2(157, 0), &"left": Vector2(0, 130), &"right": Vector2(314, 130), &"rear": Vector2(157, 268)}
+const SLOT_AREA := Vector2(484, 384)
+const SLOT_SPOTS := {&"nose": Vector2(157, 0), &"left": Vector2(0, 134), &"right": Vector2(314, 134), &"rear": Vector2(157, 280)}
 const MOUNT_NAMES := {&"nose": "NOSE", &"left": "LEFT", &"rear": "REAR", &"right": "RIGHT", &"hull": "HULL"}
 
 var catalog: HangarCatalog = preload("res://data/hangar/catalog.tres")
 var parts := HangarParts.new(self)
-var blueprint := HangarBlueprint.new(self)
+var tree := HangarTree.new(self)
 var _title: Label
 var _credits: Label
 var _list: VBoxContainer
@@ -71,22 +71,22 @@ func _build() -> void:
 	column.add_child(HangarUI.panel(_detail))
 
 
-## Shows the ship with `state` (empty = the saved loadout) in the big preview, or the blueprint.
-func show_ship(state: Dictionary, as_blueprint := false) -> void:
+## Shows the ship with `state` (empty = the saved loadout) in the big preview.
+func show_ship(state: Dictionary) -> void:
 	for child in _preview_box.get_children():
 		child.queue_free()
-	var ship := HangarUI.blueprint(3.0, 170) if as_blueprint else HangarUI.ship_preview(state, 3.0, 170)
+	var ship := HangarUI.ship_preview(state, 3.0, 170)
 	ship.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_preview_box.add_child(ship)
 
 
 ## Clears the list for a new menu. `back` runs on cancel.
-func page(title: String, back: Callable, as_blueprint := false) -> void:
+func page(title: String, back: Callable) -> void:
 	_title.text = title
 	_back = back
 	_detail.text = ""
 	_preview_box.custom_minimum_size.y = 170
-	show_ship({}, as_blueprint)
+	show_ship({})
 	for child in _list.get_children():
 		_list.remove_child(child)
 		child.queue_free()
@@ -103,6 +103,11 @@ func add(button: Button, detail: String, action: Callable, preview := {}) -> But
 	button.pressed.connect(action)
 	_list.add_child(button)
 	return button
+
+
+## Adds any control to the page body (the ship tree's columns).
+func add_body(control: Control) -> void:
+	_list.add_child(control)
 
 
 func focus(index := 0) -> void:
@@ -126,7 +131,12 @@ func home(focus_row := 0) -> void:
 	_slot_boxes(ship, state)
 	var stock := (state["stock"] as Array).size()
 	add(HangarUI.row("STORE", "", "%d FOR SALE" % stock), "New parts for scrap. The stock changes after every run.", parts.store)
-	add(HangarUI.row("BLUEPRINT"), "The %s tree. Rarer parts on a mount open deeper nodes there." % ship.display_name.to_upper(), blueprint.open)
+	var owned := 0
+	var total := 0
+	for node in ship.tree:
+		owned += ShipTree.rank(state, ship, node)
+		total += node.max_rank
+	add(HangarUI.row("SHIP TREE", "", "%d / %d" % [owned, total]), "The %s's own upgrades: offense, defense and utility." % ship.display_name.to_upper(), tree.open)
 	add(HangarUI.row("PILOT", "", Hangar.pilot().display_name.to_upper(), Color.TRANSPARENT, Hangar.pilot().color), "Pick your pilot. Each one brings an active power.", _pilots)
 	add(HangarUI.row("BACK"), "Back to the title screen.", SceneRouter.go_to.bind(TITLE_SCENE))
 	var boxes := _preview_box.get_children().filter(func(c: Node) -> bool: return c is Button and not c.is_queued_for_deletion())

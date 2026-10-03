@@ -8,31 +8,31 @@ id = &"scrap_magnet"
 display_name = "Scrap Magnet"
 category = 4
 tier = 0
-text = "Pulls scrap from farther away."
+text = "Pulls in scrap within 80 px."
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"magnet",
-"value": 60.0
+"value": 80.0
 }])
 attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"add",
 "stat": &"magnet",
-"value": 20.0
+"value": 40.0
 }],
 "id": &"pull",
-"max": 5,
+"max": 3,
 "name": "PULL",
-"text": "Pulls from 20 px farther per level"
+"text": "Pull range +40 px per level"
 }, {
 "effects": [{
-"op": &"mul",
+"op": &"add",
 "stat": &"scrap_mult",
-"value": 1.05
+"value": 0.1
 }],
 "id": &"value",
 "max": 3,
 "name": "VALUE",
-"text": "Scrap worth 5% more per level"
+"text": "Scrap worth 10% more per level"
 }])
 part = &"antenna_support"
