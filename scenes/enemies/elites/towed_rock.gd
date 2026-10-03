@@ -2,7 +2,7 @@ class_name TowedRock
 extends Node2D
 ## The Rock Hauler's giant rock. Hangs on a tether below the elite and lags behind its moves. Every
 ## 1/chunks of its hp breaks off a falling chunk. Shooting the tether's hurtbox cuts it loose: the
-## rock then drifts down and off screen. Touching the rock costs a life.
+## rock then drifts down and off screen, crushing enemies on the way. Touching it costs a life.
 
 const CHUNK_SCENE := preload("res://scenes/enemies/elites/rock_chunk.tscn")
 const FOLLOW := 2.0
@@ -73,6 +73,8 @@ func cut() -> void:
 	if not tethered:
 		return
 	tethered = false
+	$Crusher.ignore = elite
+	$Crusher.set_deferred(&"monitoring", true)
 	_tether.queue_free()
 	_visual.call("set_tether", null)
 	EventBus.elite_trait_broken.emit(global_position)

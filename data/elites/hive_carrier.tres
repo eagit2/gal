@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EliteDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="def"]
+[ext_resource type="Script" path="res://scenes/enemies/elites/hive_tow.gd" id="trait"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/warden.tscn" id="visual"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/elites/hive_pod.tscn" id="pod"]
+[ext_resource type="Resource" path="res://data/enemies/bee.tres" id="bee"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("trait")
+pod_scene = ExtResource("pod")
+swarm_enemy = ExtResource("bee")
+
+[resource]
+script = ExtResource("def")
+id = &"hive_carrier"
+display_name = "Hive Carrier"
+hint = "Its pod hatches swarms. Shoot the pod down"
+hp = 40
+score = 3000
+scrap = 28
+speed = 60.0
+fire_interval = 2.3
+fan_shots = 3
+visual_scene = ExtResource("visual")
+visual_scale = 1.8
+tint = Color(1.2, 1.05, 0.7, 1)
+trait_logic = SubResource("trait_logic")

@@ -32,6 +32,7 @@ const BASE_STATS := {
 	&"freeze_charges": 0,  # Cryo Pulse uses per stage
 	&"freeze_time": 3.0,  # seconds enemies stay frozen
 	&"scrap_mult": 1.0,  # scrap value
+	&"extra_lives": 0,  # ships added to the difficulty's lives (Spare Hull)
 }
 static func compute(effects: Array[Dictionary]) -> Dictionary:
 	var stats := BASE_STATS.duplicate()

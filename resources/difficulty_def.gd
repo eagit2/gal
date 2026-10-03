@@ -3,7 +3,8 @@ extends Resource
 
 @export var id: StringName
 @export var display_name: String
-@export var lives: int = 3
+## Ships per run; the Spare Hull hangar part adds more.
+@export var lives: int = 1
 @export var enemy_bullet_speed: float = 1.0
 @export var dive_frequency: float = 1.0
 ## Rate of shots from enemies sitting in formation.

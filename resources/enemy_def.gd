@@ -21,3 +21,5 @@ extends Resource
 @export var scrap_chance: float = 0.3
 ## Scrap in the pile, before the scrap_mult stat and difficulty.
 @export var scrap: int = 1
+## Optional special behavior (blink, dash, drop rocks); scripts in scenes/enemies/traits/.
+@export var trait_logic: EnemyTrait

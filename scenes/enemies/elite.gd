@@ -20,6 +20,8 @@ var state := {}
 var entered := false
 ## Multiplies the fire interval (traits speed it up).
 var fire_scale := 1.0
+## Traits switch the patrol fans off (phased out).
+var can_fire := true
 var _dir := 1.0
 var _t := randf() * TAU
 var _fire := 1.5
@@ -66,7 +68,7 @@ func _physics_process(delta: float) -> void:
 			position.x = clampf(position.x, MIN_X, MAX_X)
 		position.y = PATROL_Y + sin(_t * 0.9) * 26.0
 		_fire -= delta
-		if _fire <= 0.0:
+		if _fire <= 0.0 and can_fire:
 			_fire = def.fire_interval * fire_scale
 			fire_fan()
 	def.trait_logic.tick(self, delta)

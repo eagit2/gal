@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/fusewing.tscn" id="2"]
+[ext_resource type="Resource" path="res://data/brains/swarmer.tres" id="3"]
+[ext_resource type="Script" path="res://scenes/enemies/traits/rock_drop_trait.gd" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/elites/rock_chunk.tscn" id="5"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("4")
+rock_scene = ExtResource("5")
+
+[resource]
+script = ExtResource("1")
+id = &"rock_dropper"
+hp = 2
+score = 100
+dive_score = 200
+speed = 270.0
+visual_scene = ExtResource("2")
+bullet_speed = 300.0
+scrap_chance = 0.45
+scrap = 2
+brain = ExtResource("3")
+trait_logic = SubResource("trait_logic")
