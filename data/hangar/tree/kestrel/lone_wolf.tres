@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lone_wolf"
+display_name = "Lone Wolf"
+text = "+1 damage and combo meters fill twice as fast"
+branch = &"capstone"
+requires = Array[StringName]([&"swarm_link", &"ricochet", &"overflow", &"phase_link"])
+needs = 2
+excludes = &"armada"
+max_rank = 1
+cost = 1000
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"damage",
+"value": 1
+}, {
+"op": &"mul",
+"stat": &"chain_gain",
+"value": 2.0
+}, {
+"op": &"mul",
+"stat": &"graze_gain",
+"value": 2.0
+}])
+socket_category = -1
+row = 4
+column = 3.5

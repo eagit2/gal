@@ -25,4 +25,6 @@ attributes = Array[Dictionary]([{
 "name": "DRONES",
 "text": "+1 drone per level"
 }])
+sockets = 1
+links = 0
 part = &"coil_support"

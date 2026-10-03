@@ -33,6 +33,12 @@ const BASE_STATS := {
 	&"freeze_time": 3.0,  # seconds enemies stay frozen
 	&"scrap_mult": 1.0,  # scrap value
 	&"extra_lives": 0,  # ships added to the difficulty's lives (Spare Hull)
+	# Ship tree perks the run doesn't use yet (hangar plan phase 6).
+	&"shield_reflect": 0,  # shield bounces bullets back
+	&"shield_combo": 0,  # shield hits fill the combo meter
+	&"blink": 0,  # dash teleports
+	&"ricochet": 0,  # reflected shots fire as rails
+	&"wingman": 0,  # start each stage with a wingman
 }
 static func compute(effects: Array[Dictionary]) -> Dictionary:
 	var stats := BASE_STATS.duplicate()

@@ -49,4 +49,6 @@ attributes = Array[Dictionary]([{
 "name": "PIERCE",
 "text": "Pierces 1 more enemy per level"
 }])
+sockets = 2
+links = 1
 part = &"coil_weapon"

@@ -1,7 +1,8 @@
 extends Control
-## Hangar menus. Home shows the ship and its slots; picking a slot opens its categories, then the
-## parts of one category, then the part's attributes to upgrade and fit (HangarParts). Also the
-## rotating store, the ship tree (HangarTree) and pilots. Built in code from the catalog,
+## Hangar menus. SHIPS comes first (locked ships show what unlocks them); a ship opens its home,
+## with the ship and its slots. Picking a slot opens its categories, then the parts of one category,
+## then the part's attributes to upgrade and fit (HangarParts). Also the rotating store, the ship
+## tree (HangarTree) and pilots. Built in code from the catalog,
 ## so new content needs only data. Keyboard, gamepad (focus) and touch all work; cancel goes back.
 
 const TITLE_SCENE := "res://scenes/main/title.tscn"
@@ -25,7 +26,7 @@ func _ready() -> void:
 	_build()
 	EventBus.credits_changed.connect(func(_c: int) -> void: _credits.text = "SCRAP  %d" % Hangar.credits())
 	_credits.text = "SCRAP  %d" % Hangar.credits()
-	home()
+	ships()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -92,6 +93,13 @@ func page(title: String, back: Callable) -> void:
 		child.queue_free()
 
 
+## Hides the ship view for pages with their own picture (ships, the tree).
+func hide_ship() -> void:
+	_preview_box.custom_minimum_size.y = 0
+	for child in _preview_box.get_children():
+		child.queue_free()
+
+
 ## Adds a row: `detail` shows in the bottom panel and `preview` in the ship view while it has focus.
 func add(button: Button, detail: String, action: Callable, preview := {}) -> Button:
 	var show := func() -> void:
@@ -124,8 +132,31 @@ func say(text: String) -> void:
 	_detail.text = text
 
 
+## Every ship: open ones fly (and open their hangar), locked ones say what unlocks them.
+func ships(focus_row := -1) -> void:
+	page("SHIPS", SceneRouter.go_to.bind(TITLE_SCENE))
+	hide_ship()
+	var state := Hangar.state()
+	for ship in catalog.ships:
+		var open := Loadout.unlocked(state, ship)
+		var card := HangarCards.ship_card(ship, open, ship == Hangar.ship())
+		var text := "%s. %s" % [ship.display_name.to_upper(), ship.description] if open else "Locked. Unlock: %s." % ship.unlock_text.to_lower()
+		add(card, text, _fly.bind(ship))
+		if focus_row < 0 and ship == Hangar.ship():
+			focus_row = row_count() - 1
+	add(HangarUI.row("< BACK"), "Back to the title screen.", SceneRouter.go_to.bind(TITLE_SCENE))
+	focus(focus_row)
+
+
+func _fly(ship: ShipDef) -> void:
+	if not Hangar.choose_ship(ship):
+		say("Locked. Unlock: %s." % ship.unlock_text.to_lower())
+		return
+	home()
+
+
 func home(focus_row := 0) -> void:
-	page("HANGAR", SceneRouter.go_to.bind(TITLE_SCENE))
+	page("%s HANGAR" % Hangar.ship().display_name.to_upper(), ships.bind(-1))
 	var ship := Hangar.ship()
 	var state := Hangar.state()
 	_slot_boxes(ship, state)
@@ -136,9 +167,9 @@ func home(focus_row := 0) -> void:
 	for node in ship.tree:
 		owned += ShipTree.rank(state, ship, node)
 		total += node.max_rank
-	add(HangarUI.row("SHIP TREE", "", "%d / %d" % [owned, total]), "The %s's own upgrades: offense, defense and utility." % ship.display_name.to_upper(), tree.open)
+	add(HangarUI.row("SHIP TREE", "", "%d / %d" % [owned, total]), "The %s's own skill tree." % ship.display_name.to_upper(), tree.open)
 	add(HangarUI.row("PILOT", "", Hangar.pilot().display_name.to_upper(), Color.TRANSPARENT, Hangar.pilot().color), "Pick your pilot. Each one brings an active power.", _pilots)
-	add(HangarUI.row("BACK"), "Back to the title screen.", SceneRouter.go_to.bind(TITLE_SCENE))
+	add(HangarUI.row("< SHIPS"), "Pick another ship.", ships.bind(-1))
 	var boxes := _preview_box.get_children().filter(func(c: Node) -> bool: return c is Button and not c.is_queued_for_deletion())
 	if focus_row < boxes.size():
 		(boxes[focus_row] as Button).grab_focus()

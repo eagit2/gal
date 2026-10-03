@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"swarm_link"
+display_name = "Swarm Link"
+text = "+1 link socket on your weapons"
+branch = &"offense"
+requires = Array[StringName]([&"scatter"])
+needs = 0
+excludes = &""
+max_rank = 1
+cost = 500
+effects = Array[Dictionary]([])
+socket_category = 0
+row = 3
+column = 0.0

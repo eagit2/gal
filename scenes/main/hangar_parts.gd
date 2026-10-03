@@ -1,10 +1,16 @@
 class_name HangarParts
 extends RefCounted
-## Hangar part menus, drawn into the hangar's list: a slot's categories, a category's parts, a
+## Hangar part menus, drawn into the hangar's list: a slot's categories, a category's parts (the
+## highlighted one opens in place with its attributes and sockets; selecting it again opens it), a
 ## part's attributes (upgrade each level with scrap, then fit it), and the rotating store.
+
+## Milliseconds a card must have been open before a press opens the part (a tap opens it first).
+const OPEN_DELAY := 200
 
 var menu: Control  # scenes/main/hangar.gd
 var _catalog: HangarCatalog = preload("res://data/hangar/catalog.tres")
+var _open_card: Button
+var _opened_at := 0
 
 
 func _init(owner: Control) -> void:
@@ -12,46 +18,76 @@ func _init(owner: Control) -> void:
 
 
 ## A slot: the categories it takes. The nose takes weapons only, so it goes straight to them.
-func slot(mount: StringName) -> void:
+func slot(mount: StringName, focus_row := -1) -> void:
 	if mount == &"nose":
 		category(mount, PartDef.Category.WEAPON)
 		return
 	var state := Hangar.state()
 	var current := Loadout.part_at(_catalog, state, mount)
 	menu.page("%s SLOT" % menu.MOUNT_NAMES[mount], menu.home.bind(_mount_row(mount)))
-	var empty := state.duplicate(true)
-	empty["mounts"][String(mount)] = ""
-	for cat in range(PartDef.Category.SHIELD, PartDef.Category.size()):
+	for cat in PartDef.MENU_CATEGORIES:
 		var all := _catalog.parts.filter(func(p: PartDef) -> bool: return p.category == cat)
 		var owned := all.filter(func(p: PartDef) -> bool: return Loadout.owns(state, p.id))
-		var right := "%d / %d" % [owned.size(), all.size()] if not all.is_empty() else "SOON"
-		var text: String = HangarUI.CATEGORY_HINTS[cat].replace("%s", menu.MOUNT_NAMES[mount].to_lower())
-		menu.add(HangarUI.row(HangarUI.CATEGORY_NAMES[cat], "", right, HangarUI.CATEGORY_COLORS[cat]), text, category.bind(mount, cat))
-	menu.add(HangarUI.row("- EMPTY -"), "Take the part off this slot.", _fit.bind(mount, &""), empty)
-	menu.say(describe(current, mount) if current else "Empty slot. Pick what kind of part goes here.")
-	menu.focus(current.category - PartDef.Category.SHIELD if current else 0)
+		menu.add(HangarUI.row(HangarUI.CATEGORY_NAMES[cat], "", "%d / %d >" % [owned.size(), all.size()], HangarUI.CATEGORY_COLORS[cat]), describe(current, mount), category.bind(mount, cat))
+	menu.add(HangarUI.row("< BACK"), describe(current, mount), menu.home.bind(_mount_row(mount)))
+	menu.say(describe(current, mount) if current else "Empty slot.")
+	if focus_row < 0:
+		focus_row = PartDef.MENU_CATEGORIES.find(current.category) if current else 0
+	menu.focus(maxi(focus_row, 0))
 
 
 ## A category's parts for `mount`: owned ones first, then the rest with their store state.
 func category(mount: StringName, cat: int, focus_part: PartDef = null) -> void:
 	var state := Hangar.state()
-	var back: Callable = menu.home.bind(_mount_row(mount)) if mount == &"nose" else slot.bind(mount)
+	var back: Callable = menu.home.bind(_mount_row(mount)) if mount == &"nose" else slot.bind(mount, PartDef.MENU_CATEGORIES.find(cat))
 	menu.page("%s  %s" % [menu.MOUNT_NAMES[mount], HangarUI.CATEGORY_NAMES[cat]], back)
+	_open_card = null
 	var list := _catalog.parts.filter(func(p: PartDef) -> bool: return p.category == cat)
 	list.sort_custom(func(a: PartDef, b: PartDef) -> bool: return Loadout.owns(state, a.id) and not Loadout.owns(state, b.id))
 	var focus_row := 0
 	for def: PartDef in list:
 		if def == focus_part or (focus_part == null and Loadout.part_at(_catalog, state, mount) == def):
 			focus_row = menu.row_count()
-		var right := _status(state, def, mount)
 		var color := HangarUI.GOOD if Loadout.owns(state, def.id) else (HangarUI.GOLD if HangarStock.in_stock(state, def.id) else HangarUI.DIM)
-		menu.add(HangarUI.row(def.display_name.to_upper(), "LV %d" % Loadout.total_levels(state, def.id) if Loadout.owns(state, def.id) else "", right, HangarUI.TIER_COLORS[def.tier], color), describe(def, mount), part.bind(mount, def, back), _fitted(state, mount, def))
+		var row := HangarUI.row(def.display_name.to_upper(), "", _status(state, def, mount), HangarUI.TIER_COLORS[def.tier], color)
+		var card := HangarCards.drop_card(row, _final_stats(state, mount, def), Loadout.sockets(_catalog, state, def), HangarUI.CATEGORY_COLORS[def.category])
+		menu.add(card, describe(def, mount), _press.bind(card, part.bind(mount, def, back)), _fitted(state, mount, def))
+		card.focus_entered.connect(_open.bind(card))
 	if list.is_empty():
-		menu.add(HangarUI.row("NONE YET"), "Chips arrive with combos.", back)
+		menu.add(HangarUI.row("NONE YET"), "More parts arrive with combos.", back)
+	menu.add(HangarUI.row("< BACK"), "", back)
 	menu.focus(focus_row)
 
 
-## A part: its attributes with an upgrade per level, then fit, buy or back.
+## Attribute rows for a drop card: name, level, max and the stat it reaches with the part fitted.
+func _final_stats(state: Dictionary, mount: StringName, def: PartDef) -> Array:
+	var stats := _stats(_fitted(state, mount, def))
+	var rows := []
+	for a in def.attributes:
+		var stat: StringName = a["effects"][0]["stat"]
+		rows.append([a["name"], Loadout.level(state, def.id, a["id"]), int(a["max"]), StatWords.value(stat, stats[stat])])
+	return rows
+
+
+func _open(card: Button) -> void:
+	if _open_card == card:
+		return
+	if is_instance_valid(_open_card):
+		HangarCards.set_open(_open_card, false)
+	_open_card = card
+	_opened_at = Time.get_ticks_msec()
+	HangarCards.set_open(card, true)
+
+
+## First press opens the card; a press on an open card runs `action`.
+func _press(card: Button, action: Callable) -> void:
+	if _open_card != card:
+		_open(card)
+	elif Time.get_ticks_msec() - _opened_at >= OPEN_DELAY:
+		action.call()
+
+
+## A part: its attributes with an upgrade per level, its link sockets, then fit, buy or back.
 func part(mount: StringName, def: PartDef, back: Callable, focus_row := 0) -> void:
 	var state := Hangar.state()
 	menu.page(def.display_name.to_upper(), back)
@@ -70,6 +106,11 @@ func part(mount: StringName, def: PartDef, back: Callable, focus_row := 0) -> vo
 		var color := HangarUI.GOOD if maxed else (HangarUI.GOLD if price <= Hangar.credits() else HangarUI.ROSE)
 		var text := "%s  level %d / %d\n%s.\n%s" % [a["name"], lv, int(a["max"]), a["text"], "Buy the part first." if not owned else ("Maxed." if maxed else "Next level: " + change)]
 		menu.add(HangarUI.upgrade_card(a["name"], lv, int(a["max"]), HangarUI.CATEGORY_COLORS[def.category], change, right, color), text, _upgrade.bind(mount, def, a["id"], back))
+	var links := HangarUI.row("LINKS")
+	var sockets := HangarCards.sockets(Loadout.sockets(_catalog, state, def), 22)
+	sockets.position = Vector2(140, 11)
+	links.add_child(sockets)
+	menu.add(links, "Link sockets: chips go here, and linked chips combo. Chips arrive with combos.", func() -> void: pass)
 	var where := Loadout.mount_of(state, def.id)
 	if owned and where == mount:
 		menu.add(HangarUI.row("FITTED ON %s" % menu.MOUNT_NAMES[mount], "", "", Color.TRANSPARENT, HangarUI.GOOD), summary, back)
@@ -79,7 +120,7 @@ func part(mount: StringName, def: PartDef, back: Callable, focus_row := 0) -> vo
 		menu.add(HangarUI.row("BUY", "", str(def.price()), Color.TRANSPARENT, HangarUI.GOLD if def.price() <= Hangar.credits() else HangarUI.ROSE), summary, _buy.bind(mount, def, back), _fitted(state, mount, def))
 	elif not owned:
 		menu.add(HangarUI.row("NOT IN STOCK", "", "", Color.TRANSPARENT, HangarUI.DIM), "Not in the store right now. The stock changes after every run.", back)
-	menu.add(HangarUI.row("BACK"), summary, back)
+	menu.add(HangarUI.row("< BACK"), summary, back)
 	menu.show_ship(_fitted(state, mount, def))
 	menu.focus(focus_row)
 	menu.say(summary)
@@ -92,15 +133,15 @@ func store(focus_row := 0) -> void:
 	for id: String in state["stock"]:
 		var def := _catalog.part(StringName(id))
 		var mount := _best_mount(state, def)
-		menu.add(HangarUI.part_card(def, Loadout.preview(_catalog, state, def), Hangar.credits()), describe(def, mount), part.bind(mount, def, store.bind(menu.row_count())))
+		menu.add(HangarUI.part_card(def, Loadout.preview(_catalog, state, def), Hangar.credits(), Loadout.sockets(_catalog, state, def)), describe(def, mount), part.bind(mount, def, store.bind(menu.row_count())))
 	if (state["stock"] as Array).is_empty():
 		menu.add(HangarUI.row("SOLD OUT"), "You own every part. New ones come with combos.", menu.home)
 	menu.add(HangarUI.row("REROLL", "", str(HangarStock.REROLL_COST)), "Swap the stock for new parts now instead of after the next run.", _reroll)
-	menu.add(HangarUI.row("BACK"), "Back to the hangar.", menu.home.bind(Hangar.ship().mounts.size()))
+	menu.add(HangarUI.row("< BACK"), "Back to the hangar.", menu.home.bind(Hangar.ship().mounts.size()))
 	menu.focus(focus_row)
 
 
-## Rarity, category, what it does, what `mount` adds, and which tree nodes it powers there.
+## Rarity, category, what it does, and what `mount` adds.
 func describe(def: PartDef, mount: StringName) -> String:
 	if def == null:
 		return ""
@@ -135,13 +176,15 @@ func _fitted(state: Dictionary, mount: StringName, def: PartDef) -> Dictionary:
 	return copy
 
 
-## Places the part, first emptying any mount whose part fills the same slot type.
+## Places the part, first emptying mounts whose parts fill the same slot type until it fits.
 func _force_place(state: Dictionary, mount: StringName, id: StringName) -> bool:
 	if id != &"" and not Loadout.can_place(_catalog, state, mount, _catalog.part(id)):
 		for other in Loadout.ship_of(_catalog, state).mounts:
 			var p := Loadout.part_at(_catalog, state, other)
 			if other != mount and p and p.slot() == _catalog.part(id).slot():
 				state["mounts"][String(other)] = ""
+				if Loadout.can_place(_catalog, state, mount, _catalog.part(id)):
+					break
 	return Loadout.place(_catalog, state, mount, id)
 
 

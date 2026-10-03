@@ -4,15 +4,20 @@
 
 [resource]
 script = ExtResource("1")
-id = &"overdrive_core"
-display_name = "Overdrive Core"
-text = "Combo window 25% longer"
-branch = &"utility"
-requires = &"chrono_cell"
+id = &"overflow"
+display_name = "Overflow"
+text = "Combo modes last 50% longer"
+branch = &"merge"
+requires = Array[StringName]([&"absorb", &"drone_drift"])
+needs = 0
+excludes = &""
 max_rank = 1
-cost = 800
+cost = 600
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"overdrive_window",
-"value": 0.25
+"value": 0.5
 }])
+socket_category = -1
+row = 3
+column = 3.5

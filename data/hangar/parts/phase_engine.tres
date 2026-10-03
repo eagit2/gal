@@ -39,4 +39,6 @@ attributes = Array[Dictionary]([{
 "name": "WINDOW",
 "text": "Combo window 10% longer per level"
 }])
+sockets = 3
+links = 1
 part = &"coil_hull"

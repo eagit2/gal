@@ -3,7 +3,7 @@ extends RefCounted
 ## Hangar rules on the saved loadout state. Pure functions so tests can call them directly.
 ## State: {"ship": id, "ships": [ids], "parts": {id: {attribute id: level}}, "mounts": {mount: part
 ## id or ""}, "pilot": id, "pilots": [ids], "stock": [part ids for sale], "tree": {ship id: {node
-## id: rank}}}. Store stock lives in HangarStock, tree rules in ShipTree.
+## id: rank}}, "cleared": [stage ids ever cleared, for ship unlocks]}. Store stock lives in HangarStock, tree rules in ShipTree.
 
 
 static func default_state(catalog: HangarCatalog) -> Dictionary:
@@ -17,7 +17,7 @@ static func default_state(catalog: HangarCatalog) -> Dictionary:
 		var id := String(catalog.starter_mounts[mount])
 		parts[id] = {}
 		mounts[String(mount)] = id
-	return {"ship": ship, "ships": [ship], "parts": parts, "mounts": mounts, "pilot": pilot, "pilots": [pilot], "stock": [], "tree": {}}
+	return {"ship": ship, "ships": [ship], "parts": parts, "mounts": mounts, "pilot": pilot, "pilots": [pilot], "stock": [], "tree": {}, "cleared": []}
 
 
 ## Returns a usable state. Saves from before ship slots keep their pilots and start a fresh loadout;
@@ -53,7 +53,17 @@ static func normalize(state: Variant, catalog: HangarCatalog) -> Dictionary:
 	state["stock"] = stock.filter(func(id: Variant) -> bool: return catalog.part(StringName(str(id))) != null)
 	if not state.get("tree") is Dictionary:
 		state["tree"] = {}
+	if not state.get("cleared") is Array:
+		state["cleared"] = []
+	var ship := catalog.ship(StringName(str(state.get("ship", ""))))
+	if ship == null or not unlocked(state, ship):
+		state["ship"] = fresh["ship"]
 	return state
+
+
+## True when the ship needs no stage, or its stage has been cleared.
+static func unlocked(state: Dictionary, ship: ShipDef) -> bool:
+	return ship.unlock_stage == &"" or String(ship.unlock_stage) in (state.get("cleared", []) as Array)
 
 
 static func pilot_of(catalog: HangarCatalog, state: Dictionary) -> PilotDef:
@@ -140,6 +150,15 @@ static func effects(catalog: HangarCatalog, state: Dictionary) -> Array[Dictiona
 			result.append_array(catalog.placement_effects(def, mount))
 	result.append_array(ShipTree.effects(catalog, state))
 	return result
+
+
+## Link sockets on a part, linked pairs first: 2 = a linked pair, 1 = a single socket, 0 = a
+## single socket the ship tree adds.
+static func sockets(catalog: HangarCatalog, state: Dictionary, def: PartDef) -> Array[int]:
+	var groups := PartDef.socket_groups(def.sockets, def.links)
+	for i in ShipTree.extra_sockets(catalog, state, def.category):
+		groups.append(0)
+	return groups
 
 
 ## Scrap for the next level of an attribute; -1 when it is maxed or the part isn't owned.

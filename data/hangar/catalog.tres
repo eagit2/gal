@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="HangarCatalog" load_steps=29 format=3]
+[gd_resource type="Resource" script_class="HangarCatalog" load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://resources/hangar_catalog.gd" id="1"]
 [ext_resource type="Script" path="res://resources/ship_def.gd" id="sdef"]
@@ -9,6 +9,8 @@
 [ext_resource type="Resource" path="res://data/hangar/pilots/nyx.tres" id="p_nyx"]
 [ext_resource type="Resource" path="res://data/hangar/pilots/juno.tres" id="p_juno"]
 [ext_resource type="Resource" path="res://data/hangar/ships/kestrel.tres" id="s_kestrel"]
+[ext_resource type="Resource" path="res://data/hangar/ships/talon.tres" id="s_talon"]
+[ext_resource type="Resource" path="res://data/hangar/ships/bastion.tres" id="s_bastion"]
 [ext_resource type="Resource" path="res://data/hangar/parts/pulse_laser.tres" id="pt_pulse_laser"]
 [ext_resource type="Resource" path="res://data/hangar/parts/twin_cannon.tres" id="pt_twin_cannon"]
 [ext_resource type="Resource" path="res://data/hangar/parts/needle_gun.tres" id="pt_needle_gun"]
@@ -30,7 +32,7 @@
 
 [resource]
 script = ExtResource("1")
-ships = Array[ExtResource("sdef")]([ExtResource("s_kestrel")])
+ships = Array[ExtResource("sdef")]([ExtResource("s_kestrel"), ExtResource("s_talon"), ExtResource("s_bastion")])
 parts = Array[ExtResource("ptdef")]([ExtResource("pt_pulse_laser"), ExtResource("pt_twin_cannon"), ExtResource("pt_needle_gun"), ExtResource("pt_missile_pod"), ExtResource("pt_arc_lance"), ExtResource("pt_bubble"), ExtResource("pt_regen_field"), ExtResource("pt_ablative_armor"), ExtResource("pt_prism_shield"), ExtResource("pt_cryo_pulse"), ExtResource("pt_ion_thruster"), ExtResource("pt_vector_jet"), ExtResource("pt_phase_engine"), ExtResource("pt_scrap_magnet"), ExtResource("pt_scrap_compactor"), ExtResource("pt_drone_bay"), ExtResource("pt_combo_amp"), ExtResource("pt_spare_hull")])
 pilots = Array[ExtResource("pdef")]([ExtResource("p_vega"), ExtResource("p_rook"), ExtResource("p_nyx"), ExtResource("p_juno")])
 starter_mounts = {

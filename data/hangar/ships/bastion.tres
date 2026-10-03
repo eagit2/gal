@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ShipDef" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/ship_def.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/player_bastion.png" id="2"]
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="tdef"]
+
+[resource]
+script = ExtResource("1")
+id = &"bastion"
+display_name = "Bastion"
+description = "Its own skill tree comes later."
+slots = {
+&"engine": 1,
+&"extra": 2,
+&"shield": 1,
+&"weapon": 2
+}
+mounts = Array[StringName]([&"nose", &"left", &"rear", &"right"])
+sprite = ExtResource("2")
+tree = Array[ExtResource("tdef")]([])
+unlock_stage = &"stage_10"
+unlock_text = "BEAT THE MATRIARCH"

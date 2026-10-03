@@ -31,4 +31,6 @@ attributes = Array[Dictionary]([{
 "name": "LAYERS",
 "text": "Absorbs 1 more hit per level"
 }])
+sockets = 1
+links = 0
 part = &"dome_hull"

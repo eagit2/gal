@@ -26,7 +26,7 @@ func _medal(goal: MedalDef.Goal, target := 0.0) -> MedalDef:
 func test_every_file_is_in_the_catalog() -> void:
 	expect_eq(DirAccess.get_files_at("res://data/hangar/parts").size(), CATALOG.parts.size(), "parts registered")
 	expect_eq(DirAccess.get_files_at("res://data/hangar/ships").size(), CATALOG.ships.size(), "ships registered")
-	for ship in CATALOG.ships:
+	for ship in CATALOG.ships.filter(func(s: ShipDef) -> bool: return not s.tree.is_empty()):
 		expect_eq(DirAccess.get_files_at("res://data/hangar/tree/%s" % ship.id).size(), ship.tree.size(), "%s tree registered" % ship.id)
 
 
@@ -47,7 +47,10 @@ func test_content_is_valid() -> void:
 	for ship in CATALOG.ships:
 		for node in ship.tree:
 			expect_true(node.branch in ShipTree.BRANCHES, "%s branch" % node.id)
-			expect_true(node.requires == &"" or ship.node(node.requires) != null, "%s requires" % node.id)
+			for id in node.requires:
+				expect_true(ship.node(id) != null, "%s requires %s" % [node.id, id])
+			var partner := ship.node(node.excludes) if node.excludes != &"" else null
+			expect_true(node.excludes == &"" or (partner != null and partner.excludes == node.id), "%s fork pairs up" % node.id)
 			for effect: Dictionary in node.effects:
 				expect_true(UpgradeSystem.BASE_STATS.has(effect["stat"]), "%s: %s" % [node.id, effect["stat"]])
 	for mount in CATALOG.starter_mounts:
@@ -62,16 +65,17 @@ func test_new_save_flies_one_of_each_slot() -> void:
 		var def := Loadout.part_at(CATALOG, state, mount)
 		expect_true(def != null, "%s fitted" % mount)
 		slots.append(def.slot())
-	expect_eq(slots, [&"weapon", &"shield", &"bonus", &"power"], "nose, left, rear, right")
+	expect_eq(slots, [&"weapon", &"shield", &"engine", &"extra"], "nose, left, rear, right")
 	expect_true(_stats(state)[&"freeze_charges"] == 1, "starter power works")
 
 
-func test_weapons_only_on_the_nose() -> void:
-	var state := _owning(["twin_cannon", "regen_field"])
-	expect_true(not Loadout.place(CATALOG, state, &"left", &"twin_cannon"), "no weapon on a side mount")
+func test_nose_takes_weapons_and_sides_take_anything() -> void:
+	var state := _owning(["twin_cannon", "regen_field", "needle_gun"])
 	expect_true(not Loadout.place(CATALOG, state, &"nose", &"regen_field"), "no shield on the nose")
 	expect_true(Loadout.place(CATALOG, state, &"nose", &"twin_cannon"), "weapon on the nose")
 	expect_eq(_stats(state)[&"extra_shots"], 1)
+	expect_true(Loadout.place(CATALOG, state, &"right", &"pulse_laser"), "a second weapon on a side mount")
+	expect_true(not Loadout.place(CATALOG, state, &"rear", &"needle_gun"), "but only two weapons")
 
 
 func test_one_part_per_slot_type() -> void:
@@ -79,7 +83,7 @@ func test_one_part_per_slot_type() -> void:
 	expect_true(not Loadout.place(CATALOG, state, &"right", &"regen_field"), "the bubble already fills the shield slot")
 	Loadout.place(CATALOG, state, &"left", &"")
 	expect_true(Loadout.place(CATALOG, state, &"right", &"regen_field"), "free slot after emptying")
-	expect_true(Loadout.place(CATALOG, state, &"rear", &"vector_jet"), "swapping the bonus part on its own mount")
+	expect_true(Loadout.place(CATALOG, state, &"rear", &"vector_jet"), "swapping the engine on its own mount")
 	expect_true(Loadout.place(CATALOG, state, &"left", &"vector_jet"), "moving a part to another mount")
 	expect_eq(String(state["mounts"]["rear"]), "", "moved off the old mount")
 
@@ -142,20 +146,57 @@ func test_stock_rotates_unowned_parts() -> void:
 	expect_true(not HangarStock.take(state, CATALOG.part(&"pulse_laser")), "can't buy what isn't stocked")
 
 
-func test_ship_tree_branches() -> void:
+func test_ship_tree_forks_and_merges() -> void:
 	var state := Loadout.default_state(CATALOG)
 	var ship := CATALOG.ships[0]
-	var lens := ship.node(&"focus_lens")
-	var coil := ship.node(&"rail_coil")
-	for branch in ShipTree.BRANCHES:
-		expect_true(not ShipTree.branch(ship, branch).is_empty(), "%s branch" % branch)
-	expect_eq(ShipTree.gate(CATALOG, state, coil), ShipTree.Gate.NEEDS_NODE, "needs the node above")
-	expect_true(ShipTree.buy(CATALOG, state, lens), "top node opens")
-	expect_true(ShipTree.buy(CATALOG, state, coil), "then the next")
-	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.1), "node effect applies")
+	var n := func(id: StringName) -> TreeNodeDef: return ship.node(id)
+	expect_eq(ShipTree.gate(CATALOG, state, n.call(&"rail")), ShipTree.Gate.NEEDS_NODE, "needs the node below")
+	for id in [&"focus_lens", &"rail", &"plating"]:
+		expect_true(ShipTree.buy(CATALOG, state, n.call(id)), "buy %s" % id)
+	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.3), "node effect applies")
 	Loadout.place(CATALOG, state, &"nose", &"")
-	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.1), "belongs to the ship, not a part")
-	expect_eq(ShipTree.price(state, ship, lens), lens.cost * 2, "rank 2 costs double")
+	expect_true(is_equal_approx(_stats(state)[&"projectile_speed"], 1.3), "belongs to the ship, not a part")
+	expect_eq(ShipTree.gate(CATALOG, state, n.call(&"scatter")), ShipTree.Gate.CLOSED, "the fork closes the other side")
+	expect_eq(ShipTree.gate(CATALOG, state, n.call(&"ricochet")), ShipTree.Gate.NEEDS_NODE, "a merge needs both parents")
+	ShipTree.buy(CATALOG, state, n.call(&"reflect"))
+	expect_true(ShipTree.buy(CATALOG, state, n.call(&"ricochet")), "both parents owned")
+	expect_eq(ShipTree.gate(CATALOG, state, n.call(&"armada")), ShipTree.Gate.NEEDS_NODE, "a capstone needs two")
+	ShipTree.buy(CATALOG, state, n.call(&"afterburn"))
+	ShipTree.buy(CATALOG, state, n.call(&"blink"))
+	var nose := CATALOG.part(&"pulse_laser")
+	var before := Loadout.sockets(CATALOG, state, CATALOG.part(&"ion_thruster")).size()
+	ShipTree.buy(CATALOG, state, n.call(&"phase_link"))
+	expect_eq(Loadout.sockets(CATALOG, state, CATALOG.part(&"ion_thruster")).size(), before + 1, "socket node adds to engines")
+	expect_eq(Loadout.sockets(CATALOG, state, nose), [1], "not to weapons")
+	expect_true(ShipTree.buy(CATALOG, state, n.call(&"armada")), "any two open the capstone")
+	expect_eq(ShipTree.gate(CATALOG, state, n.call(&"lone_wolf")), ShipTree.Gate.CLOSED, "one capstone only")
+	expect_eq(ShipTree.price(state, ship, n.call(&"focus_lens")), n.call(&"focus_lens").cost * 2, "rank 2 costs double")
+
+
+func test_sockets_grow_with_rarity() -> void:
+	expect_eq(PartDef.socket_groups(3, 1), [2, 1], "a linked pair and a single")
+	var last := 0
+	for def in CATALOG.parts:
+		expect_true(def.links * 2 <= def.sockets, "%s links fit" % def.id)
+	for tier in PartDef.Tier.values():
+		var counts := CATALOG.parts.filter(func(p: PartDef) -> bool: return p.tier == tier).map(func(p: PartDef) -> int: return p.sockets)
+		if not counts.is_empty():
+			expect_true(counts.min() >= last, "tier %d has at least as many sockets" % tier)
+			last = counts.max()
+
+
+func test_ships_unlock_by_stage() -> void:
+	var state := Loadout.default_state(CATALOG)
+	expect_eq(CATALOG.ships.size(), 3, "three ships")
+	expect_true(Loadout.unlocked(state, CATALOG.ships[0]), "first ship open")
+	var talon := CATALOG.ship(&"talon")
+	expect_true(not Loadout.unlocked(state, talon), "talon locked")
+	state["ship"] = "talon"
+	expect_eq(Loadout.normalize(state, CATALOG)["ship"], "kestrel", "a locked ship can't be flown")
+	state["cleared"].append(String(talon.unlock_stage))
+	state["ship"] = "talon"
+	expect_true(Loadout.unlocked(state, talon), "clearing its stage unlocks it")
+	expect_eq(Loadout.normalize(state, CATALOG)["ship"], "talon", "and it stays picked")
 
 
 func test_stat_words() -> void:
