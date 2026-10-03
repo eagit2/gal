@@ -76,7 +76,7 @@ static func stacks(owned: Array[UpgradeDef], id: StringName) -> int:
 
 
 ## Upgrades from `source` that can still be offered: below max stacks with requirements owned.
-static func available(pool: UpgradePool, owned: Array[UpgradeDef], source := UpgradeDef.Source.CARD) -> Array[UpgradeDef]:
+static func available(pool: UpgradePool, owned: Array[UpgradeDef], source := UpgradeDef.Source.BULLET) -> Array[UpgradeDef]:
 	var ids: Array[StringName] = []
 	for upgrade in owned:
 		ids.append(upgrade.id)
@@ -87,24 +87,10 @@ static func available(pool: UpgradePool, owned: Array[UpgradeDef], source := Upg
 	return result
 
 
-## `count` distinct card upgrades, weighted by rarity.
-static func roll_choices(pool: UpgradePool, owned: Array[UpgradeDef], count: int, rng: RandomNumberGenerator) -> Array[UpgradeDef]:
-	var candidates := available(pool, owned)
-	var picked: Array[UpgradeDef] = []
-	while picked.size() < count and not candidates.is_empty():
-		var weights := PackedFloat32Array()
-		for upgrade in candidates:
-			weights.append(pool.rarity_weights[upgrade.rarity])
-		var index := rng.rand_weighted(weights)
-		picked.append(candidates[index])
-		candidates.remove_at(index)
-	return picked
-
-
-## One drop upgrade for a pickup: roll a rarity (shifted up by `rarity_bonus` tiers), then an upgrade of it.
+## One upgrade from `source` for a pickup: roll a rarity (shifted up by `rarity_bonus` tiers), then an upgrade of it.
 ## Falls back to any available upgrade when that rarity has none left.
-static func roll_drop(pool: UpgradePool, owned: Array[UpgradeDef], rarity_bonus: int, rng: RandomNumberGenerator) -> UpgradeDef:
-	var candidates := available(pool, owned, UpgradeDef.Source.DROP)
+static func roll_drop(pool: UpgradePool, owned: Array[UpgradeDef], rarity_bonus: int, rng: RandomNumberGenerator, source := UpgradeDef.Source.BULLET) -> UpgradeDef:
+	var candidates := available(pool, owned, source)
 	if candidates.is_empty():
 		return null
 	var rarity := mini(rng.rand_weighted(PackedFloat32Array(pool.rarity_weights)) + rarity_bonus, UpgradeDef.Rarity.EPIC)

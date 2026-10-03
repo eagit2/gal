@@ -90,12 +90,8 @@ func gain_upgrade(upgrade: UpgradeDef) -> void:
 	EventBus.upgrade_picked.emit(upgrade.id)
 
 
-func roll_choices(count: int) -> Array[UpgradeDef]:
-	return UpgradeSystem.roll_choices(POOL, owned, count, rng)
-
-
-func roll_drop(rarity_bonus: int) -> UpgradeDef:
-	return UpgradeSystem.roll_drop(POOL, owned, rarity_bonus, rng)
+func roll_drop(rarity_bonus: int, source := UpgradeDef.Source.BULLET) -> UpgradeDef:
+	return UpgradeSystem.roll_drop(POOL, owned, rarity_bonus, rng, source)
 
 
 ## Hangar purchases call this; the effects apply under every run's upgrades.

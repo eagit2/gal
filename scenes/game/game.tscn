@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1"]
 [ext_resource type="Resource" path="res://data/difficulty/pilot.tres" id="2"]
@@ -15,7 +15,6 @@
 [ext_resource type="Script" path="res://systems/drop_system.gd" id="13"]
 [ext_resource type="Script" path="res://systems/kill_blast.gd" id="14"]
 [ext_resource type="Script" path="res://systems/combo_tracker.gd" id="15"]
-[ext_resource type="PackedScene" path="res://scenes/game/upgrade_pick.tscn" id="16"]
 [ext_resource type="Script" path="res://systems/freeze_system.gd" id="17"]
 
 [node name="Game" type="Node2D"]
@@ -60,5 +59,3 @@ script = ExtResource("17")
 [node name="Player" parent="Entities" instance=ExtResource("4")]
 
 [node name="HUD" parent="." instance=ExtResource("5")]
-
-[node name="UpgradePick" parent="." instance=ExtResource("16")]

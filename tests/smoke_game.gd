@@ -12,7 +12,6 @@ var _stages_cleared := 0
 var _styles: Array[StringName] = []
 var _picks := 0
 var _combos: Array[StringName] = []
-var _pick_wait := 0
 
 
 func _initialize() -> void:
@@ -33,12 +32,6 @@ func _initialize() -> void:
 func _process(_delta: float) -> bool:
 	_frame += 1
 	Input.action_press("fire")  # Actions are registered by the Controls autoload after _initialize.
-	# Pick the first card after a short look, like a player would.
-	# Untyped: naming game classes here would compile them before the autoloads exist.
-	var pick: Node = _game.get_node("UpgradePick")
-	_pick_wait = _pick_wait + 1 if pick.call("is_open") else 0
-	if _pick_wait == 40:
-		pick.call("choose", 0)
 	var right := (_frame / 90) % 2 == 0
 	Input.action_release("move_left" if right else "move_right")
 	Input.action_press("move_right" if right else "move_left")

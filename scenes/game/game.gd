@@ -30,7 +30,6 @@ var _dev := DevOptions.from_environment()
 @onready var _drops: DropSystem = $Entities/DropSystem
 @onready var _combos: ComboTracker = $Entities/ComboTracker
 @onready var _hud: Hud = $HUD
-@onready var _pick: UpgradePick = $UpgradePick
 
 
 func _ready() -> void:
@@ -56,7 +55,6 @@ func _ready() -> void:
 	_drops.player = _player
 	_drops.entities = _entities
 	_combos.difficulty = difficulty
-	_pick.picked.connect(_on_upgrade_picked)
 	_hud.set_lives(GameState.lives)
 	stage_number = _dev.stage_index(sector.stages, int(run.get("stage", first_stage)))
 	_start_stage()
@@ -114,7 +112,7 @@ func _on_stage_finished(kills: int, total: int) -> void:
 		var bonus := kills * CHALLENGE_HIT_BONUS
 		if kills == total:
 			bonus += CHALLENGE_PERFECT_BONUS
-			_drops.spawn(PERFECT_DROP_AT, 0)
+			_drops.spawn(PERFECT_DROP_AT, 0, true)
 		GameState.add_score(roundi(bonus * _score_multiplier()))
 		_hud.show_banner("%sHITS %d / %d\nBONUS %d" % ["PERFECT!\n" if kills == total else "", kills, total, bonus], STAGE_DELAY)
 	if not _dev.repeat:
@@ -125,17 +123,7 @@ func _on_stage_finished(kills: int, total: int) -> void:
 func _on_stage_delay_done() -> void:
 	if game_over:
 		return
-	var choices := GameState.roll_choices(difficulty.upgrade_choices)
-	if choices.is_empty():
-		_start_stage()
-	else:
-		_pick.open(choices)
-
-
-func _on_upgrade_picked(upgrade: UpgradeDef) -> void:
-	GameState.gain_upgrade(upgrade)
-	if not game_over:
-		_start_stage()
+	_start_stage()
 
 
 func _score_multiplier() -> float:

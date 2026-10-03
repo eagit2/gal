@@ -1,5 +1,5 @@
 extends TestCase
-## Upgrade stacking, synergies, card rolls and drop math.
+## Upgrade stacking, synergies, drop rolls and drop math.
 
 const POOL: UpgradePool = preload("res://data/upgrades/upgrade_pool.tres")
 
@@ -45,21 +45,18 @@ func test_combo_effects_layer_on_top() -> void:
 	expect_true(is_equal_approx(stats[&"fire_rate"], 1.725), "1.15 * 1.5")
 
 
-func test_choices_are_distinct_and_respect_requirements() -> void:
+func test_utility_drops_are_utility_and_respect_requirements() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	for i in 50:
-		var choices := UpgradeSystem.roll_choices(POOL, [] as Array[UpgradeDef], 3, rng)
-		expect_eq(choices.size(), 3, "three cards")
-		expect_true(choices[0] != choices[1] and choices[1] != choices[2] and choices[0] != choices[2], "distinct")
-		for choice in choices:
-			expect_eq(choice.source, UpgradeDef.Source.CARD, "%s is a card upgrade" % choice.id)
-			expect_true(choice.id != &"deep_freeze", "deep freeze needs cryo pulse")
+		var drop := UpgradeSystem.roll_drop(POOL, [] as Array[UpgradeDef], 0, rng, UpgradeDef.Source.UTILITY)
+		expect_eq(drop.source, UpgradeDef.Source.UTILITY, "%s is a utility upgrade" % drop.id)
+		expect_true(drop.id != &"deep_freeze", "deep freeze needs cryo pulse")
 
 
 func test_maxed_upgrades_are_not_offered() -> void:
 	var owned := _owned([&"spare_ship"])
-	expect_true(POOL.find(&"spare_ship") not in UpgradeSystem.available(POOL, owned), "max 1")
+	expect_true(POOL.find(&"spare_ship") not in UpgradeSystem.available(POOL, owned, UpgradeDef.Source.UTILITY), "max 1")
 
 
 func test_drop_bonus_raises_rarity() -> void:
@@ -75,7 +72,7 @@ func test_drops_only_change_bullets() -> void:
 	var rng := RandomNumberGenerator.new()
 	for i in 40:
 		var drop := UpgradeSystem.roll_drop(POOL, [] as Array[UpgradeDef], 0, rng)
-		expect_eq(drop.source, UpgradeDef.Source.DROP, "%s is a drop" % drop.id)
+		expect_eq(drop.source, UpgradeDef.Source.BULLET, "%s is a drop" % drop.id)
 		for effect: Dictionary in drop.effects:
 			expect_true(effect["stat"] in BULLET_STATS, "%s changes %s" % [drop.id, effect["stat"]])
 

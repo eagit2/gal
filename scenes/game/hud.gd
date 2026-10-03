@@ -167,7 +167,7 @@ func _on_combo_ended(_combo: ComboDef) -> void:
 func _on_upgrade_picked(id: StringName) -> void:
 	var upgrade := GameState.POOL.find(id)
 	if upgrade:
-		show_toast("+ " + upgrade.display_name.to_upper(), UpgradePick.RARITY_COLORS[upgrade.rarity])
+		show_toast("+ " + upgrade.display_name.to_upper(), UpgradeDef.RARITY_COLORS[upgrade.rarity])
 
 
 func _on_run_ended(_victory: bool) -> void:

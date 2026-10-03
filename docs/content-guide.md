@@ -23,7 +23,7 @@ To test a stage without playing up to it, add URL options to the build: `?stage=
 Create `data/weapons/<id>.tres` of type `WeaponDef` (fire_rate, projectile_scene, projectile_speed, spread_count, spread_angle, damage).
 
 ## Upgrade
-Create `data/upgrades/<id>.tres` of type `UpgradeDef` and add it to `data/upgrades/upgrade_pool.tres` (a test fails if you forget). Fields: source (CARD for the between-stage pick, DROP for in-level pickups; drops may only change bullet stats, a test checks), display_name, description (card text), category, rarity (card weights 70/25/5 in the pool), tags (for synergies), max_stacks, requires (upgrade ids), effects.
+Create `data/upgrades/<id>.tres` of type `UpgradeDef` and add it to `data/upgrades/upgrade_pool.tres` (a test fails if you forget). Fields: source (UTILITY for gold capsules, BULLET for regular capsules; bullet upgrades may only change bullet stats, a test checks), display_name, description (toast text), category, rarity (drop weights 70/25/5 in the pool), tags (for synergies), max_stacks, requires (upgrade ids), effects.
 
 Effects are `{"stat": &"...", "op": &"add"|"mul"|"max", "value": ...}`. Stats and their defaults are `UpgradeSystem.BASE_STATS` (`systems/upgrade_system.gd`); `lives` is applied once on pickup. A new stat needs a line in BASE_STATS and code that reads it.
 

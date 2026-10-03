@@ -2,6 +2,7 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: No upgrade pick between stages (Eric); stages run back to back. Utility upgrades (freeze, shield, credits, score, speed) now come from larger gold capsules, 25% of drops and every perfect-challenge drop; the rest are bullet capsules. `UpgradeDef.Source` is UTILITY or BULLET; `DifficultyDef.upgrade_choices` and the UpgradePick scene are gone.
 - 2026-10-03: Upgrade rework (Eric): upgrades are gentler, in-level drops only change bullets (fire rate, shot speed, damage, homing, extra shots, pierce), and stage cards carry utility (Cryo Pulse freeze, extra shield bubbles, shield recharge, credit multiplier, score, speed, magnet, lives). `UpgradeDef.source` (CARD or DROP) decides where an upgrade can appear. Missiles, wing drones and Wide Spread left the pool (the stats stay for the hangar). Drop chances halved.
 - 2026-10-03: Cryo Pulse is an active charge refilled each stage, fired with its own button (C or L; pad Y; tap FREEZE on the HUD), separate from the pilot power (Shift/X/K, pad B/X, two fingers). It freezes enemies and their shots for `freeze_time` seconds; frozen enemies can still be shot. Picked over an automatic trigger so the player chooses the moment.
 - 2026-10-03: `credit_mult` stat (Salvage Contract card) multiplies hangar medal payouts (`Hangar._currency_mult`).
