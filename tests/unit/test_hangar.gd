@@ -140,7 +140,8 @@ func test_stock_rotates_unowned_parts() -> void:
 	for id: String in stock:
 		expect_true(not Loadout.owns(state, StringName(id)), "%s not owned" % id)
 		expect_eq(stock.count(id), 1, "%s once" % id)
-	var def := CATALOG.part(StringName(stock[0]))
+	state["stock"] = ["twin_cannon", "power_chip", "bubble"]
+	var def := CATALOG.part(&"twin_cannon")
 	expect_true(HangarStock.take(state, def), "buy from stock")
 	expect_true(Loadout.owns(state, def.id) and not HangarStock.in_stock(state, def.id), "owned, gone from stock")
 	expect_true(not HangarStock.take(state, CATALOG.part(&"pulse_laser")), "can't buy what isn't stocked")
