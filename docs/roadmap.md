@@ -56,6 +56,7 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Styles: Cold Hologram, Particle Storm, Pocket Four (post shader), Arcade Classic+ (post shader + starfield)
 - [ ] Playtest and tune: drop rate, meter thresholds, upgrade values
 ## M4 Difficulty + meta
+- [x] Title screen: Continue (resumes the saved run at its last stage), New Game with difficulty pick and an overwrite confirm. Hangar button hook in `title.gd`.
 - [ ] Stage medals (goal per stage) pay meta currency, scaled by difficulty
 ## M5 Sector 1 complete
 Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).

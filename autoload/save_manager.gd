@@ -17,6 +17,9 @@ static func default_data() -> Dictionary:
 		"currency": 0,
 		"high_score": 0,
 		"unlocks": [],
+		## Checkpoint of the run in progress (GameState.snapshot), empty when there is none.
+		"run": {},
+		"last_difficulty": "pilot",
 		"settings": {"music_volume": 0.8, "sfx_volume": 0.8, "auto_fire": false},
 	}
 
@@ -34,6 +37,20 @@ func save() -> void:
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(data))
+
+
+func has_run() -> bool:
+	return not (data["run"] as Dictionary).is_empty()
+
+
+func save_run(run: Dictionary) -> void:
+	data["run"] = run
+	save()
+
+
+func clear_run() -> void:
+	data["run"] = {}
+	save()
 
 
 ## Fills keys missing from older saves with defaults. Bump SCHEMA_VERSION when the shape changes.

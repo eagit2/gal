@@ -34,9 +34,13 @@ var _dev := DevOptions.from_environment()
 
 
 func _ready() -> void:
-	if _dev.difficulty != &"" and ResourceLoader.exists("res://data/difficulty/%s.tres" % _dev.difficulty):
-		difficulty = load("res://data/difficulty/%s.tres" % _dev.difficulty)
-	GameState.start_run(difficulty.id, difficulty.lives)
+	var run: Dictionary = SaveManager.data["run"] if GameState.resume_requested else {}
+	GameState.resume_requested = false
+	_load_difficulty(_dev.difficulty if _dev.difficulty != &"" else StringName(run.get("difficulty", GameState.difficulty_id)))
+	if run.is_empty():
+		GameState.start_run(difficulty.id, difficulty.lives)
+	else:
+		GameState.restore(run)
 	EventBus.enemy_killed.connect(_on_enemy_killed)
 	_player.entities = _entities
 	_player.hit.connect(_on_player_hit)
@@ -54,8 +58,14 @@ func _ready() -> void:
 	_combos.difficulty = difficulty
 	_pick.picked.connect(_on_upgrade_picked)
 	_hud.set_lives(GameState.lives)
-	stage_number = _dev.stage_index(sector.stages, first_stage)
+	stage_number = _dev.stage_index(sector.stages, int(run.get("stage", first_stage)))
 	_start_stage()
+
+
+func _load_difficulty(id: StringName) -> void:
+	var path := "res://data/difficulty/%s.tres" % id
+	if id != &"" and ResourceLoader.exists(path):
+		difficulty = load(path)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -84,6 +94,9 @@ func _start_stage() -> void:
 	_drops.enabled = not stage.is_challenge
 	_hud.show_banner("CHALLENGING STAGE" if stage.is_challenge else "STAGE %d" % (stage_number + 1), BANNER_TIME)
 	EventBus.stage_started.emit(stage.id)
+	GameState.stage_index = stage_number
+	if not _dev.is_set():
+		SaveManager.save_run(GameState.snapshot())
 	_runner.start(stage, difficulty)
 	get_tree().create_timer(ATTACK_DELAY, false).timeout.connect(_open_attacks.bind(stage_number))
 
@@ -149,7 +162,9 @@ func _end_run() -> void:
 	_dives.active = false
 	_combos.stop()
 	EventBus.run_ended.emit(false)
+	if not _dev.is_set():
+		SaveManager.data["run"] = {}
 	if GameState.score > SaveManager.data["high_score"]:
 		SaveManager.data["high_score"] = GameState.score
-		SaveManager.save()
+	SaveManager.save()
 	_hud.show_message("GAME OVER\n\nFIRE TO RETRY")
