@@ -73,7 +73,7 @@ func test_nose_takes_weapons_and_sides_take_anything() -> void:
 	var state := _owning(["twin_cannon", "regen_field", "needle_gun"])
 	expect_true(not Loadout.place(CATALOG, state, &"nose", &"regen_field"), "no shield on the nose")
 	expect_true(Loadout.place(CATALOG, state, &"nose", &"twin_cannon"), "weapon on the nose")
-	expect_eq(_stats(state)[&"extra_shots"], 1)
+	expect_eq(_stats(state)[&"extra_shots"], 0, "the second barrel lives in the cannon's WeaponDef")
 	expect_true(Loadout.place(CATALOG, state, &"right", &"pulse_laser"), "a second weapon on a side mount")
 	expect_true(not Loadout.place(CATALOG, state, &"rear", &"needle_gun"), "but only two weapons")
 

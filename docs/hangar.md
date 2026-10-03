@@ -29,6 +29,7 @@ Categories in the slot menu: weapons (green), shields (purple), engines (blue), 
 | Category | Parts (rarity) and attributes |
 |---|---|
 | Weapons | Pulse Laser (starter: POWER, SPEED, PENETRATION), Twin Cannon (common: POWER, FIRE RATE, BARRELS), Needle Gun (uncommon: POWER, FIRE RATE, PIERCE), Missile Pod (rare: RELOAD, SALVO, HOMING), Arc Lance (epic: POWER, SPEED, ARC) |
+| Weapon shots | Each weapon fires its own `WeaponDef` (data/weapons): Pulse Laser 8/s, 1 dmg cyan bolt; Twin Cannon 3/s, two parallel 2-dmg orange rounds 14 px apart; Needle Gun 11/s, fast (1350) thin green darts; Missile Pod 2/s, a pair of 3-dmg homing missiles; Arc Lance 3.5/s, 4-dmg violet beam-bolt piercing 3. Nose fires straight; a weapon on a side mount fires its own shot 15° outward, on the rear straight up (`systems/ship_guns.gd`). Empty nose = basic gun. Run stats modify every gun. |
 | Shields | Bubble (starter), Regen Field, Ablative Armor (common), Prism Shield (rare: LAYERS, RECHARGE, SHOCK) |
 | Engines | Ion Thruster (starter), Vector Jet (common), Phase Engine (rare: THRUST, WINDOW) |
 | Extras | Cryo Pulse (starter: DURATION, CHARGES), Scrap Magnet (starter), Scrap Compactor, Drone Bay (common), Combo Amp (uncommon), Spare Hull (rare: +1 ship per run; SHIPS +1 more per level, max 2) |

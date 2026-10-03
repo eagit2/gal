@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/missile_pod.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -8,32 +9,28 @@ id = &"missile_pod"
 display_name = "Missile Pod"
 category = 0
 tier = 3
-text = "Homing missiles beside your gun."
-effects = Array[Dictionary]([{
-"op": &"add",
-"stat": &"missiles",
-"value": 1
-}])
+text = "Slow homing missiles in pairs."
+effects = Array[Dictionary]([])
 attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"add",
-"stat": &"missile_rate",
-"value": 0.2
+"stat": &"fire_rate",
+"value": 0.1
 }],
 "id": &"reload",
 "max": 5,
 "name": "RELOAD",
-"text": "+20% missile rate per level"
+"text": "+10% fire rate per level"
 }, {
 "effects": [{
 "op": &"add",
-"stat": &"missiles",
+"stat": &"extra_shots",
 "value": 1
 }],
 "id": &"salvo",
 "max": 2,
 "name": "SALVO",
-"text": "+1 missile per volley per level"
+"text": "+1 shot per volley per level"
 }, {
 "effects": [{
 "op": &"add",
@@ -48,3 +45,4 @@ attributes = Array[Dictionary]([{
 sockets = 3
 links = 1
 part = &"pod_weapon"
+weapon = ExtResource("2")

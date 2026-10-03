@@ -29,6 +29,7 @@ var _bars := {}  # combo id -> ProgressBar
 func _ready() -> void:
 	EventBus.score_changed.connect(_on_score_changed)
 	EventBus.shield_changed.connect(_on_shield_changed)
+	_shield.visible = int(GameState.stats.get(&"shield", 0)) > 0
 	EventBus.lives_changed.connect(set_lives)
 	EventBus.combo_meter_changed.connect(_on_meter_changed)
 	EventBus.combo_started.connect(_on_combo_started)
@@ -91,6 +92,7 @@ func _on_score_changed(score: int) -> void:
 
 
 func _on_shield_changed(charge: float) -> void:
+	_shield.visible = charge >= 0.0  # -1: no shield part fitted
 	_shield.text = "SHIELD UP" if charge >= 1.0 else "SHIELD %d%%" % floori(charge * 100.0)
 	_shield.modulate.a = 1.0 if charge >= 1.0 else 0.55
 

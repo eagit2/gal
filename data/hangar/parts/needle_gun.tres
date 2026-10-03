@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/needle_gun.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -8,16 +9,8 @@ id = &"needle_gun"
 display_name = "Needle Gun"
 category = 0
 tier = 2
-text = "Fast darts: +30% fire rate, +40% shot speed."
-effects = Array[Dictionary]([{
-"op": &"add",
-"stat": &"fire_rate",
-"value": 0.3
-}, {
-"op": &"add",
-"stat": &"projectile_speed",
-"value": 0.4
-}])
+text = "Thin, fast darts at a high fire rate."
+effects = Array[Dictionary]([])
 attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"add",
@@ -52,3 +45,4 @@ attributes = Array[Dictionary]([{
 sockets = 2
 links = 1
 part = &"coil_weapon"
+weapon = ExtResource("2")
