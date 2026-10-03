@@ -10,6 +10,10 @@ category = 1
 tier = 1
 text = "Recharges 40% faster."
 effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"shield",
+"value": 1
+}, {
 "op": &"mul",
 "stat": &"shield_recharge",
 "value": 0.6

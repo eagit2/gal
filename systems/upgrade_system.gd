@@ -33,6 +33,10 @@ const BASE_STATS := {
 	&"freeze_time": 3.0,  # seconds enemies stay frozen
 	&"scrap_mult": 1.0,  # scrap value
 	&"extra_lives": 0,  # ships added to the difficulty's lives (Spare Hull)
+	&"shield": 0,  # shield parts fitted; no shield bubble without one
+	&"burn": 0,  # hits set enemies burning (Ember chip)
+	&"chill": 0,  # hits slow enemies (Frost chip)
+	&"chain": 0,  # hits arc to this many nearby enemies (Volt chip)
 	# Ship tree perks the run doesn't use yet (hangar plan phase 6).
 	&"shield_reflect": 0,  # shield bounces bullets back
 	&"shield_combo": 0,  # shield hits fill the combo meter

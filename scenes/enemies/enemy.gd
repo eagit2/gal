@@ -81,6 +81,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if GameState.freeze_left > 0.0:
 		return  # Cryo Pulse: hold still (still hittable).
+	delta *= StatusEffects.speed_scale(self)  # Frost chip
 	match state:
 		State.ENTERING:
 			_advance_path(delta)

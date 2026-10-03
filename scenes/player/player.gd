@@ -1,7 +1,8 @@
 class_name Player
 extends Node2D
-## Player ship: movement (keyboard, gamepad, touch drag), shooting, shield bubble, grazing, invulnerability
-## after a hit. Run stats (GameState.stats) modify speed and the weapon; slow-mo doesn't slow the ship.
+## Player ship: movement (keyboard, gamepad, touch drag), shooting every fitted gun, the shield bubble
+## (only with a shield part fitted), grazing, invulnerability after a hit.
+## Run stats (GameState.stats) modify speed and every weapon; slow-mo doesn't slow the ship.
 
 signal hit
 
@@ -22,6 +23,7 @@ const CAPTURE_TIME := 1.1
 ## Enemy shots passing within this distance (but missing) count as grazes.
 const GRAZE_RADIUS := 30.0
 
+## The nose weapon (drones copy it); set from the hangar loadout on ready.
 @export var weapon: WeaponDef
 var entities: Node
 var alive := true
@@ -32,7 +34,8 @@ var _wingman: Node2D
 ## Pixels per second this frame; enemies lead their aim with it.
 var velocity := Vector2.ZERO
 var shield: Shield
-var _cooldown := 0.0
+## Every gun on the ship: {"mount", "weapon", "cooldown"} (ShipGuns).
+var _guns: Array[Dictionary] = []
 var _invuln := 0.0
 var _touch_target: Variant = null
 var _graze_candidates: Array[Bullet] = []
@@ -43,6 +46,10 @@ var _graze_candidates: Array[Bullet] = []
 
 func _ready() -> void:
 	_hurtbox.hurt.connect(_on_hurt)
+	_guns = ShipGuns.mounted(Hangar.CATALOG, Hangar.state())
+	for gun in _guns:
+		gun["cooldown"] = 0.0
+	weapon = _guns[0]["weapon"]
 	# Added from code so player.tscn stays untouched while the art PR is open.
 	shield = SHIELD_SCENE.instantiate()
 	add_child(shield)
@@ -74,10 +81,12 @@ func _physics_process(delta: float) -> void:
 	position = (position + motion).clamp(Vector2(MARGIN, MIN_Y), Vector2(max_x, MAX_Y))
 	velocity = (position - before) / delta
 
-	_cooldown -= real_delta
 	var auto_fire: bool = SaveManager.data["settings"]["auto_fire"]
-	if _cooldown <= 0.0 and (Input.is_action_pressed("fire") or auto_fire or _touch_target != null):
-		_fire()
+	var firing := Input.is_action_pressed("fire") or auto_fire or _touch_target != null
+	for gun in _guns:
+		gun["cooldown"] -= real_delta
+		if firing and gun["cooldown"] <= 0.0:
+			_fire(gun)
 
 	if _invuln > 0.0:
 		_invuln -= delta
@@ -160,24 +169,36 @@ func respawn(at: Vector2) -> void:
 	_hurtbox.invulnerable = true
 
 
-func _fire() -> void:
+## Fires one gun: its WeaponDef from its mount (side guns angle outward), modified by run stats.
+func _fire(gun: Dictionary) -> void:
 	var stats := GameState.stats
-	_cooldown = 1.0 / (weapon.fire_rate * stats[&"fire_rate"])
-	var count: int = weapon.spread_count + stats[&"extra_shots"]
-	var angle: float = weapon.spread_angle + stats[&"spread"]
-	for degrees in WeaponDef.fan(count, angle):
-		fire_shot(global_position + Vector2(0, -26), degrees)
+	var gun_weapon: WeaponDef = gun["weapon"]
+	var mount: StringName = gun["mount"]
+	gun["cooldown"] = 1.0 / (gun_weapon.fire_rate * stats[&"fire_rate"])
+	var count: int = gun_weapon.spread_count + stats[&"extra_shots"]
+	var angles := WeaponDef.fan(count, gun_weapon.spread_angle + stats[&"spread"])
+	var offsets := WeaponDef.barrels(count, gun_weapon.spacing)
+	var facing := ShipGuns.muzzle_angle(mount)
+	var muzzle := ShipGuns.muzzle_offset(mount)
+	for i in angles.size():
+		var from := muzzle + Vector2(offsets[i], 0).rotated(deg_to_rad(facing))
+		fire_shot(global_position + from, facing + angles[i], gun_weapon)
 		if dual:
-			fire_shot(global_position + WINGMAN_OFFSET + Vector2(0, -26), degrees)
-	EventBus.shot_fired.emit()
+			fire_shot(global_position + WINGMAN_OFFSET + from, facing + angles[i], gun_weapon)
+	if mount == &"nose":
+		EventBus.shot_fired.emit()
 
 
-## One primary-weapon shot with the current stats (drones use this too).
-func fire_shot(from: Vector2, degrees: float) -> void:
+## One shot of `shot_weapon` (the nose weapon by default) with the current stats (drones use this too).
+func fire_shot(from: Vector2, degrees: float, shot_weapon: WeaponDef = null) -> void:
 	var stats := GameState.stats
-	var bullet: Bullet = Pools.acquire(weapon.projectile_scene)
-	var shot_velocity: Vector2 = Vector2.UP.rotated(deg_to_rad(degrees)) * weapon.projectile_speed * stats[&"projectile_speed"]
-	bullet.launch(entities, from, shot_velocity, weapon.damage + stats[&"damage"], weapon.projectile_scene, stats[&"pierce"], stats[&"homing"])
+	var w := shot_weapon if shot_weapon else weapon
+	var bullet: Bullet = Pools.acquire(w.projectile_scene)
+	var shot_velocity: Vector2 = Vector2.UP.rotated(deg_to_rad(degrees)) * w.projectile_speed * stats[&"projectile_speed"]
+	bullet.launch(entities, from, shot_velocity, w.damage + stats[&"damage"], w.projectile_scene, w.pierce + stats[&"pierce"], w.homing + stats[&"homing"])
+	bullet.burn = stats[&"burn"]
+	bullet.chill = stats[&"chill"]
+	bullet.chain = stats[&"chain"]
 
 
 ## A shot counts as a graze once it has come within GRAZE_RADIUS and then leaves it without hitting.

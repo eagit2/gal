@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="LinkComboDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/link_combo_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"thunder_seeker"
+display_name = "Thunder Seeker"
+text = "Seeking shots arc to 2 more enemies"
+chips = Array[StringName]([&"volt_chip", &"seeker_chip"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"chain",
+"value": 2
+}, {
+"op": &"add",
+"stat": &"homing",
+"value": 1.0
+}])

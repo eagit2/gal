@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ChipDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/chip_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"pierce_chip"
+display_name = "Pierce"
+text = "Shots pass through 1 more enemy"
+color = Color(0.957, 0.937, 0.902, 1)
+price = 150
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"pierce",
+"value": 1
+}])

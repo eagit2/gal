@@ -8,6 +8,11 @@ extends Resource
 @export var spread_count: int = 1
 @export var spread_angle: float = 0.0
 @export var damage: int = 1
+## Pixels between parallel barrels (twin cannon); 0 fires every shot from the muzzle.
+@export var spacing: float = 0.0
+## Enemies each shot passes through, and its turn rate toward enemies (radians per second).
+@export var pierce: int = 0
+@export var homing: float = 0.0
 
 
 ## Shot directions in degrees from straight up, spread evenly across spread_angle.
@@ -24,3 +29,12 @@ static func fan(count: int, angle: float) -> Array[float]:
 	for i in count:
 		angles.append(lerpf(-angle / 2.0, angle / 2.0, i / (count - 1.0)))
 	return angles
+
+
+## Sideways offset of each of `count` parallel barrels `gap` px apart, centred on the muzzle.
+static func barrels(count: int, gap: float) -> Array[float]:
+	var offsets: Array[float] = []
+	var n := maxi(count, 1)
+	for i in n:
+		offsets.append((i - (n - 1) / 2.0) * gap)
+	return offsets

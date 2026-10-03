@@ -10,6 +10,7 @@ signal enemy_killed(enemy: Node2D, position: Vector2, score: int)
 signal enemy_escaped(enemy: Node2D)
 signal player_hit()
 ## Shield charge in 0..1 (1 = bubble up), reported in 10% steps.
+## Shield charge 0..1, or -1 when no shield part is fitted.
 signal shield_changed(charge: float)
 signal shot_fired()
 ## A player shot hit an enemy (Lock-On meter).

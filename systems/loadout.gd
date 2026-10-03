@@ -3,7 +3,8 @@ extends RefCounted
 ## Hangar rules on the saved loadout state. Pure functions so tests can call them directly.
 ## State: {"ship": id, "ships": [ids], "parts": {id: {attribute id: level}}, "mounts": {mount: part
 ## id or ""}, "pilot": id, "pilots": [ids], "stock": [part ids for sale], "tree": {ship id: {node
-## id: rank}}, "cleared": [stage ids ever cleared, for ship unlocks]}. Store stock lives in HangarStock, tree rules in ShipTree.
+## id: rank}}, "cleared": [stage ids ever cleared, for ship unlocks], "chips": {chip id: copies
+## owned}, "sockets": {part id: [chip id or "" per socket]}}. Store stock lives in HangarStock, tree rules in ShipTree.
 
 
 static func default_state(catalog: HangarCatalog) -> Dictionary:
@@ -17,7 +18,7 @@ static func default_state(catalog: HangarCatalog) -> Dictionary:
 		var id := String(catalog.starter_mounts[mount])
 		parts[id] = {}
 		mounts[String(mount)] = id
-	return {"ship": ship, "ships": [ship], "parts": parts, "mounts": mounts, "pilot": pilot, "pilots": [pilot], "stock": [], "tree": {}, "cleared": []}
+	return {"ship": ship, "ships": [ship], "parts": parts, "mounts": mounts, "pilot": pilot, "pilots": [pilot], "stock": [], "tree": {}, "cleared": [], "chips": {}, "sockets": {}}
 
 
 ## Returns a usable state. Saves from before ship slots keep their pilots and start a fresh loadout;
@@ -55,6 +56,9 @@ static func normalize(state: Variant, catalog: HangarCatalog) -> Dictionary:
 		state["tree"] = {}
 	if not state.get("cleared") is Array:
 		state["cleared"] = []
+	for key in ["chips", "sockets"]:
+		if not state.get(key) is Dictionary:
+			state[key] = {}
 	var ship := catalog.ship(StringName(str(state.get("ship", ""))))
 	if ship == null or not unlocked(state, ship):
 		state["ship"] = fresh["ship"]
@@ -149,6 +153,80 @@ static func effects(catalog: HangarCatalog, state: Dictionary) -> Array[Dictiona
 			result.append_array(def.effects_at(state["parts"][String(def.id)]))
 			result.append_array(catalog.placement_effects(def, mount))
 	result.append_array(ShipTree.effects(catalog, state))
+	for mount in ship_of(catalog, state).mounts:
+		var def := part_at(catalog, state, mount)
+		if def == null:
+			continue
+		for id in chips_in(catalog, state, def):
+			if id != "":
+				result.append_array(catalog.chip(StringName(id)).effects)
+	for combo in active_combos(catalog, state):
+		result.append_array(combo.effects)
+	return result
+
+
+## Chip ids in a part's sockets, one per socket ("" = empty), in Loadout.sockets order.
+static func chips_in(catalog: HangarCatalog, state: Dictionary, def: PartDef) -> Array[String]:
+	var count := 0
+	for group in sockets(catalog, state, def):
+		count += maxi(group, 1)
+	var saved: Array = state["sockets"].get(String(def.id), [])
+	var result: Array[String] = []
+	for i in count:
+		var id := str(saved[i]) if i < saved.size() else ""
+		result.append(id if catalog.chip(StringName(id)) else "")
+	return result
+
+
+## Socket index pairs that are linked, from a part's socket groups.
+static func linked_pairs(groups: Array[int]) -> Array[Vector2i]:
+	var pairs: Array[Vector2i] = []
+	var i := 0
+	for group in groups:
+		if group == 2:
+			pairs.append(Vector2i(i, i + 1))
+		i += maxi(group, 1)
+	return pairs
+
+
+## Copies of a chip not sitting in any socket.
+static func chips_free(state: Dictionary, chip: StringName) -> int:
+	var used := 0
+	for list: Array in state["sockets"].values():
+		used += list.count(String(chip))
+	return int(state["chips"].get(String(chip), 0)) - used
+
+
+## Puts an owned chip (or "" to empty it) in socket `index` of an owned part. False when no free copy.
+static func set_chip(catalog: HangarCatalog, state: Dictionary, def: PartDef, index: int, chip: StringName) -> bool:
+	var list := chips_in(catalog, state, def)
+	if index < 0 or index >= list.size() or not owns(state, def.id):
+		return false
+	if chip != &"" and list[index] != String(chip) and chips_free(state, chip) <= 0:
+		return false
+	list[index] = String(chip)
+	state["sockets"][String(def.id)] = list
+	return true
+
+
+## Combos from linked chip pairs on fitted parts.
+static func active_combos(catalog: HangarCatalog, state: Dictionary) -> Array[LinkComboDef]:
+	var result: Array[LinkComboDef] = []
+	for mount in ship_of(catalog, state).mounts:
+		var def := part_at(catalog, state, mount)
+		if def:
+			result.append_array(part_combos(catalog, state, def))
+	return result
+
+
+## Combos formed in one part's linked sockets.
+static func part_combos(catalog: HangarCatalog, state: Dictionary, def: PartDef) -> Array[LinkComboDef]:
+	var result: Array[LinkComboDef] = []
+	var list := chips_in(catalog, state, def)
+	for pair in linked_pairs(sockets(catalog, state, def)):
+		var combo := catalog.combo_for(StringName(list[pair.x]), StringName(list[pair.y]))
+		if combo:
+			result.append(combo)
 	return result
 
 

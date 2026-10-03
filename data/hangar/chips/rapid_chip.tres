@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ChipDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/chip_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"rapid_chip"
+display_name = "Rapid"
+text = "+15% fire rate"
+color = Color(1.000, 0.827, 0.310, 1)
+price = 150
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"fire_rate",
+"value": 0.15
+}])

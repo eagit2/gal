@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/twin_cannon.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -8,12 +9,8 @@ id = &"twin_cannon"
 display_name = "Twin Cannon"
 category = 0
 tier = 1
-text = "Two parallel shots."
-effects = Array[Dictionary]([{
-"op": &"add",
-"stat": &"extra_shots",
-"value": 1
-}])
+text = "Two parallel heavy rounds."
+effects = Array[Dictionary]([])
 attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"add",
@@ -48,3 +45,4 @@ attributes = Array[Dictionary]([{
 sockets = 1
 links = 0
 part = &"cannon_weapon"
+weapon = ExtResource("2")

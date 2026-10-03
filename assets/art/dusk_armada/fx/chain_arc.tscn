@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://assets/art/dusk_armada/fx/chain_arc.gd" id="1"]
+
+[sub_resource type="CanvasItemMaterial" id="add"]
+blend_mode = 1
+
+[node name="ChainArc" type="Line2D"]
+z_index = 2
+material = SubResource("add")
+width = 2.0
+default_color = Color(0.75, 0.85, 1, 1)
+texture_filter = 1
+script = ExtResource("1")

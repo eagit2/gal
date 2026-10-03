@@ -59,6 +59,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if GameState.freeze_left > 0.0:
 		return
+	delta *= StatusEffects.speed_scale(self)  # Frost chip
 	_t += delta
 	if not entered:
 		position.y += ENTER_SPEED * delta
