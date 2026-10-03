@@ -335,6 +335,8 @@ EXPLOSION_PAL = {"d": "#fff4d0", "y": "#ffe08a", "o": "#fca54d", "r": "#e86450"}
 SKY_W, SKY_H = 270, 480
 SKY_BANDS = ["#140a28", "#1e0f38", "#2c1247", "#3f1653", "#561b5b", "#73215f",
              "#932b60", "#b2385d", "#cf4b57", "#e86450", "#f5834a", "#fca54d"]
+SKY_SOFTEN = 0.35  # 0 keeps the full sunset contrast, 1 flattens it to one color
+BAYER4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
 SUN = ["#ffe58a", "#ffc56e", "#ff9f62", "#ff7a59", "#ff7a59"]
 
 
@@ -348,17 +350,18 @@ def sky() -> Image.Image:
     dark so ships and the reserved bullet color stay readable."""
     img = Image.new("RGBA", (SKY_W, SKY_H))
     hy = round(SKY_H * HORIZON)
-    band_h = hy / len(SKY_BANDS)
+    # Soften the sky: pull each band 35% toward the sky's average color, then blend
+    # neighbouring bands with a 4x4 ordered dither so no band edge reads as a line.
+    bands = [rgba(c) for c in SKY_BANDS]
+    avg = [sum(c[k] for c in bands) / len(bands) for k in range(3)]
+    bands = [tuple(round(c[k] + (avg[k] - c[k]) * SKY_SOFTEN) for k in range(3)) + (255,) for c in bands]
+    band_h = hy / len(bands)
     for y in range(hy):
-        f = y / band_h
-        i = min(len(SKY_BANDS) - 1, int(f))
-        fr = f - i
+        f = y / band_h - 0.5
+        i = max(0, min(len(bands) - 2, int(math.floor(f))))
+        fr = min(1.0, max(0.0, f - i))
         for x in range(SKY_W):
-            col = SKY_BANDS[i]
-            # Two-step dither into the next band (checker, then 3/4 fill).
-            if i < len(SKY_BANDS) - 1 and fr > 0.6 and ((x + y) % 2 == 0 or fr > 0.8 and x % 2 == 0):
-                col = SKY_BANDS[i + 1]
-            img.putpixel((x, y), rgba(col))
+            img.putpixel((x, y), bands[i + 1] if fr > (BAYER4[y % 4][x % 4] + 0.5) / 16 else bands[i])
     cx, r = round(SKY_W * 0.68), 44
     for j in range(-r, 1):
         y = hy + j
