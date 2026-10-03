@@ -1,14 +1,14 @@
 class_name HangarParts
 extends RefCounted
 ## Hangar part menus, drawn into the hangar's list: a slot's categories, the owned parts of a
-## category (the highlighted one opens in place with its attributes and sockets, plus EQUIP and
-## UPGRADE rows), a part's attributes and link sockets (HangarChips), and the rotating store.
+## category (the highlighted one opens in place with its attributes and sockets, and an
+## EQUIPPED / UNEQUIPPED tag toggles it), a part's attributes and link sockets (HangarChips), and
+## the rotating store.
 
 var menu: Control  # scenes/main/hangar.gd
 var chips: HangarChips
 var _catalog: HangarCatalog = preload("res://data/hangar/catalog.tres")
 var _open_card: Button
-var _actions := {}  # card -> [equip row, upgrade row], shown while the card is open
 
 
 func _init(owner: Control) -> void:
@@ -35,28 +35,27 @@ func slot(mount: StringName, focus_row := -1) -> void:
 	menu.focus(maxi(focus_row, 0))
 
 
-## A category's owned parts for `mount`. Each opens in place when highlighted, with EQUIP (no trip
-## into the part) and UPGRADE rows under it.
+## A category's owned parts for `mount`. The highlighted one opens in place; selecting it opens
+## the part. Its EQUIPPED / UNEQUIPPED tag (or the E key) equips or removes it on `mount`.
 func category(mount: StringName, cat: int, focus_part: PartDef = null) -> void:
 	var state := Hangar.state()
 	var back: Callable = menu.home.bind(_mount_row(mount)) if mount == &"nose" else slot.bind(mount, PartDef.MENU_CATEGORIES.find(cat))
 	menu.page("%s  %s" % [menu.MOUNT_NAMES[mount], HangarUI.CATEGORY_NAMES[cat]], back)
 	_open_card = null
-	_actions.clear()
 	var list := _catalog.parts.filter(func(p: PartDef) -> bool: return p.category == cat and Loadout.owns(state, p.id))
 	var to_open: Button = null
 	for def: PartDef in list:
 		var here := Loadout.mount_of(state, def.id) == mount
-		var row := HangarUI.row(def.display_name.to_upper(), "", _status(state, def, mount), HangarUI.TIER_COLORS[def.tier], HangarUI.GOOD)
+		var row := HangarUI.row(def.display_name.to_upper(), "", "", HangarUI.TIER_COLORS[def.tier])
 		var card := HangarCards.drop_card(row, _final_stats(state, mount, def), Loadout.sockets(_catalog, state, def), chips.fills(def), HangarUI.CATEGORY_COLORS[def.category])
-		menu.add(card, describe(def, mount), _open.bind(card), _fitted(state, mount, def))
+		var toggle := _toggle.bind(mount, cat, def)
+		HangarCards.status_tag(card, "EQUIPPED" if here else "UNEQUIPPED", HangarUI.GOOD if here else HangarUI.DIM, toggle)
+		menu.add(card, describe(def, mount), part.bind(mount, def, category.bind(mount, cat, def)), _fitted(state, mount, def))
 		card.focus_entered.connect(_open.bind(card))
-		var equip_text := "EQUIPPED ON %s" % menu.MOUNT_NAMES[mount] if here else "EQUIP ON %s" % menu.MOUNT_NAMES[mount]
-		var equip: Button = menu.add(HangarUI.row("   " + equip_text, "", "", Color.TRANSPARENT, HangarUI.GOOD), describe(def, mount), (func() -> void: pass) if here else _fit.bind(mount, def.id), _fitted(state, mount, def))
-		var upgrade: Button = menu.add(HangarUI.row("   UPGRADE AND LINKS >"), describe(def, mount), part.bind(mount, def, category.bind(mount, cat, def)))
-		_actions[card] = [equip, upgrade]
-		equip.visible = false
-		upgrade.visible = false
+		card.mouse_entered.connect(_open.bind(card))
+		card.gui_input.connect(func(event: InputEvent) -> void:
+			if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_E:
+				toggle.call())
 		if to_open == null or def == focus_part or (focus_part == null and here):
 			to_open = card
 	if list.is_empty():
@@ -66,6 +65,18 @@ func category(mount: StringName, cat: int, focus_part: PartDef = null) -> void:
 		to_open.grab_focus()
 	else:
 		menu.focus()
+
+
+## Equips `def` on `mount` (moving it from another mount), or takes it off if it is already there.
+func _toggle(mount: StringName, cat: int, def: PartDef) -> void:
+	var state := Hangar.state().duplicate(true)
+	if Loadout.mount_of(state, def.id) == mount:
+		state["mounts"][String(mount)] = ""
+	elif not _force_place(state, mount, def.id):
+		menu.say("That part can't go on the %s." % menu.MOUNT_NAMES[mount])
+		return
+	Hangar.set_mounts(state["mounts"])
+	category(mount, cat, def)
 
 
 ## Attribute rows for a drop card: name, level, max and the stat it reaches with the part fitted.
@@ -78,18 +89,14 @@ func _final_stats(state: Dictionary, mount: StringName, def: PartDef) -> Array:
 	return rows
 
 
-## Opens a part card and its EQUIP / UPGRADE rows, closing the last one.
+## Opens a part card in place, closing the last one.
 func _open(card: Button) -> void:
 	if _open_card == card:
 		return
 	if is_instance_valid(_open_card):
 		HangarCards.set_open(_open_card, false)
-		for row: Control in _actions.get(_open_card, []):
-			row.visible = false
 	_open_card = card
 	HangarCards.set_open(card, true)
-	for row: Control in _actions.get(card, []):
-		row.visible = true
 
 
 ## A part: its attributes with an upgrade per level, its link sockets, then fit, buy or back.
@@ -166,17 +173,6 @@ func _stats(state: Dictionary) -> Dictionary:
 	return UpgradeSystem.compute(Loadout.effects(_catalog, state))
 
 
-func _status(state: Dictionary, def: PartDef, mount: StringName) -> String:
-	var where := Loadout.mount_of(state, def.id)
-	if where == mount:
-		return "FITTED"
-	if where != &"":
-		return "ON %s" % menu.MOUNT_NAMES[where]
-	if Loadout.owns(state, def.id):
-		return "OWNED"
-	return str(def.price()) if HangarStock.in_stock(state, def.id) else "-"
-
-
 ## The loadout with `def` on `mount` (swapping out a part of its slot type elsewhere), for previews.
 func _fitted(state: Dictionary, mount: StringName, def: PartDef) -> Dictionary:
 	var copy := state.duplicate(true)
@@ -196,15 +192,6 @@ func _force_place(state: Dictionary, mount: StringName, id: StringName) -> bool:
 				if Loadout.can_place(_catalog, state, mount, _catalog.part(id)):
 					break
 	return Loadout.place(_catalog, state, mount, id)
-
-
-func _fit(mount: StringName, id: StringName) -> void:
-	var state := Hangar.state().duplicate(true)
-	if not _force_place(state, mount, id):
-		menu.say("That part can't go on the %s." % menu.MOUNT_NAMES[mount])
-		return
-	Hangar.set_mounts(state["mounts"])
-	menu.home(_mount_row(mount))
 
 
 func _upgrade(mount: StringName, def: PartDef, attr: StringName, back: Callable) -> void:
