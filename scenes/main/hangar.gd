@@ -172,9 +172,11 @@ func home(focus_row := 0) -> void:
 	add(HangarUI.row("PILOT", "", Hangar.pilot().display_name.to_upper(), Color.TRANSPARENT, Hangar.pilot().color), "Pick your pilot. Each one brings an active power.", _pilots)
 	var run: Dictionary = SaveManager.data["run"]
 	var stage := "STAGE %d" % (int(run.get("stage", 0)) + 1) if not run.is_empty() else "STAGE 1"
-	add(HangarUI.row("RESTART LEVEL", "", stage), "Fly %s again with this loadout." % stage, _restart)
 	add(HangarUI.row("< SHIPS"), "Pick another ship.", ships.bind(-1))
-	add(HangarUI.row("MAIN MENU"), "Back to the title screen. Progress is saved.", SceneRouter.go_to.bind(TITLE_SCENE))
+	var gap := Control.new()
+	gap.custom_minimum_size.y = 18
+	add_body(gap)
+	add(HangarUI.row("RESTART LEVEL", "", stage), "Fly %s again with this loadout." % stage, _restart)
 	var boxes := _preview_box.get_children().filter(func(c: Node) -> bool: return c is Button and not c.is_queued_for_deletion())
 	if focus_row < boxes.size():
 		(boxes[focus_row] as Button).grab_focus()
