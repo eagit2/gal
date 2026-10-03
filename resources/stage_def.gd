@@ -14,3 +14,5 @@ extends Resource
 @export var reinforce_below: int = 18
 @export var modifiers: Array[StringName] = []
 @export_range(0, 3) var music_intensity: int = 1
+## Boss stage: plays SoundBank.boss_music instead of the style's music.
+@export var boss: bool = false

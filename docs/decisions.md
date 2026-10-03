@@ -2,6 +2,9 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: All audio is original and generated in the repo (`tools/audio/`, numpy + scipy synthesis, ffmpeg for Vorbis), so there are no licensing questions and sounds are edited as text. SFX are WAV (QOA-compressed on import, low latency on web); music is looping OGG.
+- 2026-10-03: Music follows the art style: `ThemeDef.music` is the track for that style, so a combo mode crossfades to its own track and back (the stage track resumes where it left off). Boss stages (`StageDef.boss`) use `SoundBank.boss_music`; menus use `SoundBank.scene_music` keyed by scene path.
+- 2026-10-03: Gameplay code never plays sounds. `AudioCues` (child of AudioManager) maps EventBus signals to SoundBank ids; per-sound cooldown, pitch variance and voice priority are data on `SfxDef`. M key toggles mute (saved).
 - 2026-10-03: Level playtesting uses URL options on the live build (`?stage=&god=&repeat=&difficulty=`) instead of a debug menu: works on any device, shareable links, no UI to maintain. A title-screen stage select can come later if needed.
 - 2026-10-03: Pacing must feel frantic (Eric's M2 playtest). Enemy attacks are steered live by per-type brains (`EnemyBrain` resources in `data/brains/`) instead of fixed dive curves; entries still fly in on data paths. Squads attack from 2s into a stage, formation fires, and reinforcement squads refill the formation.
 - 2026-10-03: The player shield is an always-on bubble that absorbs one hit (shot or ram, the rammer dies) and recharges (Eric picked "Auto bubble"). Recharge time is a DifficultyDef value.

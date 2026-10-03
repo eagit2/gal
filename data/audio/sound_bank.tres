@@ -1,0 +1,223 @@
+[gd_resource type="Resource" script_class="SoundBank" load_steps=43 format=3]
+
+[ext_resource type="Script" path="res://resources/sound_bank.gd" id="bank"]
+[ext_resource type="Script" path="res://resources/sfx_def.gd" id="sfx_def"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/boss.ogg" id="m_boss"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/title.ogg" id="m_title"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/shot.wav" id="s_shot"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/shot_hit.wav" id="s_shot_hit"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/explode_small.wav" id="s_explode_small"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/explode_big.wav" id="s_explode_big"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/player_hit.wav" id="s_player_hit"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/shield_pop.wav" id="s_shield_pop"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/shield_restore.wav" id="s_shield_restore"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/graze.wav" id="s_graze"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/pickup.wav" id="s_pickup"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/upgrade_pick.wav" id="s_upgrade_pick"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/combo_start.wav" id="s_combo_start"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/combo_end.wav" id="s_combo_end"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/synergy.wav" id="s_synergy"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/stage_start.wav" id="s_stage_start"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/stage_clear.wav" id="s_stage_clear"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/game_over.wav" id="s_game_over"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_move.wav" id="s_ui_move"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_confirm.wav" id="s_ui_confirm"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_back.wav" id="s_ui_back"]
+
+[sub_resource type="Resource" id="shot"]
+script = ExtResource("sfx_def")
+id = &"shot"
+streams = Array[AudioStream]([ExtResource("s_shot")])
+volume_db = -10.0
+pitch_variance = 0.06
+cooldown = 0.05
+priority = 1
+bus = &"SFX"
+
+[sub_resource type="Resource" id="shot_hit"]
+script = ExtResource("sfx_def")
+id = &"shot_hit"
+streams = Array[AudioStream]([ExtResource("s_shot_hit")])
+volume_db = -12.0
+pitch_variance = 0.1
+cooldown = 0.03
+priority = 2
+bus = &"SFX"
+
+[sub_resource type="Resource" id="explode_small"]
+script = ExtResource("sfx_def")
+id = &"explode_small"
+streams = Array[AudioStream]([ExtResource("s_explode_small")])
+volume_db = -4.0
+pitch_variance = 0.12
+cooldown = 0.03
+priority = 5
+bus = &"SFX"
+
+[sub_resource type="Resource" id="explode_big"]
+script = ExtResource("sfx_def")
+id = &"explode_big"
+streams = Array[AudioStream]([ExtResource("s_explode_big")])
+volume_db = -2.0
+pitch_variance = 0.08
+cooldown = 0.05
+priority = 7
+bus = &"SFX"
+
+[sub_resource type="Resource" id="player_hit"]
+script = ExtResource("sfx_def")
+id = &"player_hit"
+streams = Array[AudioStream]([ExtResource("s_player_hit")])
+volume_db = 0.0
+pitch_variance = 0.0
+cooldown = 0.3
+priority = 10
+bus = &"SFX"
+
+[sub_resource type="Resource" id="shield_pop"]
+script = ExtResource("sfx_def")
+id = &"shield_pop"
+streams = Array[AudioStream]([ExtResource("s_shield_pop")])
+volume_db = 0.0
+pitch_variance = 0.03
+cooldown = 0.2
+priority = 9
+bus = &"SFX"
+
+[sub_resource type="Resource" id="shield_restore"]
+script = ExtResource("sfx_def")
+id = &"shield_restore"
+streams = Array[AudioStream]([ExtResource("s_shield_restore")])
+volume_db = -4.0
+pitch_variance = 0.0
+cooldown = 0.5
+priority = 8
+bus = &"SFX"
+
+[sub_resource type="Resource" id="graze"]
+script = ExtResource("sfx_def")
+id = &"graze"
+streams = Array[AudioStream]([ExtResource("s_graze")])
+volume_db = -10.0
+pitch_variance = 0.15
+cooldown = 0.06
+priority = 2
+bus = &"SFX"
+
+[sub_resource type="Resource" id="pickup"]
+script = ExtResource("sfx_def")
+id = &"pickup"
+streams = Array[AudioStream]([ExtResource("s_pickup")])
+volume_db = -4.0
+pitch_variance = 0.02
+cooldown = 0.05
+priority = 7
+bus = &"SFX"
+
+[sub_resource type="Resource" id="upgrade_pick"]
+script = ExtResource("sfx_def")
+id = &"upgrade_pick"
+streams = Array[AudioStream]([ExtResource("s_upgrade_pick")])
+volume_db = -3.0
+pitch_variance = 0.0
+cooldown = 0.1
+priority = 8
+bus = &"UI"
+
+[sub_resource type="Resource" id="combo_start"]
+script = ExtResource("sfx_def")
+id = &"combo_start"
+streams = Array[AudioStream]([ExtResource("s_combo_start")])
+volume_db = -2.0
+pitch_variance = 0.0
+cooldown = 0.5
+priority = 9
+bus = &"SFX"
+
+[sub_resource type="Resource" id="combo_end"]
+script = ExtResource("sfx_def")
+id = &"combo_end"
+streams = Array[AudioStream]([ExtResource("s_combo_end")])
+volume_db = -5.0
+pitch_variance = 0.0
+cooldown = 0.5
+priority = 8
+bus = &"SFX"
+
+[sub_resource type="Resource" id="synergy"]
+script = ExtResource("sfx_def")
+id = &"synergy"
+streams = Array[AudioStream]([ExtResource("s_synergy")])
+volume_db = -3.0
+pitch_variance = 0.0
+cooldown = 0.3
+priority = 8
+bus = &"SFX"
+
+[sub_resource type="Resource" id="stage_start"]
+script = ExtResource("sfx_def")
+id = &"stage_start"
+streams = Array[AudioStream]([ExtResource("s_stage_start")])
+volume_db = -4.0
+pitch_variance = 0.0
+cooldown = 1.0
+priority = 8
+bus = &"UI"
+
+[sub_resource type="Resource" id="stage_clear"]
+script = ExtResource("sfx_def")
+id = &"stage_clear"
+streams = Array[AudioStream]([ExtResource("s_stage_clear")])
+volume_db = -3.0
+pitch_variance = 0.0
+cooldown = 1.0
+priority = 8
+bus = &"UI"
+
+[sub_resource type="Resource" id="game_over"]
+script = ExtResource("sfx_def")
+id = &"game_over"
+streams = Array[AudioStream]([ExtResource("s_game_over")])
+volume_db = -2.0
+pitch_variance = 0.0
+cooldown = 2.0
+priority = 10
+bus = &"UI"
+
+[sub_resource type="Resource" id="ui_move"]
+script = ExtResource("sfx_def")
+id = &"ui_move"
+streams = Array[AudioStream]([ExtResource("s_ui_move")])
+volume_db = -8.0
+pitch_variance = 0.0
+cooldown = 0.03
+priority = 6
+bus = &"UI"
+
+[sub_resource type="Resource" id="ui_confirm"]
+script = ExtResource("sfx_def")
+id = &"ui_confirm"
+streams = Array[AudioStream]([ExtResource("s_ui_confirm")])
+volume_db = -5.0
+pitch_variance = 0.0
+cooldown = 0.05
+priority = 6
+bus = &"UI"
+
+[sub_resource type="Resource" id="ui_back"]
+script = ExtResource("sfx_def")
+id = &"ui_back"
+streams = Array[AudioStream]([ExtResource("s_ui_back")])
+volume_db = -5.0
+pitch_variance = 0.0
+cooldown = 0.05
+priority = 6
+bus = &"UI"
+
+[resource]
+script = ExtResource("bank")
+sfx = Array[ExtResource("sfx_def")]([SubResource("shot"), SubResource("shot_hit"), SubResource("explode_small"), SubResource("explode_big"), SubResource("player_hit"), SubResource("shield_pop"), SubResource("shield_restore"), SubResource("graze"), SubResource("pickup"), SubResource("upgrade_pick"), SubResource("combo_start"), SubResource("combo_end"), SubResource("synergy"), SubResource("stage_start"), SubResource("stage_clear"), SubResource("game_over"), SubResource("ui_move"), SubResource("ui_confirm"), SubResource("ui_back")])
+boss_music = ExtResource("m_boss")
+scene_music = {
+"res://scenes/main/title.tscn": ExtResource("m_title")
+}
