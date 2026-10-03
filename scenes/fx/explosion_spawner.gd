@@ -10,6 +10,7 @@ func _ready() -> void:
 	EventBus.enemy_killed.connect(_on_enemy_killed)
 	EventBus.player_hit.connect(_on_player_hit)
 	EventBus.wingman_lost.connect(func(at: Vector2) -> void: _spawn(player_explosion_scene, at))
+	EventBus.companion_lost.connect(func(at: Vector2) -> void: _spawn(player_explosion_scene, at))
 
 
 func _on_enemy_killed(_enemy: Node2D, at: Vector2, _score: int) -> void:

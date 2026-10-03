@@ -92,6 +92,7 @@ func charge() -> float:
 func _on_hurt(_hitbox: Hitbox) -> void:
 	if not enabled:
 		return
+	EventBus.ship_struck.emit()
 	if layers >= _max_layers:
 		_recharge = _cycle_time()
 	layers -= 1

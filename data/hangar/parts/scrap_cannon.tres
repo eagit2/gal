@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/scrap_cannon.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"scrap_cannon"
+display_name = "Scrap Cannon"
+category = 0
+tier = 2
+text = "Lobs big slow lumps of scrap that break into shrapnel on hit."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"damage",
+"value": 1
+}],
+"id": &"power",
+"max": 3,
+"name": "POWER",
+"text": "+1 damage per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"shrapnel",
+"value": 1
+}],
+"id": &"shrapnel",
+"max": 3,
+"name": "SHRAPNEL",
+"text": "+1 shrapnel piece per level"
+}])
+sockets = 2
+links = 1
+part = &"dome_weapon"
+weapon = ExtResource("2")

@@ -29,6 +29,14 @@ signal combo_started(combo: ComboDef, chain: int)
 signal combo_ended(combo: ComboDef)
 ## Meter fill in 0..1 for each combo id, sent when it changes.
 signal combo_meter_changed(combo_id: StringName, fill: float)
+## Upgrade bubbles (BubbleSystem): a combo or triggered extra drops a bubble the ship must catch.
+signal upgrade_bubble_requested(kind: StringName, is_combo: bool, label: String, tint: Color)
+signal upgrade_bubble_caught(kind: StringName)
+signal upgrade_bubble_lost(kind: StringName)
+## Anything touched the ship: a shield layer or the hull (no-hit stage tracking).
+signal ship_struck()
+## The companion drone rammed an enemy.
+signal companion_lost(at: Vector2)
 ## A stage medal was earned and paid `credits` hangar credits.
 signal medal_earned(medal: MedalDef, credits: int)
 signal credits_changed(credits: int)

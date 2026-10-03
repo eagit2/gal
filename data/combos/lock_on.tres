@@ -5,15 +5,15 @@
 [resource]
 script = ExtResource("1")
 id = &"lock_on"
-display_name = "LOCK-ON"
+display_name = "CHAIN"
 style = &""
-threshold = 25.0
+threshold = 30.0
 decay_delay = 2.0
-decay_rate = 0.1
+decay_rate = 0.0
 duration = 8.0
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"homing",
-"value": 3.0
+"stat": &"chain",
+"value": 5.0
 }])
 color = Color(0.4, 0.95, 1, 1)

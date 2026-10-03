@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/rubber_duck_gun.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"rubber_duck_gun"
+display_name = "Rubber Duck Gun"
+category = 0
+tier = 2
+text = "Squeaky ducks that bounce off enemies and walls, hitting up to 4 times."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"bounces",
+"value": 1
+}],
+"id": &"bounces",
+"max": 3,
+"name": "BOUNCES",
+"text": "+1 bounce per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"fire_rate",
+"value": 0.1
+}],
+"final": [{
+"op": &"add",
+"stat": &"fire_rate",
+"value": 1.0
+}],
+"id": &"fire_rate",
+"max": 5,
+"name": "FIRE RATE",
+"text": "+10% fire rate per level; the last level is a big jump"
+}])
+sockets = 2
+links = 1
+part = &"dish_weapon"
+weapon = ExtResource("2")

@@ -191,12 +191,15 @@ func _fire(gun: Dictionary) -> void:
 func fire_shot(from: Vector2, degrees: float, shot_weapon: WeaponDef = null) -> void:
 	var stats := GameState.stats
 	var w := shot_weapon if shot_weapon else weapon
+	if not WeaponDef.can_fire(get_tree().get_nodes_in_group(w.id).size() if w.active_cap > 0 else 0, w.cap(stats[&"max_active"])):
+		return  # Capped weapon (mines) already has its most out.
 	var bullet: Bullet = Pools.acquire(w.projectile_scene)
 	var shot_velocity: Vector2 = Vector2.UP.rotated(deg_to_rad(degrees)) * w.projectile_speed * stats[&"projectile_speed"]
 	bullet.launch(entities, from, shot_velocity, w.damage + stats[&"damage"], w.projectile_scene, w.pierce + stats[&"pierce"], w.homing + stats[&"homing"])
 	bullet.burn = stats[&"burn"]
 	bullet.chill = stats[&"chill"]
 	bullet.chain = stats[&"chain"]
+	bullet.configure(w, stats)
 
 
 ## A shot counts as a graze once it has come within GRAZE_RADIUS and then leaves it without hitting.
@@ -216,6 +219,7 @@ func _check_grazes() -> void:
 
 
 func _on_hurt(_hitbox: Hitbox) -> void:
+	EventBus.ship_struck.emit()
 	if dual:
 		_lose_wingman()
 		return
