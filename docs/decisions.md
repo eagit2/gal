@@ -2,6 +2,7 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: UI font is Press Start 2P (OFL, `assets/fonts/`), set project-wide through `ui/theme.tres` (Eric asked for an arcade font). Imported without antialiasing; use sizes in multiples of 8 so glyphs stay crisp.
 - 2026-10-03: Continue resumes at the start of the last stage reached, with its score, lives and upgrades (a checkpoint `SaveManager.data.run` written as each stage starts, cleared on game over). Mid-stage progress isn't saved: simple, and can't save a doomed state. Dev URL runs never touch the save. Difficulty is picked on the title screen and remembered.
 - 2026-10-03: M3 run stats are one Dictionary (`GameState.stats`) recomputed from owned upgrades + synergies + the active combo whenever any of them changes. Systems read stats; nothing applies deltas in place, so stacking and expiring buffs can't drift.
 - 2026-10-03: Card pick after every stage, including challenge stages. A perfect challenge also drops a guaranteed pickup. Pickups roll their upgrade on collect; once everything is maxed they pay 1000 points.

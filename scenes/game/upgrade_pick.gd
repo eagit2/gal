@@ -62,7 +62,7 @@ func _make_card(upgrade: UpgradeDef, index: int) -> Button:
 	card.disabled = true
 	card.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	card.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	card.add_theme_font_size_override(&"font_size", 20)
+	card.add_theme_font_size_override(&"font_size", 16)
 	var color := RARITY_COLORS[upgrade.rarity]
 	card.add_theme_color_override(&"font_color", color)
 	card.add_theme_color_override(&"font_focus_color", color)

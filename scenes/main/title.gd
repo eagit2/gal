@@ -74,7 +74,7 @@ func _refresh() -> void:
 	if not run.is_empty():
 		var i := _find_difficulty(StringName(run.get("difficulty", "")))
 		var name := _difficulties[i].display_name.to_upper() if i >= 0 else ""
-		_continue.text = "CONTINUE   STAGE %d  %s" % [int(run.get("stage", 0)) + 1, name]
+		_continue.text = "CONTINUE  STAGE %d %s" % [int(run.get("stage", 0)) + 1, name]
 	var def := _difficulties[_difficulty_index]
 	_difficulty_button.text = "<   %s   >" % def.display_name.to_upper()
 	_difficulty_info.text = "%d LIVES   SCORE x%s" % [def.lives, str(def.score_multiplier)]
