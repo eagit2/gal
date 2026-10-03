@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"rapid_fire"
+display_name = "Rapid Fire"
+description = "Fire 20% faster."
+category = 0
+rarity = 0
+tags = Array[StringName]([&"rapid"])
+max_stacks = 3
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.2
+}])
+requires = Array[StringName]([])

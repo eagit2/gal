@@ -12,10 +12,15 @@ extends Resource
 
 ## Shot directions in degrees from straight up, spread evenly across spread_angle.
 func shot_angles() -> Array[float]:
+	return fan(spread_count, spread_angle)
+
+
+## `count` directions in degrees spread evenly across `angle`, centred on straight up.
+static func fan(count: int, angle: float) -> Array[float]:
 	var angles: Array[float] = []
-	if spread_count <= 1:
+	if count <= 1:
 		angles.append(0.0)
 		return angles
-	for i in spread_count:
-		angles.append(lerpf(-spread_angle / 2.0, spread_angle / 2.0, i / (spread_count - 1.0)))
+	for i in count:
+		angles.append(lerpf(-angle / 2.0, angle / 2.0, i / (count - 1.0)))
 	return angles

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"fuse_shells"
+display_name = "Fuse Shells"
+description = "Chain Reaction events count double."
+category = 3
+rarity = 1
+tags = Array[StringName]([&"chain"])
+max_stacks = 1
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"chain_gain",
+"value": 2.0
+}])
+requires = Array[StringName]([])

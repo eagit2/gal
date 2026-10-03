@@ -16,7 +16,12 @@ func _initialize() -> void:
 
 
 func _run_file(path: String) -> void:
-	var suite: Object = load(path).new()
+	var script: GDScript = load(path)
+	if script == null or not script.can_instantiate():
+		failures += 1
+		printerr("FAIL %s: script does not compile" % path.get_file())
+		return
+	var suite: Object = script.new()
 	for method in suite.get_method_list():
 		var name: String = method["name"]
 		if not name.begins_with("test_"):

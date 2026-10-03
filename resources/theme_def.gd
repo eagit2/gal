@@ -8,3 +8,7 @@ extends Resource
 @export var family: StringName = &"pixel"
 @export var palette: Array[Color] = []
 @export var music: AudioStream
+## Full-screen post-process applied over everything while this style is active (optional).
+@export var post_shader: Shader
+## Tint for generated vector wireframes.
+@export var wire_tint: Color = Color.WHITE

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ThemeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/theme_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cold_hologram"
+display_name = "Cold Hologram"
+family = &"vector"
+palette = Array[Color]([Color(0.012, 0.035, 0.078, 1), Color(0.4, 0.95, 1, 1), Color(0.85, 1, 1, 1)])
+wire_tint = Color(0.45, 1.6, 1.8, 1)

@@ -164,6 +164,11 @@ func predicted_player(lead: float) -> Vector2:
 	return guess.clamp(Vector2(MIN_X, Player.MIN_Y), Vector2(MAX_X, Player.MAX_Y))
 
 
+## Damage from outside a hitbox (kill blasts).
+func damage(amount: int) -> void:
+	_health.take_damage(amount)
+
+
 func is_damaged() -> bool:
 	return _health.hp < _health.max_hp
 

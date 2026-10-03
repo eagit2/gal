@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"graze_plating"
+display_name = "Graze Plating"
+description = "+50% Graze meter gain."
+category = 3
+rarity = 0
+tags = Array[StringName]([&"graze"])
+max_stacks = 1
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"graze_gain",
+"value": 1.5
+}])
+requires = Array[StringName]([])

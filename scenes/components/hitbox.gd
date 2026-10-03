@@ -20,7 +20,8 @@ func _on_area_entered(area: Area2D) -> void:
 	var hurtbox := area as Hurtbox
 	if hurtbox.invulnerable:
 		return
-	hurtbox.take_hit(self)
-	hit.emit(hurtbox)
+	# Spent before emitting so a hit handler can re-arm the hitbox (piercing shots).
 	if single_hit:
 		spent = true
+	hurtbox.take_hit(self)
+	hit.emit(hurtbox)

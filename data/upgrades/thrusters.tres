@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/upgrade_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"thrusters"
+display_name = "Thrusters"
+description = "Move 12% faster."
+category = 3
+rarity = 0
+tags = Array[StringName]([&"speed"])
+max_stacks = 2
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"move_speed",
+"value": 1.12
+}])
+requires = Array[StringName]([])
