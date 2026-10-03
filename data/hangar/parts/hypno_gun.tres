@@ -1,26 +1,26 @@
 [gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
-[ext_resource type="Resource" path="res://data/weapons/rubber_duck_gun.tres" id="2"]
+[ext_resource type="Resource" path="res://data/weapons/hypno_gun.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
-id = &"rubber_duck_gun"
-display_name = "Rubber Duck Gun"
+id = &"hypno_gun"
+display_name = "Hypno Gun"
 category = 0
 tier = 2
-text = "Squeaky ducks that bounce off the walls up to 3 times and pop on the first ship they hit."
+text = "Swirling orbs hypnotize regular enemies: they shoot at or ram their own side for a while."
 effects = Array[Dictionary]([])
 attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"add",
-"stat": &"damage",
-"value": 1
+"stat": &"hypno_time",
+"value": 1.0
 }],
-"id": &"power",
+"id": &"hypno_time",
 "max": 3,
-"name": "POWER",
-"text": "+1 damage per level"
+"name": "HYPNO TIME",
+"text": "+1 s of hypnosis per level"
 }, {
 "effects": [{
 "op": &"add",
@@ -39,5 +39,5 @@ attributes = Array[Dictionary]([{
 }])
 sockets = 2
 links = 1
-part = &"dish_weapon"
+part = &"lens_weapon"
 weapon = ExtResource("2")

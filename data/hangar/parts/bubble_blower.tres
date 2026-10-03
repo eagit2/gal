@@ -9,7 +9,7 @@ id = &"bubble_blower"
 display_name = "Bubble Blower"
 category = 0
 tier = 3
-text = "Slow bubbles trap an enemy, float it up and pop for big damage. Elites just pop them."
+text = "Slow bubbles trap up to 3 enemies each, float them up and pop for big damage. Elites just pop them."
 effects = Array[Dictionary]([])
 attributes = Array[Dictionary]([{
 "effects": [{
@@ -20,7 +20,7 @@ attributes = Array[Dictionary]([{
 "id": &"size",
 "max": 4,
 "name": "BUBBLE SIZE",
-"text": "+15% bubble size per level"
+"text": "+15% bubble size per level: a wider trap"
 }, {
 "effects": [{
 "op": &"add",

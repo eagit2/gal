@@ -18,7 +18,7 @@ func test_every_weapon_part_fires_its_own_shot() -> void:
 		if part.weapon:
 			expect_eq(part.weapon.id, part.id, "%s weapon id" % part.id)
 			scenes[part.weapon.projectile_scene.resource_path] = true
-	expect_eq(scenes.size(), 11, "distinct projectiles (Twin Needle reuses the needle dart)")
+	expect_eq(scenes.size(), 14,"distinct projectiles (Twin Needle reuses the needle dart)")
 
 
 func test_parallel_barrels_are_centred() -> void:

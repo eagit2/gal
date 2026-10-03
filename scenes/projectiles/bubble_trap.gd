@@ -2,7 +2,7 @@ class_name BubbleTrap
 extends Node2D
 ## An enemy caught in a Bubble Blower bubble: added as the enemy's child, it stops the enemy acting,
 ## floats it upward for TRAP_TIME, then pops for pop_damage. A surviving enemy flies back to its
-## formation slot. The look is the bubble visual, scaled up around the enemy.
+## formation slot (EnemyHold). The look is the bubble visual, scaled up around the enemy.
 
 const NODE_NAME := &"BubbleTrap"
 const VISUAL := preload("res://assets/art/dusk_armada/projectiles/bubble.tscn")
@@ -20,7 +20,7 @@ var _enemy: Enemy
 func _ready() -> void:
 	name = NODE_NAME
 	_enemy = get_parent() as Enemy
-	_enemy.set_physics_process(false)
+	EnemyHold.grab(_enemy)
 	var look: Node2D = VISUAL.instantiate()
 	look.scale = Vector2.ONE * VISUAL_SCALE * size
 	add_child(look)
@@ -39,11 +39,7 @@ func _physics_process(delta: float) -> void:
 
 func _pop() -> void:
 	set_physics_process(false)
-	_enemy.set_physics_process(true)
-	if _enemy.state == Enemy.State.IN_FORMATION:
-		_enemy.state = Enemy.State.RETURNING
-	elif _enemy.state == Enemy.State.ENTERING and _enemy.slot != Enemy.NO_SLOT:
-		_enemy.state = Enemy.State.TO_SLOT
+	EnemyHold.release(_enemy, self)
 	var enemy := _enemy
 	queue_free()
 	enemy.damage(pop_damage)

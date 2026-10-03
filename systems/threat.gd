@@ -30,7 +30,3 @@ static func away(tree: SceneTree, pos: Vector2, radius: float) -> Vector2:
 				from = (node as Node2D).global_position
 	return Vector2.ZERO if from == Vector2.ZERO else (pos - from).normalized()
 
-
-## Any enemy on screen at all.
-static func any_enemy(tree: SceneTree) -> bool:
-	return tree.get_first_node_in_group(&"enemies") != null or tree.get_first_node_in_group(&"elites") != null

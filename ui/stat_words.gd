@@ -16,12 +16,13 @@ const FORMATS := {
 	&"move_speed": ["Speed", "pct"], &"strafe_left": ["Strafe left", "pct"], &"strafe_right": ["Strafe right", "pct"],
 	&"shield_recharge": ["Recharge", "recharge"], &"shield_layers": ["Layers", "count"], &"magnet": ["Pull range", "px"],
 	&"overdrive_window": ["Overkill gain", "pct"], &"graze_gain": ["Graze gain", "pct"], &"chain_gain": ["Chain gain", "pct"],
-	&"explode_radius": ["Burst radius", "px"], &"freeze_charges": ["Freezes", "plain"], &"freeze_time": ["Freeze", "seconds"],
+	&"explode_radius": ["Burst radius", "px"], &"freeze_charges": ["Novas", "plain"], &"freeze_time": ["Slow", "seconds"],
 	&"scrap_mult": ["Scrap value", "pct"], &"extra_lives": ["Ships", "lives"], &"spread": ["Spread", "plain"],
 	&"shield_reflect": ["Reflect", "plain"], &"shield_combo": ["Shield combo", "plain"], &"blink": ["Blink", "plain"],
 	&"ricochet": ["Ricochet", "plain"], &"wingman": ["Wingman", "plain"],
 	&"bounces": ["Bounces", "plain"], &"shrapnel": ["Shrapnel", "plain"], &"blast_radius": ["Blast radius", "px"],
-	&"max_active": ["Mines out", "plain"], &"shot_size": ["Bubble size", "pct"],
+	&"max_active": ["Mines out", "plain"], &"shot_size": ["Bubble size", "pct"], &"ball_size": ["Ball size", "pct"],
+	&"hypno_time": ["Hypno time", "seconds"], &"pull_time": ["Pull time", "seconds"], &"pull_radius": ["Pull radius", "px"],
 }
 
 
@@ -46,6 +47,12 @@ static func value(stat: StringName, v: float, weapon: WeaponDef = null) -> Strin
 				return "%d" % roundi(weapon.blast_radius + v)
 			&"max_active":
 				return str(weapon.cap(roundi(v)))
+			&"hypno_time":
+				return "%.1fs" % (HypnoControl.BASE_TIME + v)
+			&"pull_time":
+				return "%.1fs" % (GravityWell.BASE_PULL_TIME + v)
+			&"pull_radius":
+				return "%d" % roundi(GravityWell.BASE_PULL_RADIUS + v)
 	match kind:
 		"pct":
 			return "%d%%" % roundi(v * 100.0)

@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/ball_lightning.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"ball_lightning"
+display_name = "Ball Lightning"
+category = 0
+tier = 3
+text = "A big slow ball of lightning that wanders up the screen, shocking everything it touches."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"damage",
+"value": 1
+}],
+"id": &"power",
+"max": 3,
+"name": "POWER",
+"text": "+1 damage per shock per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"ball_size",
+"value": 0.2
+}],
+"id": &"size",
+"max": 3,
+"name": "BALL SIZE",
+"text": "+20% ball size per level"
+}])
+sockets = 3
+links = 1
+part = &"coil_weapon"
+weapon = ExtResource("2")

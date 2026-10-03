@@ -1,12 +1,12 @@
 [gd_scene load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://scenes/projectiles/scrap_ball.gd" id="1"]
-[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/projectiles/scrap_ball.tscn" id="2"]
+[ext_resource type="Script" path="res://scenes/projectiles/gravity_well.gd" id="1"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/projectiles/gravity_well.tscn" id="2"]
 
 [sub_resource type="CircleShape2D" id="shape"]
-radius = 34.0
+radius = 10.0
 
-[node name="ScrapBall" type="Area2D"]
+[node name="GravityWell" type="Area2D"]
 collision_layer = 4
 collision_mask = 2
 monitorable = false
