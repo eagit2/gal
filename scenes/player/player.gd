@@ -216,6 +216,7 @@ func _check_grazes() -> void:
 
 
 func _on_hurt(_hitbox: Hitbox) -> void:
+	EventBus.ship_struck.emit()
 	if dual:
 		_lose_wingman()
 		return

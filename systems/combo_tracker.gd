@@ -1,9 +1,10 @@
 class_name ComboTracker
 extends Node
 ## Fills the combo meters from play and runs combo modes (docs/combo-styles.md):
-## Overdrive (kill streaks), Lock-On (accuracy), Chain Reaction (multi-kills and diver kills),
-## Graze (near misses), and Arcade '81 (ship rescue, triggered directly).
-## One mode at a time; a full meter waiting when a mode ends chains into it for a higher multiplier.
+## Overkill (every 30 kills), Chain (30 hits in a row, no miss), Chain Reaction (multi-kills and
+## diver kills), Graze (near misses), and Arcade '81 (ship rescue, triggered directly).
+## A full meter drops an upgrade bubble (BubbleSystem); the mode starts when the ship catches it.
+## One mode at a time; catching a bubble while a mode runs chains into it for a higher multiplier.
 
 const COMBOS: Array[ComboDef] = [
 	preload("res://data/combos/overdrive.tres"),
@@ -12,7 +13,6 @@ const COMBOS: Array[ComboDef] = [
 	preload("res://data/combos/graze.tres"),
 	preload("res://data/combos/arcade_81.tres"),
 ]
-const KILL_WINDOW := 1.2
 ## Kills this close together count as one multi-kill burst.
 const BURST_WINDOW := 0.25
 const BURST_SIZE := 3
@@ -26,7 +26,7 @@ var time_left := 0.0
 var meters := {}  # combo id -> points
 var _idle := {}  # combo id -> seconds since the meter last gained
 var _clock := 0.0
-var _last_kill := -100.0
+var _pending := {}  # combo id -> true while its bubble is falling
 var _burst_start := -100.0
 var _burst := 0
 
@@ -37,9 +37,11 @@ func _ready() -> void:
 		_idle[combo.id] = 0.0
 	EventBus.enemy_killed.connect(_on_enemy_killed)
 	EventBus.shot_hit.connect(func() -> void: gain(&"lock_on", 1.0))
-	EventBus.shot_missed.connect(func() -> void: _set_meter(&"lock_on", 0.0))
+	EventBus.shot_missed.connect(_on_missed)
 	EventBus.bullet_grazed.connect(_on_grazed)
 	EventBus.ship_rescued.connect(func() -> void: trigger(&"arcade_81"))
+	EventBus.upgrade_bubble_caught.connect(_on_bubble_caught)
+	EventBus.upgrade_bubble_lost.connect(_on_bubble_lost)
 
 
 func _exit_tree() -> void:
@@ -52,7 +54,7 @@ func _physics_process(delta: float) -> void:
 	_clock += real_delta
 	for combo in COMBOS:
 		_idle[combo.id] += real_delta
-		if _idle[combo.id] > combo.decay_delay and meters[combo.id] > 0.0:
+		if _idle[combo.id] > combo.decay_delay and meters[combo.id] > 0.0 and not _pending.has(combo.id):
 			_set_meter(combo.id, maxf(0.0, meters[combo.id] - combo.decay_rate * threshold(combo) * real_delta))
 	if active:
 		time_left -= real_delta
@@ -70,20 +72,48 @@ func multiplier() -> int:
 
 
 func gain(id: StringName, points: float) -> void:
-	if active and active.id == id:
+	if (active and active.id == id) or _pending.has(id):
 		return
 	var combo := _find(id)
 	_idle[id] = 0.0
 	_set_meter(id, minf(meters[id] + points, threshold(combo)))
-	if not active and meters[id] >= threshold(combo):
-		_start(combo, 1)
+	if meters[id] >= threshold(combo):
+		_drop_bubble(combo)
 
 
-## Starts a mode now (Arcade '81 on rescue), replacing any running mode.
+## Drops a mode's bubble now (Arcade '81 on rescue).
 func trigger(id: StringName) -> void:
+	if not _pending.has(id):
+		_drop_bubble(_find(id))
+
+
+func is_pending(id: StringName) -> bool:
+	return _pending.has(id)
+
+
+func _drop_bubble(combo: ComboDef) -> void:
+	_pending[combo.id] = true
+	EventBus.upgrade_bubble_requested.emit(combo.id, true, combo.display_name, combo.color)
+
+
+func _on_bubble_caught(kind: StringName) -> void:
+	if not _pending.has(kind):
+		return
+	_pending.erase(kind)
+	var level := chain + 1 if active else 1
 	if active:
 		_finish()
-	_start(_find(id), 1)
+	_start(_find(kind), level)
+
+
+func _on_bubble_lost(kind: StringName) -> void:
+	if _pending.erase(kind):
+		_set_meter(kind, 0.0)
+
+
+func _on_missed() -> void:
+	if not _pending.has(&"lock_on"):
+		_set_meter(&"lock_on", 0.0)
 
 
 ## Ends any running mode without chaining (game over).
@@ -94,10 +124,7 @@ func stop() -> void:
 
 
 func _on_enemy_killed(node: Node2D, _at: Vector2, _score: int) -> void:
-	var window: float = KILL_WINDOW * GameState.stats[&"overdrive_window"]
-	if _clock - _last_kill <= window:
-		gain(&"overdrive", 1.0)
-	_last_kill = _clock
+	gain(&"overdrive", GameState.stats[&"overdrive_window"])
 	var chain_gain: float = GameState.stats[&"chain_gain"]
 	if _clock - _burst_start > BURST_WINDOW:
 		_burst_start = _clock
@@ -129,11 +156,7 @@ func _start(combo: ComboDef, chain_level: int) -> void:
 
 
 func _end() -> void:
-	var ended := _finish()
-	for combo in COMBOS:
-		if combo != ended and combo.threshold > 0.0 and meters[combo.id] >= threshold(combo):
-			_start(combo, chain + 1)
-			return
+	_finish()
 	chain = 0
 
 

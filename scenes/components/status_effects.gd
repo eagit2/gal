@@ -18,6 +18,9 @@ const CHILL_CAP := 0.6
 const CHILL_TIME := 2.0
 const CHAIN_RADIUS := 90.0
 const CHAIN_DAMAGE := 1
+## Chain combo (5 arcs) and up: big lightning that reaches further.
+const BIG_CHAIN := 5
+const BIG_CHAIN_RADIUS := 200.0
 
 var burn_left := 0.0
 var chill_left := 0.0
@@ -86,9 +89,11 @@ static func _arc(enemy: Node2D, count: int) -> void:
 		if node != enemy and node.has_node(^"Health"):
 			others.append(node as Node2D)
 			points.append((node as Node2D).global_position)
-	for i in chain_targets(enemy.global_position, points, count, CHAIN_RADIUS):
+	var big := count >= BIG_CHAIN
+	for i in chain_targets(enemy.global_position, points, count, BIG_CHAIN_RADIUS if big else CHAIN_RADIUS):
 		var arc: Node2D = ARC_SCENE.instantiate()
 		enemy.get_parent().add_child(arc)
+		arc.set(&"big", big)
 		arc.call(&"connect_points", enemy.global_position, points[i])
 		(others[i].get_node(^"Health") as Health).take_damage(CHAIN_DAMAGE)
 

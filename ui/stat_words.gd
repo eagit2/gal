@@ -15,7 +15,7 @@ const FORMATS := {
 	&"missiles": ["Missiles", "plain"], &"missile_rate": ["Missile rate", "pct"], &"drones": ["Drones", "plain"],
 	&"move_speed": ["Speed", "pct"], &"strafe_left": ["Strafe left", "pct"], &"strafe_right": ["Strafe right", "pct"],
 	&"shield_recharge": ["Recharge", "recharge"], &"shield_layers": ["Layers", "count"], &"magnet": ["Pull range", "px"],
-	&"overdrive_window": ["Combo window", "pct"], &"graze_gain": ["Graze gain", "pct"], &"chain_gain": ["Chain gain", "pct"],
+	&"overdrive_window": ["Overkill gain", "pct"], &"graze_gain": ["Graze gain", "pct"], &"chain_gain": ["Chain gain", "pct"],
 	&"explode_radius": ["Burst radius", "px"], &"freeze_charges": ["Freezes", "plain"], &"freeze_time": ["Freeze", "seconds"],
 	&"scrap_mult": ["Scrap value", "pct"], &"extra_lives": ["Ships", "lives"], &"spread": ["Spread", "plain"],
 	&"shield_reflect": ["Reflect", "plain"], &"shield_combo": ["Shield combo", "plain"], &"blink": ["Blink", "plain"],

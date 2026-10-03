@@ -73,3 +73,4 @@ Newest first. One line per decision with the reason.
 - 2026-10-03: Dev unlock on by default during development (Eric): everything owned, tree nodes toggle on/off for free; unlock=0 turns it off.
 - 2026-10-03: Elite description banner removed from gameplay; challenge stages taken out of sector 1 for now (data/stages/challenge_1.tres kept) (Eric).
 - 2026-10-03: Gun fire rate starts slower (60% of before); small +10% steps, last level adds +100% (Eric: last step is the big jump).
+- 2026-10-03: Combos and triggered extras drop an upgrade bubble the ship must catch (combos fall 2x scrap speed). Overkill = every 30 kills; Chain = 30 hits without a miss, hits arc to 5 enemies with big lightning; a no-hit stage drops a companion drone (pea shooter, rams enemies about to hit the ship) (Eric).
