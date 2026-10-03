@@ -1,7 +1,7 @@
 class_name ComboDef
 extends Resource
 ## One combo mode (docs/combo-styles.md): a meter filled by a style of play that triggers a timed
-## buff and switches the art style.
+## buff. `style` (a ThemeDef id) would switch the art style; empty keeps the screen as is (Eric, 2026-10-03).
 
 @export var id: StringName
 @export var display_name: String

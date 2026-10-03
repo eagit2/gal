@@ -24,7 +24,6 @@ func test_difficulty_data_loads() -> void:
 
 func test_snapshot_survives_json_and_restores() -> void:
 	GameState.start_run(&"ace", 3)
-	GameState.gain_upgrade(GameState.POOL.upgrades[0])
 	GameState.score = 1234
 	GameState.stage_index = 4
 	var run: Dictionary = JSON.parse_string(JSON.stringify(GameState.snapshot()))
@@ -35,8 +34,6 @@ func test_snapshot_survives_json_and_restores() -> void:
 	expect_eq(GameState.stage_index, 4, "stage")
 	expect_eq(GameState.score, 1234, "score")
 	expect_eq(GameState.lives, lives, "lives")
-	expect_eq(GameState.upgrades, [GameState.POOL.upgrades[0].id] as Array[StringName], "upgrades")
-	expect_eq(GameState.owned.size(), 1, "owned")
 
 
 func test_title_lists_difficulties_easiest_first() -> void:

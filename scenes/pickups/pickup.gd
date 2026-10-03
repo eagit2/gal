@@ -1,34 +1,30 @@
 class_name Pickup
 extends Node2D
-## Upgrade capsule dropped by an enemy. Falls slowly with a sway; the ship collects it by flying
-## over it. The Tractor Magnet upgrade pulls it in. The upgrade is rolled when collected: utility
-## capsules (tinted gold) roll freeze/shield/credit upgrades, the rest roll bullet upgrades.
+## Scrap pile left by a destroyed ship. Falls slowly with a sway; the ship collects it by flying
+## over it, and the magnet stat pulls it in. Scrap is the hangar currency.
 
 const FALL_SPEED := 85.0
 const SWAY := 22.0
 const COLLECT_RADIUS := 30.0
 const PULL_SPEED := 460.0
 const BOTTOM := 1000.0
-## Score instead of an upgrade once every upgrade is maxed.
-const MAXED_SCORE := 1000
-const UTILITY_TINT := Color(1.0, 0.8, 0.3)
+const SPIN := 1.6
 
 var player: Player
-var rarity_bonus := 0
-var utility := false
+## Scrap before multipliers. Bigger piles draw bigger.
+var amount := 1
 var _t := randf() * TAU
 var _x := 0.0
 
 
 func _ready() -> void:
 	_x = position.x
-	if utility:
-		$Visual.modulate = UTILITY_TINT
-		$Visual.scale = Vector2(1.4, 1.4)
+	$Visual.scale = Vector2.ONE * clampf(0.8 + amount * 0.08, 0.8, 2.0)
 
 
 func _physics_process(delta: float) -> void:
 	_t += delta
+	rotation += SPIN * delta
 	if not is_instance_valid(player) or not player.alive:
 		_fall(delta)
 		return
@@ -51,12 +47,5 @@ func _fall(delta: float) -> void:
 
 
 func _collect() -> void:
-	var source := UpgradeDef.Source.UTILITY if utility else UpgradeDef.Source.BULLET
-	var upgrade := GameState.roll_drop(rarity_bonus, source)
-	if upgrade == null and utility:
-		upgrade = GameState.roll_drop(rarity_bonus)
-	if upgrade:
-		GameState.gain_upgrade(upgrade)
-	else:
-		GameState.add_score(MAXED_SCORE)
+	Hangar.add_scrap(amount, global_position)
 	queue_free()

@@ -14,7 +14,7 @@ func _state(frame: StringName, ids: Array) -> Dictionary:
 
 
 func _stats(state: Dictionary) -> Dictionary:
-	return UpgradeSystem.compute([], [], Loadout.effects(CATALOG, state))
+	return UpgradeSystem.compute(Loadout.effects(CATALOG, state))
 
 
 func _medal(goal: MedalDef.Goal, target := 0.0) -> MedalDef:

@@ -10,8 +10,9 @@ const ATTACK_DELAY := 2.0
 const BANNER_TIME := 2.0
 const CHALLENGE_HIT_BONUS := 100
 const CHALLENGE_PERFECT_BONUS := 10000
-## Where the guaranteed pickup for a perfect challenge stage appears.
+## Where the guaranteed scrap pile for a perfect challenge stage appears.
 const PERFECT_DROP_AT := Vector2(270, 240)
+const PERFECT_SCRAP := 25
 
 @export var difficulty: DifficultyDef
 @export var sector: SectorDef
@@ -112,7 +113,7 @@ func _on_stage_finished(kills: int, total: int) -> void:
 		var bonus := kills * CHALLENGE_HIT_BONUS
 		if kills == total:
 			bonus += CHALLENGE_PERFECT_BONUS
-			_drops.spawn(PERFECT_DROP_AT, 0, true)
+			_drops.spawn(PERFECT_DROP_AT, PERFECT_SCRAP)
 		GameState.add_score(roundi(bonus * _score_multiplier()))
 		_hud.show_banner("%sHITS %d / %d\nBONUS %d" % ["PERFECT!\n" if kills == total else "", kills, total, bonus], STAGE_DELAY)
 	if not _dev.repeat:

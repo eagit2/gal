@@ -4,20 +4,20 @@
 
 [resource]
 script = ExtResource("1")
-id = &"salvage_scanner"
-display_name = "Salvage Scanner"
-description = "Ships leave scrap 15% more often, more per level."
+id = &"cryo_pulse"
+display_name = "Cryo Pulse"
+description = "Once per stage, press C (pad Y, or tap FREEZE) to freeze every enemy and shot for 3s. +1s per level."
 kind = 2
-cost = 90
+cost = 150
 effects = Array[Dictionary]([{
-"op": &"mul",
-"stat": &"drop_mult",
-"value": 1.15
+"op": &"add",
+"stat": &"freeze_charges",
+"value": 1
 }])
 per_level = Array[Dictionary]([{
-"op": &"mul",
-"stat": &"drop_mult",
-"value": 1.1
+"op": &"add",
+"stat": &"freeze_time",
+"value": 1.0
 }])
 ap_levels = Array[int]([60, 200])
 amplify = 0

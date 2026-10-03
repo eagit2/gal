@@ -15,7 +15,7 @@ extends Resource
 ## How it attacks once it leaves formation (scenes/enemies/behaviors/, data in data/brains/).
 @export var brain: EnemyBrain
 @export var bullet_speed: float = 300.0
-## Chance per kill to drop an upgrade pickup (design/intro-levels.md 2.1).
-@export var drop_chance: float = 0.02
-## Rarity tiers added to this enemy's drops (wardens: +1).
-@export var drop_rarity_bonus: int = 0
+## Chance per kill to leave a scrap pile (hangar currency).
+@export var scrap_chance: float = 0.3
+## Scrap in the pile, before the scrap_mult stat and difficulty.
+@export var scrap: int = 1

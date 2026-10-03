@@ -6,7 +6,7 @@
 script = ExtResource("1")
 id = &"magnet_coil"
 display_name = "Magnet Coil"
-description = "Pulls pickups from 90 px away, further per level."
+description = "Pulls scrap from 90 px away, further per level."
 kind = 2
 cost = 60
 effects = Array[Dictionary]([{

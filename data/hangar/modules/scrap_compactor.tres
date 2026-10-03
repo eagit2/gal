@@ -4,19 +4,19 @@
 
 [resource]
 script = ExtResource("1")
-id = &"salvage_scanner"
-display_name = "Salvage Scanner"
-description = "Ships leave scrap 15% more often, more per level."
+id = &"scrap_compactor"
+display_name = "Scrap Compactor"
+description = "Scrap piles are worth 20% more, more per level."
 kind = 2
-cost = 90
+cost = 120
 effects = Array[Dictionary]([{
 "op": &"mul",
-"stat": &"drop_mult",
-"value": 1.15
+"stat": &"scrap_mult",
+"value": 1.2
 }])
 per_level = Array[Dictionary]([{
 "op": &"mul",
-"stat": &"drop_mult",
+"stat": &"scrap_mult",
 "value": 1.1
 }])
 ap_levels = Array[int]([60, 200])
