@@ -14,6 +14,8 @@ How to add content without touching code. Filled in as each system lands.
 ## Stages and sectors
 `data/stages/<id>.tres` (`StageDef`) holds WaveDefs as sub-resources: enemy, count, entry_path, formation_slots (one Vector2i(column, row) per enemy, grid 10x5), delay. `is_challenge` makes enemies fly through; `style` forces a theme for the stage. `data/sectors/<id>.tres` lists stages in play order; the game loops them with rising aggression. `tests/unit/test_stage_data.gd` checks slots are unique and on the grid.
 
+To test a stage without playing up to it, add URL options to the build: `?stage=3` (number or id like `challenge_1`), `god=1` (hits cost no lives), `repeat=1` (replay the stage), `difficulty=ace`. Example: https://eagit2.github.io/gal/?stage=challenge_1&god=1&repeat=1. Locally: `godot -- stage=3 god=1`. See `systems/dev_options.gd`.
+
 ## Art styles
 `data/themes/<id>.tres` (`ThemeDef`): id, family (`pixel` or `vector`), palette. Register new themes in `autoload/style_director.gd` (THEMES).
 

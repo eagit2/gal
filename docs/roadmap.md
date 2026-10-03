@@ -43,6 +43,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Auto shield bubble: absorbs one shot or ram, recharges (DifficultyDef.shield_recharge, 9 to 16s)
 - [ ] Playtest and tune numbers in `data/brains/` and `data/difficulty/`
 
+- [x] Playtest shortcuts: URL options to start on any stage, god mode, repeat, difficulty
+
 ## M3 Upgrades v1
 - [ ] Upgrade drops: DropTable per enemy, pity bonus, falling pickup (adds to the card pick)
 - [ ] ComboTracker + ComboDef: Overdrive mode end to end (meter, buff, N1 style switch)
