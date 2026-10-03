@@ -20,6 +20,7 @@ const PERFECT_DROP_AT := Vector2(270, 240)
 
 var stage_number := 0
 var game_over := false
+var _dev := DevOptions.from_environment()
 
 @onready var _entities: Node2D = $Entities
 @onready var _player: Player = $Entities/Player
@@ -33,6 +34,8 @@ var game_over := false
 
 
 func _ready() -> void:
+	if _dev.difficulty != &"" and ResourceLoader.exists("res://data/difficulty/%s.tres" % _dev.difficulty):
+		difficulty = load("res://data/difficulty/%s.tres" % _dev.difficulty)
 	GameState.start_run(difficulty.id, difficulty.lives)
 	EventBus.enemy_killed.connect(_on_enemy_killed)
 	_player.entities = _entities
@@ -51,7 +54,7 @@ func _ready() -> void:
 	_combos.difficulty = difficulty
 	_pick.picked.connect(_on_upgrade_picked)
 	_hud.set_lives(GameState.lives)
-	stage_number = first_stage
+	stage_number = _dev.stage_index(sector.stages, first_stage)
 	_start_stage()
 
 
@@ -101,7 +104,8 @@ func _on_stage_finished(kills: int, total: int) -> void:
 			_drops.spawn(PERFECT_DROP_AT, 0)
 		GameState.add_score(roundi(bonus * _score_multiplier()))
 		_hud.show_banner("%sHITS %d / %d\nBONUS %d" % ["PERFECT!\n" if kills == total else "", kills, total, bonus], STAGE_DELAY)
-	stage_number += 1
+	if not _dev.repeat:
+		stage_number += 1
 	get_tree().create_timer(STAGE_DELAY, false).timeout.connect(_on_stage_delay_done)
 
 
@@ -131,7 +135,7 @@ func _on_enemy_killed(_enemy: Node2D, _position: Vector2, score: int) -> void:
 
 func _on_player_hit() -> void:
 	EventBus.player_hit.emit()
-	var run_over := GameState.lose_life()
+	var run_over := false if _dev.god else GameState.lose_life()
 	_hud.set_lives(GameState.lives)
 	if run_over:
 		_end_run()
