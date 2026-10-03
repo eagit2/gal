@@ -57,6 +57,7 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [ ] Playtest and tune: drop rate, meter thresholds, upgrade values
 - [x] M3.5 upgrade rework: drops change bullets only, cards are utility (Cryo Pulse freeze, extra bubbles, credit multiplier), lower values
 - [x] M3.6 no between-stage pick: utility upgrades drop as gold capsules
+- [x] M3.7 scrap economy (drops are hangar currency), elites with traits, capture and dual fighter, combos keep the screen
 ## M4 Difficulty + meta
 - [x] Hangar v2 (materia style): 4 frames with linked slots, 21 modules that level from AP, mastery copies and upgrade chains, ship parts per module, deeper menu (`docs/hangar.md`)
 - [x] Pilots with active powers: Vega (Overclock), Rook (Bulwark), Nyx (Phase Dash), Juno (Nova)

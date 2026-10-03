@@ -52,3 +52,9 @@ signal elite_spawned(elite: EliteDef)
 signal elite_killed(elite: EliteDef, at: Vector2)
 ## An elite's trait was beaten for now (an ice layer shattered, a tether cut).
 signal elite_trait_broken(at: Vector2)
+## A tractor beam caught the player's ship (costs a life; the ship rides above `captor`).
+signal player_captured(captor: Node2D)
+## The captor died in formation, so the captured ship is gone.
+signal captive_lost()
+## The dual fighter's wingman took a hit and is gone.
+signal wingman_lost(at: Vector2)

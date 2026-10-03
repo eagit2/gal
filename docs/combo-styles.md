@@ -1,3 +1,5 @@
+> 2026-10-03: Eric asked that combos stop changing the screen. Modes keep their meters and buffs; `ComboDef.style` is empty, so the art style and music stay put. The style mapping below is kept for reference.
+
 # Combo modes and art styles
 
 Status: decided, 2026-10-02 (Eric confirmed the mapping. Original ask: "combos need to be triggered in a certain way... multiple types, each leading to a different art style").

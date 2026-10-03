@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CaptureBrain" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/behaviors/capture_brain.gd" id="1"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/fx/tractor_beam.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+speed = 240.0
+turn_rate = 3.0
+fire_interval = 99.0
+max_time = 9.0
+hover_y = 470.0
+beam_time = 3.0
+beam_half_width = 26.0
+beam_spread = 0.32
+beam_scene = ExtResource("2")

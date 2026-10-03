@@ -18,6 +18,8 @@ const OPTIONAL_CUES := {
 	&"elite_spawned": &"stage_start",
 	&"elite_killed": &"explode_big",
 	&"elite_trait_broken": &"shield_pop",
+	&"player_captured": &"player_hit",
+	&"wingman_lost": &"explode_small",
 	&"power_used": &"combo_start",
 	&"medal_earned": &"pickup",
 	&"module_mastered": &"synergy",

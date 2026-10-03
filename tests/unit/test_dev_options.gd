@@ -22,3 +22,10 @@ func test_stage_by_number_or_id() -> void:
 	expect_eq(DevOptions.parse(PackedStringArray(["--stage=2"])).stage_index(sector.stages, 0), 1, "number")
 	expect_eq(DevOptions.parse(PackedStringArray(["stage=challenge_1"])).stage_index(sector.stages, 0), 2, "id")
 	expect_eq(DevOptions.parse(PackedStringArray(["stage=nope"])).stage_index(sector.stages, 0), 0, "unknown")
+
+
+func test_parse_elite_and_capture() -> void:
+	var opts := DevOptions.parse(PackedStringArray(["elite=Rock_Hauler", "capture=1"]))
+	expect_eq(opts.elite, &"rock_hauler", "elite")
+	expect_eq(opts.capture, true, "capture")
+	expect_eq(opts.is_set(), true, "dev run")

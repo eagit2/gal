@@ -16,4 +16,5 @@ visual_scene = ExtResource("2")
 bullet_speed = 300.0
 scrap_chance = 1.0
 scrap = 5
+can_capture = true
 brain = ExtResource("3")

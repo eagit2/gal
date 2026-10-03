@@ -23,7 +23,10 @@ To test a stage without playing up to it, add URL options to the build: `?stage=
 Create `data/weapons/<id>.tres` of type `WeaponDef` (fire_rate, projectile_scene, projectile_speed, spread_count, spread_angle, damage).
 
 ## Upgrade
-Create `data/upgrades/<id>.tres` of type `UpgradeDef` and add it to `data/upgrades/upgrade_pool.tres` (a test fails if you forget). Fields: source (UTILITY for gold capsules, BULLET for regular capsules; bullet upgrades may only change bullet stats, a test checks), display_name, description (toast text), category, rarity (drop weights 70/25/5 in the pool), tags (for synergies), max_stacks, requires (upgrade ids), effects.
+Upgrades live in the hangar: add a `ModuleDef` under `data/hangar/modules/` and list it in `data/hangar/catalog.tres` (see docs/hangar.md). Effects use {"stat", "op", "value"} with a stat from `UpgradeSystem.BASE_STATS`.
+
+### Add an elite
+Create `data/elites/<id>.tres` (`EliteDef`): name, hint (shown on arrival: what it does and how to beat it), hp, score, scrap, patrol speed, fire pattern, visual (an enemy visual scene, scaled and tinted), and `trait_logic`, a sub-resource of an `EliteTrait` script in `scenes/enemies/elites/` (Frost Shell, Rock Tow, Shield Link). A new trait is a new script overriding `begin`, `tick`, `absorb` and `end`; keep per-elite state in `elite.state`. Put elites in a stage with `StageDef.elites`. Test one anywhere with the dev option `elite=<id>`.
 
 Effects are `{"stat": &"...", "op": &"add"|"mul"|"max", "value": ...}`. Stats and their defaults are `UpgradeSystem.BASE_STATS` (`systems/upgrade_system.gd`); `lives` is applied once on pickup. A new stat needs a line in BASE_STATS and code that reads it.
 
@@ -31,7 +34,7 @@ Effects are `{"stat": &"...", "op": &"add"|"mul"|"max", "value": ...}`. Stats an
 `data/synergies/<id>.tres` (`SynergyDef`): required_tags and effects. It switches on when the player owns upgrades covering every tag. Register it in the pool.
 
 ## Drops
-`EnemyDef.drop_chance` and `drop_rarity_bonus`; `DifficultyDef.drop_mult`; pity step in `systems/drop_system.gd`.
+Scrap: `EnemyDef.scrap_chance` and `scrap`; `DifficultyDef.drop_mult`; pity step in `systems/drop_system.gd`. Capture: `EnemyDef.can_capture`, `data/brains/capture.tres`, timing in `systems/capture_system.gd`.
 
 ## Combo mode
 `data/combos/<id>.tres` (`ComboDef`): style (theme id), threshold, decay_delay, decay_rate, duration, effects (same format as upgrades), HUD color. What fills each meter is in `systems/combo_tracker.gd`; thresholds scale with `DifficultyDef.combo_threshold`.

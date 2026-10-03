@@ -6,7 +6,7 @@ extends Node2D
 
 const ENEMY_BULLET := preload("res://scenes/projectiles/enemy_bullet.tscn")
 const ENTER_SPEED := 160.0
-const PATROL_Y := 210.0
+const PATROL_Y := 370.0
 const MIN_X := 70.0
 const MAX_X := 470.0
 const RAM_DAMAGE := 10

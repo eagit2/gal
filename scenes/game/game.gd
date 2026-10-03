@@ -30,6 +30,7 @@ var _dev := DevOptions.from_environment()
 @onready var _dives: DiveController = $Entities/DiveController
 @onready var _drops: DropSystem = $Entities/DropSystem
 @onready var _combos: ComboTracker = $Entities/ComboTracker
+@onready var _capture: CaptureSystem = $Entities/CaptureSystem
 @onready var _hud: Hud = $HUD
 
 
@@ -57,6 +58,12 @@ func _ready() -> void:
 	_drops.difficulty = difficulty
 	_drops.player = _player
 	_drops.entities = _entities
+	_capture.dives = _dives
+	_capture.player = _player
+	if _dev.capture:
+		_capture.first_delay = 3.0
+		_capture.interval = Vector2(4.0, 6.0)
+	EventBus.player_captured.connect(_on_player_captured)
 	_combos.difficulty = difficulty
 	_hud.set_lives(GameState.lives)
 	stage_number = _dev.stage_index(sector.stages, int(run.get("stage", first_stage)))
@@ -146,6 +153,16 @@ func _on_player_hit() -> void:
 		return
 	# Connect instead of await: the connection drops cleanly if the scene is reloaded meanwhile.
 	get_tree().create_timer(RESPAWN_DELAY, false).timeout.connect(_player.respawn.bind(PLAYER_START))
+
+
+func _on_player_captured(captor: Node2D) -> void:
+	_player.capture(captor)
+	var run_over := false if _dev.god else GameState.lose_life()
+	_hud.set_lives(GameState.lives)
+	if run_over:
+		_end_run()
+		return
+	get_tree().create_timer(RESPAWN_DELAY + Player.CAPTURE_TIME, false).timeout.connect(_player.respawn.bind(PLAYER_START))
 
 
 func _end_run() -> void:

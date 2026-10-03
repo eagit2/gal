@@ -15,6 +15,8 @@ extends Resource
 ## How it attacks once it leaves formation (scenes/enemies/behaviors/, data in data/brains/).
 @export var brain: EnemyBrain
 @export var bullet_speed: float = 300.0
+## Can fly tractor-beam capture runs (CaptureSystem).
+@export var can_capture := false
 ## Chance per kill to leave a scrap pile (hangar currency).
 @export var scrap_chance: float = 0.3
 ## Scrap in the pile, before the scrap_mult stat and difficulty.

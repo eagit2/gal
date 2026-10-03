@@ -87,12 +87,14 @@ func _physics_process(delta: float) -> void:
 
 # --- Attacks ---------------------------------------------------------------------------------
 
-func start_attack(player: Player, stage_aggression: float) -> void:
-	if state != State.IN_FORMATION or def.brain == null:
+## Leaves formation to attack with the type's brain, or `attack_brain` (capture runs).
+func start_attack(player: Player, stage_aggression: float, attack_brain: EnemyBrain = null) -> void:
+	var chosen := attack_brain if attack_brain else def.brain
+	if state != State.IN_FORMATION or chosen == null:
 		return
 	target = player
 	aggression = stage_aggression
-	_begin_attack(def.brain)
+	_begin_attack(chosen)
 
 
 ## Called by a squad leader's brain: fly alongside `squad_leader` at `offset`.
