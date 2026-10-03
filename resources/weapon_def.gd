@@ -16,7 +16,7 @@ extends Resource
 ## Pixels a shot flies before it fizzles (flak pellets); 0 = until it leaves the screen.
 @export var max_range: float = 0.0
 ## Special shots (their projectile scene's script reads these; ordinary shots ignore them):
-## enemies a rubber duck bounces on to after its first hit, pieces a scrap ball breaks into, and a
+## wall bounces a rubber duck gets (at most 3), pieces a scrap ball breaks into, and a
 ## mine's blast radius in pixels. Run stats bounces, shrapnel and blast_radius add to them.
 @export var bounces: int = 0
 @export var shrapnel: int = 0

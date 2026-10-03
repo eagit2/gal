@@ -45,9 +45,10 @@ func _draw() -> void:
 			for p in lump:
 				inner.append(p * 0.84)
 			draw_colored_polygon(inner, color)
-			draw_line(Vector2(-size * 0.5, -size * 0.2), Vector2(size * 0.4, size * 0.3), color.darkened(0.35), 2.0)
+			var detail := maxf(2.0, size * 0.1)
+			draw_line(Vector2(-size * 0.5, -size * 0.2), Vector2(size * 0.4, size * 0.3), color.darkened(0.35), detail)
 			for p in [Vector2(-size * 0.35, size * 0.3), Vector2(size * 0.3, -size * 0.35), Vector2(0, 0)]:
-				draw_circle(p, 2.0, color.lightened(0.45))
+				draw_circle(p, detail, color.lightened(0.45))
 		Kind.SHRAPNEL:
 			var flake := PackedVector2Array([Vector2(0, -size * 1.4), Vector2(size, size * 0.6), Vector2(-size * 0.8, size)])
 			draw_colored_polygon(flake, color)

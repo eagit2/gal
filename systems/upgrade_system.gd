@@ -38,11 +38,15 @@ const BASE_STATS := {
 	&"chill": 0,  # hits slow enemies (Frost chip)
 	&"chain": 0,  # hits arc to this many nearby enemies (Volt chip)
 	# Special weapon shots (WeaponDef bounces, shrapnel, blast_radius, active_cap).
-	&"bounces": 0,  # extra enemies a rubber duck bounces on to
+	&"bounces": 0,  # extra rubber duck wall bounces (capped at 3 total)
 	&"shrapnel": 0,  # extra pieces a scrap ball breaks into
 	&"blast_radius": 0.0,  # pixels added to a mine's blast
 	&"max_active": 0,  # extra mines out at once
 	&"shot_size": 1.0,  # bubble size multiplier
+	&"ball_size": 1.0,  # ball lightning size multiplier
+	&"hypno_time": 0.0,  # seconds added to a hypno hit
+	&"pull_time": 0.0,  # seconds added to a gravity well's pull
+	&"pull_radius": 0.0,  # pixels added to a gravity well's reach
 	# Ship tree perks the run doesn't use yet (hangar plan phase 6).
 	&"shield_reflect": 0,  # shield bounces bullets back
 	&"shield_combo": 0,  # shield hits fill the combo meter

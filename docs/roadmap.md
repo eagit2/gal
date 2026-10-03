@@ -70,6 +70,7 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Hangar round 2: ships menu with unlocks, slimmer slot menu, part dropdown, link sockets on parts and store, forked Kestrel tree
 - [x] Hangar round 3: chips and link combos, per-weapon shots, shields only when fitted, owned-only lists with quick equip, 3-item store
 - [x] Design-board weapons: Flak Cannon, Rail Spike, Scrap Cannon, Twin Needle, Mine Launcher, Rubber Duck Gun, Bubble Blower (`docs/hangar.md`)
+- [x] Weapon pass 2: duck/bubble/scrap tweaks; Ball Lightning, Hypno Gun, Gravity Gun (`docs/hangar.md`)
 - [ ] Hangar v3 step 2b: rest of the parts catalog
 - [ ] Hangar v3 step 3: ship trees for Talon, Bastion and Seraph, and tree capstones that unlock ships and a 5th slot
 - [x] Title screen: Continue (resumes the saved run at its last stage), New Game with difficulty pick and an overwrite confirm. Hangar button hook in `title.gd`.

@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/gravity_gun.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"gravity_gun"
+display_name = "Gravity Gun"
+category = 0
+tier = 3
+text = "Every 5 s, a small gravity well: it stops where it hits and drags nearby enemies in."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"pull_time",
+"value": 0.5
+}],
+"id": &"pull_time",
+"max": 3,
+"name": "PULL TIME",
+"text": "+0.5 s of pull per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"pull_radius",
+"value": 30.0
+}],
+"id": &"pull_radius",
+"max": 3,
+"name": "PULL RADIUS",
+"text": "+30 px reach per level"
+}])
+sockets = 3
+links = 1
+part = &"dome_weapon"
+weapon = ExtResource("2")
