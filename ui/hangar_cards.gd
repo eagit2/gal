@@ -65,6 +65,44 @@ static func drop_card(row: Button, stats: Array, groups: Array[int], fills: Arra
 	return row
 
 
+## Puts a tappable tag at the right end of a row (EQUIPPED / UNEQUIPPED) that runs `action`.
+static func status_tag(row: Button, text: String, color: Color, action: Callable) -> Button:
+	var tag := Button.new()
+	tag.text = text
+	tag.focus_mode = Control.FOCUS_NONE
+	tag.custom_minimum_size = Vector2(150, HangarUI.ROW_HEIGHT - 12)
+	tag.add_theme_font_size_override("font_size", 12)
+	tag.add_theme_color_override("font_color", color)
+	tag.add_theme_color_override("font_hover_color", HangarUI.GOLD)
+	tag.add_theme_stylebox_override("normal", HangarUI.box(HangarUI.INK.darkened(0.2), color.darkened(0.3)))
+	tag.add_theme_stylebox_override("hover", HangarUI.box(HangarUI.INK.lightened(0.1), HangarUI.GOLD))
+	tag.add_theme_stylebox_override("pressed", HangarUI.box(HangarUI.INK.lightened(0.15), HangarUI.GOLD))
+	tag.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	tag.pressed.connect(action)
+	var parts: HBoxContainer = row.get_node("Parts")
+	parts.get_child(parts.get_child_count() - 1).queue_free()
+	parts.add_child(tag)
+	return tag
+
+
+## Marks a row as half of a linked pair: gold border, and a gold bar in the middle bridging the
+## gap down to the row below (`down`).
+static func link_line(row: Button, down: bool) -> void:
+	row.add_theme_stylebox_override("normal", HangarUI.box(HangarUI.INK, SOCKET_GOLD))
+	if not down:
+		return
+	var bar := ColorRect.new()
+	bar.color = SOCKET_GOLD
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar.anchor_left = 0.5
+	bar.anchor_right = 0.5
+	bar.offset_left = -8
+	bar.offset_right = 8
+	bar.offset_top = HangarUI.ROW_HEIGHT - 2
+	bar.offset_bottom = HangarUI.ROW_HEIGHT + 7  # spans the list's 5 px row spacing
+	row.add_child(bar)
+
+
 static func _stat_line(title: String, middle: Control, right: Control, color: Color) -> HBoxContainer:
 	var line := HBoxContainer.new()
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE

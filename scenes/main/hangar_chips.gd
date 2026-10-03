@@ -22,7 +22,8 @@ func fills(def: PartDef) -> Array[Color]:
 	return result
 
 
-## Lists the part's sockets; `back` returns to the part.
+## Lists the part's sockets (linked pairs have gold borders and a gold bridge), then the combos
+## its socketed chips make. `back` returns to the part.
 func open(def: PartDef, back: Callable, focus_row := 0) -> void:
 	var state := Hangar.state()
 	menu.page("%s  LINKS" % def.display_name.to_upper(), back)
@@ -30,13 +31,29 @@ func open(def: PartDef, back: Callable, focus_row := 0) -> void:
 	var pairs := Loadout.linked_pairs(Loadout.sockets(_catalog, state, def))
 	for i in list.size():
 		var chip := _catalog.chip(StringName(list[i]))
-		var name := chip.display_name.to_upper() if chip else "EMPTY"
-		menu.add(HangarUI.row("SOCKET %d%s" % [i + 1, _link_mark(pairs, i)], "", name + " >", chip.color if chip else HangarUI.DIM),
-			chip.text + "." if chip else "Pick a chip for this socket.", pick.bind(def, i, back))
-	for combo in Loadout.part_combos(_catalog, state, def):
-		menu.add(HangarUI.row("COMBO  " + combo.display_name.to_upper(), "", "", HangarCards.SOCKET_GOLD, HangarUI.GOLD), combo.text + ".", func() -> void: pass)
+		var row := HangarUI.row("SOCKET %d" % (i + 1), "", chip.display_name.to_upper() + " >" if chip else "EMPTY >", chip.color if chip else Color.TRANSPARENT)
+		for pair in pairs:
+			if pair.x == i or pair.y == i:
+				HangarCards.link_line(row, pair.x == i)
+		menu.add(row, chip.text + "." if chip else "Pick a chip for this socket.", pick.bind(def, i, back))
 	menu.add(HangarUI.row("< BACK"), "", back)
+	var active := Loadout.part_combos(_catalog, state, def)
+	if not active.is_empty():
+		menu.add_body(HangarUI.label("COMBOS", 12, HangarUI.GOLD, HORIZONTAL_ALIGNMENT_CENTER))
+	for combo in active:
+		var names := " + ".join(combo.chips.map(func(id: StringName) -> String: return _catalog.chip(id).display_name.to_upper()))
+		menu.add_body(_combo_line(combo.display_name.to_upper(), names))
 	menu.focus(focus_row)
+
+
+func _combo_line(title: String, chips_text: String) -> Control:
+	var line := HBoxContainer.new()
+	line.add_theme_constant_override("separation", 10)
+	var name := HangarUI.label(title, 12, HangarUI.GOLD)
+	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	line.add_child(name)
+	line.add_child(HangarUI.label(chips_text, 12, HangarUI.GOOD, HORIZONTAL_ALIGNMENT_RIGHT))
+	return line
 
 
 ## Chips that can go in socket `index`.
@@ -67,11 +84,3 @@ func _put(def: PartDef, index: int, chip: StringName, reopen: Callable) -> void:
 	var combos := Loadout.part_combos(_catalog, Hangar.state(), def)
 	if chip != &"" and not combos.is_empty():
 		menu.say("Combo active: %s." % combos.back().display_name.to_upper())
-
-
-## "LINK n" marks both sockets of the n-th linked pair.
-func _link_mark(pairs: Array[Vector2i], i: int) -> String:
-	for k in pairs.size():
-		if pairs[k].x == i or pairs[k].y == i:
-			return "  LINK %d" % (k + 1)
-	return ""

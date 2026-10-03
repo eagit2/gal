@@ -6,6 +6,7 @@ extends Control
 ## so new content needs only data. Keyboard, gamepad (focus) and touch all work; cancel goes back.
 
 const TITLE_SCENE := "res://scenes/main/title.tscn"
+const GAME_SCENE := "res://scenes/game/game.tscn"
 ## Home layout: the area holding the ship and its slot boxes, and each box's top-left corner.
 const SLOT_AREA := Vector2(484, 384)
 const SLOT_SPOTS := {&"nose": Vector2(157, 0), &"left": Vector2(0, 134), &"right": Vector2(314, 134), &"rear": Vector2(157, 280)}
@@ -169,12 +170,27 @@ func home(focus_row := 0) -> void:
 		total += node.max_rank
 	add(HangarUI.row("SHIP TREE", "", "%d / %d" % [owned, total]), "The %s's own skill tree." % ship.display_name.to_upper(), tree.open)
 	add(HangarUI.row("PILOT", "", Hangar.pilot().display_name.to_upper(), Color.TRANSPARENT, Hangar.pilot().color), "Pick your pilot. Each one brings an active power.", _pilots)
+	var run: Dictionary = SaveManager.data["run"]
+	var stage := "STAGE %d" % (int(run.get("stage", 0)) + 1) if not run.is_empty() else "STAGE 1"
 	add(HangarUI.row("< SHIPS"), "Pick another ship.", ships.bind(-1))
+	var gap := Control.new()
+	gap.custom_minimum_size.y = 18
+	add_body(gap)
+	add(HangarUI.row("RESTART LEVEL", "", stage), "Fly %s again with this loadout." % stage, _restart)
 	var boxes := _preview_box.get_children().filter(func(c: Node) -> bool: return c is Button and not c.is_queued_for_deletion())
 	if focus_row < boxes.size():
 		(boxes[focus_row] as Button).grab_focus()
 	else:
 		focus(focus_row - boxes.size())
+
+
+## Starts the saved stage (or a new run on the slot's difficulty) with the current loadout.
+func _restart() -> void:
+	SaveManager.save()
+	GameState.resume_requested = SaveManager.has_run()
+	GameState.difficulty_id = StringName(SaveManager.data["last_difficulty"])
+	StyleDirector.set_stage_style(&"")
+	SceneRouter.go_to(GAME_SCENE)
 
 
 ## The ship with a box per slot around it (nose above, sides beside, rear below). Each box shows
