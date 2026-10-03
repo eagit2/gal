@@ -1,7 +1,8 @@
 class_name CompanionDrone
 extends Node2D
 ## Companion drone (no-hit stage reward): trails the ship firing a pea shot (1 damage every 2 s).
-## When an enemy is about to hit the ship it dives into it, destroying both.
+## When an enemy is about to hit the ship it dives into it, destroying both. It has 1 HP: any
+## enemy shot or ram that touches it destroys it.
 
 const VISUAL := preload("res://assets/art/dusk_armada/player.tscn")
 const PEA := preload("res://scenes/projectiles/drone_pea.tscn")
@@ -15,6 +16,7 @@ const DANGER_RADIUS := 150.0
 const DIVE_SPEED := 720.0
 const IMPACT_RADIUS := 20.0
 const RAM_DAMAGE := 999
+const HIT_RADIUS := 9.0
 
 var player: Player
 var entities: Node
@@ -27,6 +29,16 @@ func _ready() -> void:
 	look.scale = Vector2.ONE * 0.45
 	look.modulate = Color(0.75, 1.0, 0.85)
 	add_child(look)
+	var hurtbox := Hurtbox.new()
+	hurtbox.collision_layer = 1
+	hurtbox.collision_mask = 0
+	var shape := CollisionShape2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = HIT_RADIUS
+	shape.shape = circle
+	hurtbox.add_child(shape)
+	add_child(hurtbox)
+	hurtbox.hurt.connect(func(_hitbox: Hitbox) -> void: _destroy())
 
 
 ## Index of the threat to ram: the closest enemy point within `radius` of the ship that is level
@@ -75,8 +87,14 @@ func _dive(delta: float) -> void:
 	var to := _target.global_position - global_position
 	if to.length() <= IMPACT_RADIUS:
 		(_target.get_node(^"Health") as Health).take_damage(RAM_DAMAGE)
-		EventBus.companion_lost.emit(global_position)
-		queue_free()
+		_destroy()
 		return
 	global_position += to.normalized() * minf(DIVE_SPEED * delta, to.length())
 	rotation = to.angle() + PI / 2
+
+
+func _destroy() -> void:
+	if is_queued_for_deletion():
+		return
+	EventBus.companion_lost.emit(global_position)
+	queue_free()
