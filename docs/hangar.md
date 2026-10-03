@@ -7,7 +7,7 @@ Status: v3 step 1 built 2026-10-03, then slot menus, attributes, rotating stock 
 - Scrap buys **parts** from the store's rotating stock (`PartDef.TIER_COST`: Starter 60, Common 100, Uncommon 200, Rare 400, Epic 800), **attribute levels** (level N costs N x `PartDef.LEVEL_COST`: 30, 50, 80, 120, 180 by rarity) and **ship tree ranks** (rank N costs N x the node's cost).
 
 ## Store stock (HangarStock)
-5 parts you don't own, rolled with weights 6/6/4/2/1 by rarity. New stock after every run, or now for 40 scrap (REROLL). Each card shows your ship wearing the part.
+3 items: parts you don't own (weights 6/6/4/2/1 by rarity) and chips (weight 2, `HangarStock.CHIP_WEIGHT`). New stock after every run, or now for 40 scrap (REROLL). Each card shows your ship wearing the part.
 
 ## The ship (ShipDef)
 Three ships: Kestrel (open), Talon (clear stage 5) and Bastion (beat the Matriarch, stage 10); `ShipDef.unlock_stage`, with cleared stages saved in the loadout state (`cleared`). Each has its own tree (Talon and Bastion trees come later). Slots per ship (`ShipDef.slots`): 2 weapons, 1 shield, 1 engine, 2 extras. The nose takes a weapon; the left, rear and right mounts take any part, a second weapon too (Eric, mockup 2b).
@@ -43,7 +43,7 @@ Kestrel: Focus Lens (+5% fire rate, 3) > Scatter (3-way spread) OR Rail (pierce 
 Every fitted part draws its pixel sprite at its mount, sticking out past the hull. 4+ attribute levels add a glow in the slot color; 9+ double the part (`Loadout.look`). Drawn by `assets/art/dusk_armada/ship_parts.gd` (its `preview` property draws any loadout for the store).
 
 ## Menu
-Title (or game over) > SHIPS (locked ships greyed with their unlock) > the ship's HANGAR: the ship with a box per slot around it, then STORE, SHIP TREE, PILOT, < SHIPS. A slot opens WEAPONS / SHIELDS / ENGINES / EXTRAS / < BACK (the nose goes straight to weapons). A category lists its parts; the highlighted one opens in place with each attribute's level bars, its final number and its link sockets, and selecting it again opens the part: attribute upgrade cards, LINKS, then FIT / BUY / < BACK. Store cards show rarity, category, sockets and price. Code: `scenes/main/hangar.gd`, `hangar_parts.gd`, `hangar_tree.gd`, `ui/hangar_cards.gd`. Cancel goes back one level.
+Title (or game over) > SHIPS (locked ships greyed with their unlock) > the ship's HANGAR: the ship with a box per slot around it, then STORE, SHIP TREE, PILOT, < SHIPS. A slot opens WEAPONS / SHIELDS / ENGINES / EXTRAS / < BACK (the nose goes straight to weapons). A category lists only owned parts; the highlighted one opens in place with level bars, final numbers and filled link sockets, plus EQUIP ON <mount> (or EQUIPPED ON) and UPGRADE AND LINKS rows. The part screen says EQUIPPED ON <mount> / NOT EQUIPPED, then attribute upgrade cards, LINKS (opens the chip screen, `hangar_chips.gd`: pick a socket, pick an owned chip), and a COMBO row for each active combo. Store cards show rarity, category, sockets and price. Code: `scenes/main/hangar.gd`, `hangar_parts.gd`, `hangar_tree.gd`, `ui/hangar_cards.gd`. Cancel goes back one level.
 
 ## Pilots
 Picked on the hangar's PILOT page. Each pilot brings one active power on its own button (SHIFT/X/K, gamepad B/X, or a two-finger tap), separate from the ship's Power slot (Eric kept two buttons).
@@ -61,3 +61,6 @@ Data: `data/hangar/pilots/` (`PilotDef`), run by `scenes/player/pilot_power.gd`.
 - Step 2: chips and FF7-style combos (base + element + pattern, named secret combos), parts that add combo sockets, and the rest of the catalog (Wave Gun, Flak Burst, Saw Disc, Plasma Orb, Rail Driver, the other shields, powers, engines and extras). The Power slot then needs a general ship-power runner beside the freeze system.
 - Step 3: ship trees for Talon, Bastion and Seraph, and capstones that unlock those ships and a 5th slot (their hull sprites are already in `assets/art/dusk_armada/`).
 - Medals for stages 4 to 10 (M5).
+
+## Chips and link combos
+8 chips (`data/hangar/chips/`, 150 scrap each, bought from the store, owned as counts): Power, Rapid, Split, Seeker, Pierce, Ember (burn), Frost (chill), Volt (chain). Each socketed chip adds its effects. Two specific chips in a linked socket pair make a combo (`data/hangar/combos/`, 10 of them, e.g. Ember + Power = Inferno) that adds its own effects. Combos show only when active.

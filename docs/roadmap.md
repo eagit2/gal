@@ -67,7 +67,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Hangar v3 slot menus (Eric picked mockups A and T3): slot > category > part > attribute upgrades, rotating store stock, Kestrel blueprint tree gated by part rarity, 18 parts (`docs/hangar.md`)
 - [x] Hangar cleanup: round upgrade numbers shown in real units, ship-specific skill tree (3 branches), cleaner cards on every hangar screen
 - [x] Hangar round 2: ships menu with unlocks, slimmer slot menu, part dropdown, link sockets on parts and store, forked Kestrel tree
-- [ ] Hangar v3 step 2: chips and FF7-style combos, combo sockets, rest of the parts catalog
+- [x] Hangar round 3: chips and link combos, per-weapon shots, shields only when fitted, owned-only lists with quick equip, 3-item store
+- [ ] Hangar v3 step 2b: rest of the parts catalog
 - [ ] Hangar v3 step 3: ship trees for Talon, Bastion and Seraph, and tree capstones that unlock ships and a 5th slot
 - [x] Title screen: Continue (resumes the saved run at its last stage), New Game with difficulty pick and an overwrite confirm. Hangar button hook in `title.gd`.
 - [x] Stage medals (goal per stage) pay meta currency, scaled by difficulty (v1 goals on stages 1, 2 and challenge 1)

@@ -74,7 +74,7 @@ func _final_stats(state: Dictionary, mount: StringName, def: PartDef) -> Array:
 	var rows := []
 	for a in def.attributes:
 		var stat: StringName = a["effects"][0]["stat"]
-		rows.append([a["name"], Loadout.level(state, def.id, a["id"]), int(a["max"]), StatWords.value(stat, stats[stat])])
+		rows.append([a["name"], Loadout.level(state, def.id, a["id"]), int(a["max"]), StatWords.value(stat, stats[stat], def.weapon)])
 	return rows
 
 
@@ -109,7 +109,7 @@ func part(mount: StringName, def: PartDef, back: Callable, focus_row := 0) -> vo
 		var after := _fitted(state, mount, def)
 		if not maxed:
 			after["parts"][String(def.id)][String(a["id"])] = lv + 1
-		var change := StatWords.change(a["effects"], now, _stats(after))
+		var change := StatWords.change(a["effects"], now, _stats(after), def.weapon)
 		var right := "MAX" if maxed else ("%d" % price if owned else "")
 		var color := HangarUI.GOOD if maxed else (HangarUI.GOLD if price <= Hangar.credits() else HangarUI.ROSE)
 		var text := "%s  level %d / %d\n%s.\n%s" % [a["name"], lv, int(a["max"]), a["text"], "Buy the part first." if not owned else ("Maxed." if maxed else "Next level: " + change)]
