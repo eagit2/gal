@@ -15,6 +15,8 @@ var owned: Array[UpgradeDef] = []
 ## Current run stats (see UpgradeSystem.BASE_STATS): upgrades + synergies + active combo.
 var stats: Dictionary = UpgradeSystem.BASE_STATS.duplicate()
 var rng := RandomNumberGenerator.new()
+## Seconds left on a Cryo Pulse freeze. Enemies, enemy shots and attack orders hold while above 0.
+var freeze_left := 0.0
 var _combo_effects: Array[Dictionary] = []
 ## Permanent bonuses (hangar, M4) in UpgradeDef effect format. Kept across runs.
 var _meta_effects: Array[Dictionary] = []
@@ -29,6 +31,7 @@ func start_run(difficulty: StringName, starting_lives: int) -> void:
 	stage_index = 0
 	upgrades.clear()
 	owned.clear()
+	freeze_left = 0.0
 	_combo_effects.clear()
 	_synergies.clear()
 	rng.randomize()

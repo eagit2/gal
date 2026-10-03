@@ -6,14 +6,15 @@
 script = ExtResource("1")
 id = &"lucky_charm"
 display_name = "Lucky Charm"
-description = "Enemies drop upgrades 40% more often."
+description = "Enemies drop upgrades 30% more often."
 category = 3
 rarity = 1
+source = 0
 tags = Array[StringName]([&"luck"])
 max_stacks = 2
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"drop_mult",
-"value": 1.4
+"value": 1.3
 }])
 requires = Array[StringName]([])

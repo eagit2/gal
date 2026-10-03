@@ -8,10 +8,6 @@ id = &"storm_front"
 display_name = "Storm Front"
 required_tags = Array[StringName]([&"spread", &"rapid"])
 effects = Array[Dictionary]([{
-"op": &"add",
-"stat": &"extra_shots",
-"value": 1
-}, {
 "op": &"mul",
 "stat": &"fire_rate",
 "value": 1.1

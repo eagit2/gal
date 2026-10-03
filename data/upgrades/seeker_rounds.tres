@@ -6,14 +6,15 @@
 script = ExtResource("1")
 id = &"seeker_rounds"
 display_name = "Seeker Rounds"
-description = "Shots curve toward the nearest enemy."
+description = "Shots lock on and curve toward enemies."
 category = 0
 rarity = 1
+source = 1
 tags = Array[StringName]([&"homing"])
 max_stacks = 2
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"homing",
-"value": 1.6
+"value": 1.2
 }])
 requires = Array[StringName]([])

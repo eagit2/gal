@@ -30,3 +30,9 @@ signal combo_started(combo: ComboDef, chain: int)
 signal combo_ended(combo: ComboDef)
 ## Meter fill in 0..1 for each combo id, sent when it changes.
 signal combo_meter_changed(combo_id: StringName, fill: float)
+## The player asked for their special (Cryo Pulse): key, gamepad, or two-finger tap.
+signal special_requested()
+signal freeze_started(duration: float)
+signal freeze_ended()
+## Cryo Pulse uses left this stage.
+signal freeze_charges_changed(charges: int)

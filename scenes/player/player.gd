@@ -74,10 +74,16 @@ func _physics_process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventScreenTouch:
+	if event is InputEventScreenTouch and event.index > 0:
+		# A second finger is the special (Cryo Pulse); the first keeps steering.
+		if event.pressed:
+			EventBus.special_requested.emit()
+	elif event is InputEventScreenTouch:
 		_touch_target = event.position + TOUCH_OFFSET if event.pressed else null
-	elif event is InputEventScreenDrag:
+	elif event is InputEventScreenDrag and event.index == 0:
 		_touch_target = event.position + TOUCH_OFFSET
+	elif event.is_action_pressed("special"):
+		EventBus.special_requested.emit()
 
 
 func respawn(at: Vector2) -> void:

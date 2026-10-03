@@ -2,6 +2,9 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: Upgrade rework (Eric): upgrades are gentler, in-level drops only change bullets (fire rate, shot speed, damage, homing, extra shots, pierce), and stage cards carry utility (Cryo Pulse freeze, extra shield bubbles, shield recharge, credit multiplier, score, speed, magnet, lives). `UpgradeDef.source` (CARD or DROP) decides where an upgrade can appear. Missiles, wing drones and Wide Spread left the pool (the stats stay for the hangar). Drop chances halved.
+- 2026-10-03: Cryo Pulse is an active charge refilled each stage, fired with the special button (X, Shift or K; pad B or Y; a second finger on touch). It freezes enemies and their shots for `freeze_time` seconds; frozen enemies can still be shot. Picked over an automatic trigger so the player chooses the moment.
+- 2026-10-03: `credit_mult` stat (Salvage Contract card) multiplies hangar credit payouts; the hangar applies it.
 - 2026-10-03: UI font is Press Start 2P (OFL, `assets/fonts/`), set project-wide through `ui/theme.tres` (Eric asked for an arcade font). Imported without antialiasing; use sizes in multiples of 8 so glyphs stay crisp.
 - 2026-10-03: Continue resumes at the start of the last stage reached, with its score, lives and upgrades (a checkpoint `SaveManager.data.run` written as each stage starts, cleared on game over). Mid-stage progress isn't saved: simple, and can't save a doomed state. Dev URL runs never touch the save. Difficulty is picked on the title screen and remembered.
 - 2026-10-03: Music direction (Eric): fast trance/EDM with heavy bass (rolling offbeat bass, gated supersaws, sidechain pump), with chiptune leads in the style of 16-bit RPG battle themes. Melodies stay original.

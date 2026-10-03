@@ -12,7 +12,7 @@ var _volley := 1.5
 
 
 func _physics_process(delta: float) -> void:
-	if not active or not target.alive:
+	if not active or not target.alive or GameState.freeze_left > 0.0:
 		return
 	_timer -= delta
 	_volley -= delta

@@ -29,20 +29,20 @@ func test_every_effect_targets_a_known_stat() -> void:
 
 func test_stacks_multiply() -> void:
 	var stats := UpgradeSystem.compute(_owned([&"rapid_fire", &"rapid_fire"]), [] as Array[SynergyDef])
-	expect_true(is_equal_approx(stats[&"fire_rate"], 1.44), "1.2 * 1.2 = %f" % stats[&"fire_rate"])
+	expect_true(is_equal_approx(stats[&"fire_rate"], 1.3225), "1.15 * 1.15 = %f" % stats[&"fire_rate"])
 
 
 func test_synergy_needs_both_tags() -> void:
-	var one := UpgradeSystem.compute(_owned([&"missile_pod"]), POOL.synergies)
-	var both := UpgradeSystem.compute(_owned([&"missile_pod", &"seeker_rounds"]), POOL.synergies)
-	expect_eq(one[&"missiles"], 1, "pod alone")
-	expect_eq(both[&"missiles"], 2, "swarm adds a missile")
+	var one := UpgradeSystem.compute(_owned([&"twin_shot"]), POOL.synergies)
+	var both := UpgradeSystem.compute(_owned([&"twin_shot", &"rapid_fire"]), POOL.synergies)
+	expect_true(is_equal_approx(one[&"fire_rate"], 1.0), "twin shot alone")
+	expect_true(is_equal_approx(both[&"fire_rate"], 1.15 * 1.1), "storm front adds fire rate")
 
 
 func test_combo_effects_layer_on_top() -> void:
 	var overdrive: ComboDef = load("res://data/combos/overdrive.tres")
 	var stats := UpgradeSystem.compute(_owned([&"rapid_fire"]), POOL.synergies, overdrive.effects)
-	expect_true(is_equal_approx(stats[&"fire_rate"], 1.8), "1.2 * 1.5")
+	expect_true(is_equal_approx(stats[&"fire_rate"], 1.725), "1.15 * 1.5")
 
 
 func test_choices_are_distinct_and_respect_requirements() -> void:
@@ -53,20 +53,37 @@ func test_choices_are_distinct_and_respect_requirements() -> void:
 		expect_eq(choices.size(), 3, "three cards")
 		expect_true(choices[0] != choices[1] and choices[1] != choices[2] and choices[0] != choices[2], "distinct")
 		for choice in choices:
-			expect_true(choice.id != &"wide_spread", "wide spread needs twin shot")
+			expect_eq(choice.source, UpgradeDef.Source.CARD, "%s is a card upgrade" % choice.id)
+			expect_true(choice.id != &"deep_freeze", "deep freeze needs cryo pulse")
 
 
 func test_maxed_upgrades_are_not_offered() -> void:
-	var owned := _owned([&"heavy_shells"])
-	expect_true(POOL.find(&"heavy_shells") not in UpgradeSystem.available(POOL, owned), "max 1")
+	var owned := _owned([&"spare_ship"])
+	expect_true(POOL.find(&"spare_ship") not in UpgradeSystem.available(POOL, owned), "max 1")
 
 
 func test_drop_bonus_raises_rarity() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 3
 	for i in 30:
-		var drop := UpgradeSystem.roll_drop(POOL, [] as Array[UpgradeDef], 2, rng)
-		expect_eq(drop.rarity, UpgradeDef.Rarity.EPIC, "+2 tiers is always epic")
+		var drop := UpgradeSystem.roll_drop(POOL, [] as Array[UpgradeDef], 1, rng)
+		expect_true(drop.rarity >= UpgradeDef.Rarity.RARE, "+1 tier is never common")
+
+
+func test_drops_only_change_bullets() -> void:
+	const BULLET_STATS: Array[StringName] = [&"fire_rate", &"projectile_speed", &"damage", &"homing", &"extra_shots", &"spread", &"pierce"]
+	var rng := RandomNumberGenerator.new()
+	for i in 40:
+		var drop := UpgradeSystem.roll_drop(POOL, [] as Array[UpgradeDef], 0, rng)
+		expect_eq(drop.source, UpgradeDef.Source.DROP, "%s is a drop" % drop.id)
+		for effect: Dictionary in drop.effects:
+			expect_true(effect["stat"] in BULLET_STATS, "%s changes %s" % [drop.id, effect["stat"]])
+
+
+func test_cryo_pulse_grants_freeze() -> void:
+	var stats := UpgradeSystem.compute(_owned([&"cryo_pulse", &"deep_freeze"]), POOL.synergies)
+	expect_eq(int(stats[&"freeze_charges"]), 1, "one charge")
+	expect_true(is_equal_approx(stats[&"freeze_time"], 5.0), "3 + 2 seconds")
 
 
 func test_drop_chance_includes_pity() -> void:

@@ -32,6 +32,13 @@ theme_override_font_sizes/font_size = 16
 text = "SHIPS 3"
 horizontal_alignment = 2
 
+[node name="FreezeTint" type="ColorRect" parent="."]
+visible = false
+offset_right = 540.0
+offset_bottom = 960.0
+mouse_filter = 2
+color = Color(0.45, 0.85, 1, 0.22)
+
 [node name="Shield" type="Label" parent="."]
 offset_left = 16.0
 offset_top = 40.0
@@ -39,6 +46,16 @@ offset_right = 216.0
 offset_bottom = 64.0
 theme_override_font_sizes/font_size = 16
 text = "SHIELD UP"
+
+[node name="Freeze" type="Label" parent="."]
+visible = false
+offset_left = 16.0
+offset_top = 64.0
+offset_right = 216.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.55, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "FREEZE x1"
 
 [node name="Meters" type="VBoxContainer" parent="."]
 offset_left = 426.0

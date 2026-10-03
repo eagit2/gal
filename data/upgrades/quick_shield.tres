@@ -6,14 +6,15 @@
 script = ExtResource("1")
 id = &"quick_shield"
 display_name = "Quick Shield"
-description = "Shield recharges 20% faster."
+description = "Shield bubbles recharge 15% faster."
 category = 2
 rarity = 0
+source = 0
 tags = Array[StringName]([&"shield"])
-max_stacks = 3
+max_stacks = 2
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"shield_recharge",
-"value": 0.8
+"value": 0.85
 }])
 requires = Array[StringName]([])

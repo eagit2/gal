@@ -6,14 +6,15 @@
 script = ExtResource("1")
 id = &"thrusters"
 display_name = "Thrusters"
-description = "Move 12% faster."
+description = "Move 10% faster."
 category = 3
 rarity = 0
+source = 0
 tags = Array[StringName]([&"speed"])
 max_stacks = 2
 effects = Array[Dictionary]([{
 "op": &"mul",
 "stat": &"move_speed",
-"value": 1.12
+"value": 1.1
 }])
 requires = Array[StringName]([])

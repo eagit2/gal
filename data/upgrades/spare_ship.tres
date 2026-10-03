@@ -8,9 +8,10 @@ id = &"spare_ship"
 display_name = "Spare Ship"
 description = "+1 ship right now."
 category = 2
-rarity = 1
+rarity = 2
+source = 0
 tags = Array[StringName]([])
-max_stacks = 2
+max_stacks = 1
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"lives",

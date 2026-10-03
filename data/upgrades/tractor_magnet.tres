@@ -9,6 +9,7 @@ display_name = "Tractor Magnet"
 description = "Pull upgrade pickups toward you."
 category = 3
 rarity = 0
+source = 0
 tags = Array[StringName]([&"magnet"])
 max_stacks = 1
 effects = Array[Dictionary]([{

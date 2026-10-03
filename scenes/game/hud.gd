@@ -12,6 +12,8 @@ const METER_LABELS := {&"overdrive": "OD", &"lock_on": "LK", &"chain_reaction": 
 @onready var _message: Label = $Message
 @onready var _banner: Label = $Banner
 @onready var _shield: Label = $Shield
+@onready var _freeze: Label = $Freeze
+@onready var _freeze_tint: ColorRect = $FreezeTint
 @onready var _meters: VBoxContainer = $Meters
 @onready var _mode: Label = $Mode
 @onready var _mode_bar: ProgressBar = $ModeBar
@@ -30,6 +32,11 @@ func _ready() -> void:
 	EventBus.combo_started.connect(_on_combo_started)
 	EventBus.combo_ended.connect(_on_combo_ended)
 	EventBus.upgrade_picked.connect(_on_upgrade_picked)
+	EventBus.freeze_charges_changed.connect(_on_freeze_charges_changed)
+	EventBus.freeze_started.connect(func(_d: float) -> void:
+		_freeze_tint.visible = true
+		show_toast("CRYO PULSE", Color(0.55, 0.9, 1)))
+	EventBus.freeze_ended.connect(_freeze_tint.hide)
 	EventBus.synergy_activated.connect(func(s: SynergyDef) -> void: show_toast("SYNERGY: %s" % s.display_name.to_upper(), Color(1, 0.55, 0.95)))
 	_build_meters()
 	_mode.visible = false
@@ -71,6 +78,12 @@ func _on_score_changed(score: int) -> void:
 func _on_shield_changed(charge: float) -> void:
 	_shield.text = "SHIELD UP" if charge >= 1.0 else "SHIELD %d%%" % floori(charge * 100.0)
 	_shield.modulate.a = 1.0 if charge >= 1.0 else 0.55
+
+
+func _on_freeze_charges_changed(charges: int) -> void:
+	_freeze.visible = GameState.stats[&"freeze_charges"] > 0
+	_freeze.text = "FREEZE x%d  [X]" % charges
+	_freeze.modulate.a = 1.0 if charges > 0 else 0.4
 
 
 ## Short notice mid-screen (upgrade gained, synergy unlocked).

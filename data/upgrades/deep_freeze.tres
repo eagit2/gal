@@ -4,16 +4,17 @@
 
 [resource]
 script = ExtResource("1")
-id = &"double_bubble"
-display_name = "Double Bubble"
-description = "Shield absorbs one more hit before popping."
-category = 2
-rarity = 2
-tags = Array[StringName]([&"shield"])
+id = &"deep_freeze"
+display_name = "Deep Freeze"
+description = "Cryo Pulse lasts 2s longer."
+category = 3
+rarity = 0
+source = 0
+tags = Array[StringName]([&"freeze"])
 max_stacks = 1
 effects = Array[Dictionary]([{
 "op": &"add",
-"stat": &"shield_layers",
-"value": 1
+"stat": &"freeze_time",
+"value": 2.0
 }])
-requires = Array[StringName]([])
+requires = Array[StringName]([&"cryo_pulse"])
