@@ -36,7 +36,7 @@ func test_every_enemy_has_a_visual() -> void:
 
 
 func test_new_enemy_types_have_traits() -> void:
-	for id in ["blinker", "dasher", "rock_dropper"]:
+	for id in ["blinker", "dasher", "rock_dropper", "splitter", "plated", "mender", "mine_layer"]:
 		var def: EnemyDef = load("res://data/enemies/%s.tres" % id)
 		expect_true(def.trait_logic != null, id)
 
@@ -52,5 +52,5 @@ func test_dev_elite_joins_the_queue_early() -> void:
 	var stage: StageDef = load("res://data/stages/stage_2.tres")
 	var rock: EliteDef = load("res://data/elites/rock_hauler.tres")
 	var elites := StageRunner.build_queue(stage, rock).filter(func(e: Dictionary) -> bool: return e.has("elite"))
-	expect_eq(elites.size(), stage.elites.size() + 1, "extra elite queued")
+	expect_eq(elites.size(), stage.elites.size() + stage.elite_picks + 1, "extra elite queued")
 	expect_eq(elites[0]["elite"], rock, "dev elite first")

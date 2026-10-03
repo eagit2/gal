@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EliteDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="def"]
+[ext_resource type="Script" path="res://scenes/enemies/elites/sweep_trait.gd" id="trait"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/fusewing.tscn" id="visual"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/elites/sweep_beam.tscn" id="beam"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("trait")
+beam_scene = ExtResource("beam")
+
+[resource]
+script = ExtResource("def")
+id = &"sweeper"
+display_name = "Sweeper"
+hint = "Watch the aiming line, then get behind the sweep"
+hp = 40
+score = 2800
+scrap = 26
+speed = 60.0
+fire_interval = 2.4
+fan_shots = 3
+visual_scene = ExtResource("visual")
+visual_scale = 1.9
+tint = Color(1.25, 0.8, 0.8, 1)
+trait_logic = SubResource("trait_logic")

@@ -21,5 +21,21 @@ extends Resource
 @export var elites: Array[EliteDef] = []
 @export var elite_delay: float = 9.0
 @export var elite_gap: float = 12.0
+## Elites drawn at random each run from `elite_pool`, after the fixed `elites`.
+@export var elite_pool: Array[EliteDef] = []
+@export var elite_picks: int = 0
+## Multiplies every enemy's and elite's hp on this stage (later stages hit harder).
+@export var enemy_hp_mult: float = 1.0
+## Chance that a scrap pile is a Mimic in disguise.
+@export var mimic_chance: float = 0.0
+
+
+## The fixed elites plus `elite_picks` random ones from the pool.
+func pick_elites() -> Array[EliteDef]:
+	var picked := elites.duplicate()
+	var pool := elite_pool.duplicate()
+	pool.shuffle()
+	picked.append_array(pool.slice(0, elite_picks))
+	return picked
 ## Boss stage: plays SoundBank.boss_music instead of the style's music.
 @export var boss: bool = false

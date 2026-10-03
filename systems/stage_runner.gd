@@ -17,6 +17,8 @@ var entities: Node2D
 var stage: StageDef
 ## Dev option: an extra elite for every stage (DevOptions `elite=<id>`).
 var extra_elite: EliteDef
+## Extra hp multiplier on top of the stage's (rises each time the sector loops).
+var hp_ramp := 1.0
 var _difficulty: DifficultyDef
 var _queue: Array[Dictionary] = []
 var _time := 0.0
@@ -47,7 +49,7 @@ func start(stage_def: StageDef, difficulty: DifficultyDef) -> void:
 ## Flattens waves into a spawn list sorted by time. Static so tests can check stage data.
 static func build_queue(stage_def: StageDef, extra_elite: EliteDef = null) -> Array[Dictionary]:
 	var queue: Array[Dictionary] = []
-	var elites := stage_def.elites.duplicate()
+	var elites := stage_def.pick_elites()
 	if extra_elite and not stage_def.is_challenge:
 		elites.push_front(extra_elite)
 	for i in elites.size():
@@ -112,10 +114,12 @@ func _spawn(entry: Dictionary) -> void:
 	if entry.has("elite"):
 		var elite: Elite = ELITE_SCENE.instantiate()
 		elite.setup(entry["elite"], _difficulty, target, entities)
+		elite.hp_scale = stage.enemy_hp_mult * hp_ramp
 		entities.add_child(elite)
 		return
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
 	enemy.setup(entry["enemy"], _difficulty, entry["path"], entry["slot"], formation)
 	enemy.target = target
 	enemy.entities = entities
+	enemy.hp_scale = stage.enemy_hp_mult * hp_ramp
 	entities.add_child(enemy)

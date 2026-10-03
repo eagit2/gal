@@ -26,10 +26,10 @@ Create `data/weapons/<id>.tres` of type `WeaponDef` (fire_rate, projectile_scene
 Upgrades live in the hangar: add a `PartDef` under `data/hangar/parts/` and list it in `data/hangar/catalog.tres` (see docs/hangar.md). Effects use {"stat", "op", "value"} with a stat from `UpgradeSystem.BASE_STATS`.
 
 ### Add an enemy trait
-Regular enemies can carry one `EnemyDef.trait_logic`: a sub-resource of an `EnemyTrait` script in `scenes/enemies/traits/` (Blink, Dash, Rock Drop). Override `begin` and `tick`; keep per-enemy state in `enemy.trait_state`. Anything falling that should crush enemies gets a `Crusher` Area2D (`scenes/components/crusher.gd`, mask 2).
+Regular enemies can carry one `EnemyDef.trait_logic`: a sub-resource of an `EnemyTrait` script in `scenes/enemies/traits/` (Blink, Dash, Rock Drop, Split, Plate, Mend, Mine). Override `begin` and `tick`; keep per-enemy state in `enemy.trait_state`. Anything falling that should crush enemies gets a `Crusher` Area2D (`scenes/components/crusher.gd`, mask 2).
 
 ### Add an elite
-Create `data/elites/<id>.tres` (`EliteDef`): name, hint (shown on arrival: what it does and how to beat it), hp, score, scrap, patrol speed, fire pattern, visual (an enemy visual scene, scaled and tinted), and `trait_logic`, a sub-resource of an `EliteTrait` script in `scenes/enemies/elites/` (Frost Shell, Rock Tow, Shield Link). A new trait is a new script overriding `begin`, `tick`, `absorb` and `end`; keep per-elite state in `elite.state`. Put elites in a stage with `StageDef.elites`. Test one anywhere with the dev option `elite=<id>`.
+Create `data/elites/<id>.tres` (`EliteDef`): name, hint (shown on arrival: what it does and how to beat it), hp, score, scrap, patrol speed, fire pattern, visual (an enemy visual scene, scaled and tinted), and `trait_logic`, a sub-resource of an `EliteTrait` script in `scenes/enemies/elites/` (Frost Shell, Rock Tow, Shield Link). A new trait is a new script overriding `begin`, `tick`, `absorb` and `end`; keep per-elite state in `elite.state`. Put elites in a stage with `StageDef.elites` (always) or `elite_pool` plus `elite_picks` (random each run). Test one anywhere with the dev option `elite=<id>`.
 
 Effects are `{"stat": &"...", "op": &"add"|"mul"|"max", "value": ...}`. Stats and their defaults are `UpgradeSystem.BASE_STATS` (`systems/upgrade_system.gd`); `lives` is applied once on pickup. A new stat needs a line in BASE_STATS and code that reads it.
 

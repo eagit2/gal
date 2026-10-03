@@ -4,6 +4,7 @@ extends Node
 ## difficulty and the drop_mult stat, plus a pity bonus that grows with each dry kill.
 
 const SCRAP_SCENE := preload("res://scenes/pickups/pickup.tscn")
+const MIMIC_SCENE := preload("res://scenes/enemies/mimic.tscn")
 const PITY_STEP := 0.02
 
 ## Off on challenge stages.
@@ -12,6 +13,8 @@ var difficulty: DifficultyDef
 var player: Player
 var entities: Node2D
 var pity := 0.0
+## The stage's chance that a pile is a Mimic.
+var mimic_chance := 0.0
 
 
 func _ready() -> void:
@@ -43,6 +46,12 @@ static func drop_chance(base: float, difficulty_mult: float, stat_mult: float, p
 
 
 func spawn(at: Vector2, amount: int) -> void:
+	if GameState.rng.randf() < mimic_chance:
+		var mimic: Node2D = MIMIC_SCENE.instantiate()
+		mimic.position = at
+		mimic.set("player", player)
+		entities.add_child.call_deferred(mimic)
+		return
 	var pile: Pickup = SCRAP_SCENE.instantiate()
 	pile.position = at
 	pile.player = player

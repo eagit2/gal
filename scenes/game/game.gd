@@ -105,8 +105,10 @@ func _start_stage() -> void:
 	var loop := stage_number / sector.stages.size()
 	_dives.active = false
 	_dives.aggression = 1.0 + 0.25 * loop + 0.1 * (stage_number % sector.stages.size())
+	_runner.hp_ramp = 1.0 + 0.3 * loop
 	StyleDirector.set_stage_style(stage.style)
 	_drops.enabled = not stage.is_challenge
+	_drops.mimic_chance = stage.mimic_chance
 	_hud.show_banner("CHALLENGING STAGE" if stage.is_challenge else "STAGE %d" % (stage_number + 1), BANNER_TIME)
 	EventBus.stage_started.emit(stage.id)
 	GameState.stage_index = stage_number
