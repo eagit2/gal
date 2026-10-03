@@ -24,16 +24,16 @@ func tick(elite: Elite, delta: float) -> void:
 		elite.state["refresh"] = refresh
 		_relink(elite)
 	var points: Array[Vector2] = []
-	for enemy: Enemy in elite.state["linked"]:
+	for enemy: Variant in elite.state["linked"]:
 		if is_instance_valid(enemy):
-			points.append(enemy.global_position)
+			points.append((enemy as Enemy).global_position)
 	(elite.state["beams"] as Node).call("set_targets", points)
 
 
 func end(elite: Elite) -> void:
-	for enemy: Enemy in elite.state["linked"]:
+	for enemy: Variant in elite.state["linked"]:
 		if is_instance_valid(enemy):
-			enemy.set_shielded(false)
+			(enemy as Enemy).set_shielded(false)
 	elite.state["linked"] = [] as Array[Enemy]
 
 
@@ -45,9 +45,9 @@ func _relink(elite: Elite) -> void:
 			candidates.append(enemy)
 	candidates.sort_custom(func(a: Enemy, b: Enemy) -> bool: return a.position.distance_squared_to(elite.position) < b.position.distance_squared_to(elite.position))
 	var keep := candidates.slice(0, links)
-	for enemy: Enemy in elite.state["linked"]:
+	for enemy: Variant in elite.state["linked"]:
 		if is_instance_valid(enemy) and enemy not in keep:
-			enemy.set_shielded(false)
+			(enemy as Enemy).set_shielded(false)
 	for enemy in keep:
 		enemy.set_shielded(true)
 	elite.state["linked"] = keep
