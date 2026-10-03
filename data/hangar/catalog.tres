@@ -1,44 +1,68 @@
-[gd_resource type="Resource" script_class="ModuleCatalog" load_steps=36 format=3]
+[gd_resource type="Resource" script_class="HangarCatalog" load_steps=25 format=3]
 
-[ext_resource type="Script" path="res://resources/module_catalog.gd" id="1"]
-[ext_resource type="Script" path="res://resources/frame_def.gd" id="fdef"]
-[ext_resource type="Script" path="res://resources/module_def.gd" id="mdef"]
+[ext_resource type="Script" path="res://resources/hangar_catalog.gd" id="1"]
+[ext_resource type="Script" path="res://resources/ship_def.gd" id="sdef"]
+[ext_resource type="Script" path="res://resources/part_def.gd" id="ptdef"]
 [ext_resource type="Script" path="res://resources/pilot_def.gd" id="pdef"]
 [ext_resource type="Resource" path="res://data/hangar/pilots/vega.tres" id="p_vega"]
 [ext_resource type="Resource" path="res://data/hangar/pilots/rook.tres" id="p_rook"]
 [ext_resource type="Resource" path="res://data/hangar/pilots/nyx.tres" id="p_nyx"]
 [ext_resource type="Resource" path="res://data/hangar/pilots/juno.tres" id="p_juno"]
-[ext_resource type="Resource" path="res://data/hangar/frames/kestrel.tres" id="f_kestrel"]
-[ext_resource type="Resource" path="res://data/hangar/frames/talon.tres" id="f_talon"]
-[ext_resource type="Resource" path="res://data/hangar/frames/bastion.tres" id="f_bastion"]
-[ext_resource type="Resource" path="res://data/hangar/frames/seraph.tres" id="f_seraph"]
-[ext_resource type="Resource" path="res://data/hangar/modules/twin_cannon.tres" id="m_twin_cannon"]
-[ext_resource type="Resource" path="res://data/hangar/modules/heavy_rounds.tres" id="m_heavy_rounds"]
-[ext_resource type="Resource" path="res://data/hangar/modules/pierce_lens.tres" id="m_pierce_lens"]
-[ext_resource type="Resource" path="res://data/hangar/modules/missile_pod.tres" id="m_missile_pod"]
-[ext_resource type="Resource" path="res://data/hangar/modules/drone_bay.tres" id="m_drone_bay"]
-[ext_resource type="Resource" path="res://data/hangar/modules/spread_cannon.tres" id="m_spread_cannon"]
-[ext_resource type="Resource" path="res://data/hangar/modules/swarm_rack.tres" id="m_swarm_rack"]
-[ext_resource type="Resource" path="res://data/hangar/modules/amplifier.tres" id="m_amplifier"]
-[ext_resource type="Resource" path="res://data/hangar/modules/overlink.tres" id="m_overlink"]
-[ext_resource type="Resource" path="res://data/hangar/modules/seeker.tres" id="m_seeker"]
-[ext_resource type="Resource" path="res://data/hangar/modules/volatile.tres" id="m_volatile"]
-[ext_resource type="Resource" path="res://data/hangar/modules/rapid_link.tres" id="m_rapid_link"]
-[ext_resource type="Resource" path="res://data/hangar/modules/magnet_coil.tres" id="m_magnet_coil"]
-[ext_resource type="Resource" path="res://data/hangar/modules/salvage_scanner.tres" id="m_salvage_scanner"]
-[ext_resource type="Resource" path="res://data/hangar/modules/score_uplink.tres" id="m_score_uplink"]
-[ext_resource type="Resource" path="res://data/hangar/modules/jackpot_uplink.tres" id="m_jackpot_uplink"]
-[ext_resource type="Resource" path="res://data/hangar/modules/graze_coil.tres" id="m_graze_coil"]
-[ext_resource type="Resource" path="res://data/hangar/modules/combo_primer.tres" id="m_combo_primer"]
-[ext_resource type="Resource" path="res://data/hangar/modules/thrusters.tres" id="m_thrusters"]
-[ext_resource type="Resource" path="res://data/hangar/modules/capacitor.tres" id="m_capacitor"]
-[ext_resource type="Resource" path="res://data/hangar/modules/bubble_layer.tres" id="m_bubble_layer"]
-[ext_resource type="Resource" path="res://data/hangar/modules/cryo_pulse.tres" id="m_cryo_pulse"]
-[ext_resource type="Resource" path="res://data/hangar/modules/scrap_compactor.tres" id="m_scrap_compactor"]
+[ext_resource type="Resource" path="res://data/hangar/ships/kestrel.tres" id="s_kestrel"]
+[ext_resource type="Resource" path="res://data/hangar/parts/pulse_laser.tres" id="pt_pulse_laser"]
+[ext_resource type="Resource" path="res://data/hangar/parts/twin_cannon.tres" id="pt_twin_cannon"]
+[ext_resource type="Resource" path="res://data/hangar/parts/needle_gun.tres" id="pt_needle_gun"]
+[ext_resource type="Resource" path="res://data/hangar/parts/missile_pod.tres" id="pt_missile_pod"]
+[ext_resource type="Resource" path="res://data/hangar/parts/bubble.tres" id="pt_bubble"]
+[ext_resource type="Resource" path="res://data/hangar/parts/regen_field.tres" id="pt_regen_field"]
+[ext_resource type="Resource" path="res://data/hangar/parts/ablative_armor.tres" id="pt_ablative_armor"]
+[ext_resource type="Resource" path="res://data/hangar/parts/cryo_pulse.tres" id="pt_cryo_pulse"]
+[ext_resource type="Resource" path="res://data/hangar/parts/ion_thruster.tres" id="pt_ion_thruster"]
+[ext_resource type="Resource" path="res://data/hangar/parts/vector_jet.tres" id="pt_vector_jet"]
+[ext_resource type="Resource" path="res://data/hangar/parts/scrap_magnet.tres" id="pt_scrap_magnet"]
+[ext_resource type="Resource" path="res://data/hangar/parts/scrap_compactor.tres" id="pt_scrap_compactor"]
+[ext_resource type="Resource" path="res://data/hangar/parts/drone_bay.tres" id="pt_drone_bay"]
+[ext_resource type="Resource" path="res://data/hangar/parts/combo_amp.tres" id="pt_combo_amp"]
 
 [resource]
 script = ExtResource("1")
-frames = Array[ExtResource("fdef")]([ExtResource("f_kestrel"), ExtResource("f_talon"), ExtResource("f_bastion"), ExtResource("f_seraph")])
-modules = Array[ExtResource("mdef")]([ExtResource("m_twin_cannon"), ExtResource("m_heavy_rounds"), ExtResource("m_pierce_lens"), ExtResource("m_missile_pod"), ExtResource("m_drone_bay"), ExtResource("m_spread_cannon"), ExtResource("m_swarm_rack"), ExtResource("m_amplifier"), ExtResource("m_overlink"), ExtResource("m_seeker"), ExtResource("m_volatile"), ExtResource("m_rapid_link"), ExtResource("m_magnet_coil"), ExtResource("m_salvage_scanner"), ExtResource("m_score_uplink"), ExtResource("m_jackpot_uplink"), ExtResource("m_graze_coil"), ExtResource("m_combo_primer"), ExtResource("m_thrusters"), ExtResource("m_capacitor"), ExtResource("m_bubble_layer"), ExtResource("m_cryo_pulse"), ExtResource("m_scrap_compactor")])
-starter_modules = Array[StringName]([&"thrusters", &"magnet_coil"])
+ships = Array[ExtResource("sdef")]([ExtResource("s_kestrel")])
+parts = Array[ExtResource("ptdef")]([ExtResource("pt_pulse_laser"), ExtResource("pt_twin_cannon"), ExtResource("pt_needle_gun"), ExtResource("pt_missile_pod"), ExtResource("pt_bubble"), ExtResource("pt_regen_field"), ExtResource("pt_ablative_armor"), ExtResource("pt_cryo_pulse"), ExtResource("pt_ion_thruster"), ExtResource("pt_vector_jet"), ExtResource("pt_scrap_magnet"), ExtResource("pt_scrap_compactor"), ExtResource("pt_drone_bay"), ExtResource("pt_combo_amp")])
 pilots = Array[ExtResource("pdef")]([ExtResource("p_vega"), ExtResource("p_rook"), ExtResource("p_nyx"), ExtResource("p_juno")])
+starter_mounts = {
+"left": &"bubble",
+"nose": &"pulse_laser",
+"rear": &"ion_thruster",
+"right": &"cryo_pulse"
+}
+placement = {
+"engine": {
+"left": [{
+"op": &"mul",
+"stat": &"strafe_right",
+"value": 1.25
+}],
+"rear": [{
+"op": &"mul",
+"stat": &"move_speed",
+"value": 1.15
+}],
+"right": [{
+"op": &"mul",
+"stat": &"strafe_left",
+"value": 1.25
+}]
+},
+"shield": {
+"left": [{
+"op": &"mul",
+"stat": &"shield_recharge",
+"value": 0.8
+}],
+"right": [{
+"op": &"mul",
+"stat": &"shield_recharge",
+"value": 0.8
+}]
+}
+}

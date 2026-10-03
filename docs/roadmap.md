@@ -61,6 +61,9 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 ## M4 Difficulty + meta
 - [x] Hangar v2 (materia style): 4 frames with linked slots, 21 modules that level from AP, mastery copies and upgrade chains, ship parts per module, deeper menu (`docs/hangar.md`)
 - [x] Pilots with active powers: Vega (Overclock), Rook (Bulwark), Nyx (Phase Dash), Juno (Nova)
+- [x] Hangar v3 step 1: typed slots on nose/left/rear/right mounts, placement effects, 14 ranked parts, categorized store with ship previews (`docs/hangar.md`)
+- [ ] Hangar v3 step 2: chips and FF7-style combos, combo sockets, rest of the parts catalog
+- [ ] Hangar v3 step 3: one upgrade tree per ship (Talon, Bastion, Seraph)
 - [x] Title screen: Continue (resumes the saved run at its last stage), New Game with difficulty pick and an overwrite confirm. Hangar button hook in `title.gd`.
 - [x] Stage medals (goal per stage) pay meta currency, scaled by difficulty (v1 goals on stages 1, 2 and challenge 1)
 ## M5 Sector 1 complete

@@ -8,8 +8,12 @@ const ROSE := Color(0.85, 0.52, 0.55)
 const INK := Color(0.07, 0.08, 0.17, 0.88)
 const DIM := Color(0.6, 0.6, 0.7)
 const GOOD := Color(0.55, 0.9, 0.75)
-const KIND_COLORS: Array[Color] = [Color("5fe06a"), Color("4fa6ff"), Color("ffd34f"), Color("b98bff")]
-const KIND_NAMES := ["WEAPON", "SUPPORT", "SYSTEM", "HULL"]
+## By PartDef.Category: weapon, shield, power, engine, extra, chip.
+const CATEGORY_COLORS: Array[Color] = [Color("5fe06a"), Color("b98bff"), Color("ffd34f"), Color("4fa6ff"), Color("4fa6ff"), Color("ff8f6b")]
+const CATEGORY_NAMES := ["WEAPONS", "SHIELDS", "POWERS", "ENGINES", "EXTRAS", "CHIPS"]
+const TIER_NAMES := ["STARTER", "COMMON", "UNCOMMON", "RARE", "EPIC"]
+const SHIP_VISUAL := preload("res://assets/art/dusk_armada/player.tscn")
+const SHIP_PARTS := preload("res://assets/art/dusk_armada/ship_parts.gd")
 const ROW_HEIGHT := 44
 
 
@@ -56,6 +60,23 @@ static func row(left: String, mid := "", right := "", dot := Color.TRANSPARENT, 
 
 static func stars(level: int, max_level: int) -> String:
 	return "★".repeat(mini(level, max_level)) + "☆".repeat(maxi(max_level - level, 0)) + ("+%d" % (level - max_level) if level > max_level else "")
+
+
+## A box showing the ship with its parts, centered. `state` empty = the saved loadout.
+static func ship_preview(state: Dictionary, zoom: float, height: float) -> Control:
+	var holder := Control.new()
+	holder.custom_minimum_size.y = height
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var ship: Node2D = SHIP_VISUAL.instantiate()
+	ship.scale = Vector2(zoom, zoom)
+	var parts := Node2D.new()
+	parts.set_script(SHIP_PARTS)
+	parts.set("hull", ship.get_node("dusk_armada/Sprite"))
+	parts.set("preview", state)
+	ship.get_node("dusk_armada").add_child(parts)
+	holder.add_child(ship)
+	holder.resized.connect(func() -> void: ship.position = holder.size / 2)
+	return holder
 
 
 static func panel(content: Control) -> PanelContainer:

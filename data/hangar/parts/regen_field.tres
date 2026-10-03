@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"regen_field"
+display_name = "Regen Field"
+category = 1
+tier = 1
+rank_text = Array[String](["Recharges 40% faster", "Faster again", "Fastest recharge"])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"shield_recharge",
+"value": 0.6
+}, {
+"op": &"mul",
+"stat": &"shield_recharge",
+"value": 0.8,
+"rank": 2
+}, {
+"op": &"mul",
+"stat": &"shield_recharge",
+"value": 0.8,
+"rank": 3
+}])
+part = &"fin_hull"

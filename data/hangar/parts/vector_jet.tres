@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"vector_jet"
+display_name = "Vector Jet"
+category = 3
+tier = 1
+rank_text = Array[String](["Strafe 30% faster", "Strafe 45% faster", "+10% speed"])
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"strafe_left",
+"value": 1.3
+}, {
+"op": &"mul",
+"stat": &"strafe_right",
+"value": 1.3
+}, {
+"op": &"mul",
+"stat": &"strafe_left",
+"value": 1.12,
+"rank": 2
+}, {
+"op": &"mul",
+"stat": &"strafe_right",
+"value": 1.12,
+"rank": 2
+}, {
+"op": &"mul",
+"stat": &"move_speed",
+"value": 1.1,
+"rank": 3
+}])
+part = &"fin_support"

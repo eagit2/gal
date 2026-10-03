@@ -16,6 +16,8 @@ const BASE_STATS := {
 	&"missile_rate": 1.0,
 	&"drones": 0,
 	&"move_speed": 1.0,
+	&"strafe_left": 1.0,  # speed multiplier while moving left (an engine on the right mount)
+	&"strafe_right": 1.0,  # speed multiplier while moving right (an engine on the left mount)
 	&"shield_recharge": 1.0,  # multiplier on recharge time (lower is faster)
 	&"shield_layers": 0,
 	&"magnet": 0.0,  # scrap pull radius

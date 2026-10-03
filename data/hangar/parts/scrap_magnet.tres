@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"scrap_magnet"
+display_name = "Scrap Magnet"
+category = 4
+tier = 0
+rank_text = Array[String](["Pulls scrap from farther away", "Wider pull", "Scrap worth 20% more"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"magnet",
+"value": 90.0
+}, {
+"op": &"add",
+"stat": &"magnet",
+"value": 60.0,
+"rank": 2
+}, {
+"op": &"mul",
+"stat": &"scrap_mult",
+"value": 1.2,
+"rank": 3
+}])
+part = &"coil_support"

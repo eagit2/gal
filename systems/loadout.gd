@@ -1,144 +1,142 @@
 class_name Loadout
 extends RefCounted
 ## Hangar rules on the saved loadout state. Pure functions so tests can call them directly.
-## State: {"frame": id, "frames": [ids], "modules": [{"id", "ap", "born"}], "equipped": [module index or -1 per slot],
+## State: {"ship": id, "ships": [ids], "parts": {id: rank}, "mounts": {mount: part id or ""},
 ## "pilot": id, "pilots": [ids]}
 
-const SLOTS := 6
 
-
-static func default_state(catalog: ModuleCatalog) -> Dictionary:
-	var modules: Array = []
-	for id in catalog.starter_modules:
-		modules.append({"id": String(id), "ap": 0, "born": false})
-	var equipped: Array = []
-	equipped.resize(SLOTS)
-	equipped.fill(-1)
-	var first := String(catalog.frames[0].id)
+static func default_state(catalog: HangarCatalog) -> Dictionary:
+	var ship := String(catalog.ships[0].id)
 	var pilot := String(catalog.pilots[0].id)
-	return {"frame": first, "frames": [first], "modules": modules, "equipped": equipped, "pilot": pilot, "pilots": [pilot]}
+	var parts := {}
+	var mounts := {}
+	for mount in catalog.ships[0].mounts:
+		mounts[String(mount)] = ""
+	for mount in catalog.starter_mounts:
+		var id := String(catalog.starter_mounts[mount])
+		parts[id] = 1
+		mounts[String(mount)] = id
+	return {"ship": ship, "ships": [ship], "parts": parts, "mounts": mounts, "pilot": pilot, "pilots": [pilot]}
 
 
-## Returns a usable state, replacing anything from an older or broken save.
-static func normalize(state: Variant, catalog: ModuleCatalog) -> Dictionary:
-	if not (state is Dictionary and state.has("frame") and state.has("modules") and state.has("equipped")):
-		return default_state(catalog)
-	if not state.has("pilot"):
-		state["pilot"] = String(catalog.pilots[0].id)
-		state["pilots"] = [state["pilot"]]
-	var equipped: Array = state["equipped"]
-	for slot in equipped.size():
-		equipped[slot] = int(equipped[slot])
-		if equipped[slot] >= (state["modules"] as Array).size():
-			equipped[slot] = -1
+## Returns a usable state. Saves from before ship slots keep their pilots and start a fresh loadout.
+static func normalize(state: Variant, catalog: HangarCatalog) -> Dictionary:
+	var fresh := default_state(catalog)
+	if not state is Dictionary:
+		return fresh
+	if state.has("pilot") and catalog.pilot(StringName(state["pilot"])):
+		fresh["pilot"] = state["pilot"]
+		fresh["pilots"] = state.get("pilots", [state["pilot"]])
+	if not (state.has("parts") and state.has("mounts") and state["parts"] is Dictionary):
+		return fresh
+	for id: String in state["parts"].keys():
+		state["parts"][id] = clampi(int(state["parts"][id]), 0, PartDef.MAX_RANK)
+		if catalog.part(StringName(id)) == null:
+			state["parts"].erase(id)
+	for mount: String in fresh["mounts"]:
+		var id := String(state["mounts"].get(mount, ""))
+		state["mounts"][mount] = id if state["parts"].has(id) else ""
+	state["pilot"] = fresh["pilot"]
+	state["pilots"] = fresh["pilots"]
 	return state
 
 
-static func pilot_of(catalog: ModuleCatalog, state: Dictionary) -> PilotDef:
+static func pilot_of(catalog: HangarCatalog, state: Dictionary) -> PilotDef:
 	var pilot := catalog.pilot(StringName(state["pilot"]))
 	return pilot if pilot else catalog.pilots[0]
 
 
-static func frame_of(catalog: ModuleCatalog, state: Dictionary) -> FrameDef:
-	var frame := catalog.frame(StringName(state["frame"]))
-	return frame if frame else catalog.frames[0]
+static func ship_of(catalog: HangarCatalog, state: Dictionary) -> ShipDef:
+	var ship := catalog.ship(StringName(state["ship"]))
+	return ship if ship else catalog.ships[0]
 
 
-static func def_at(catalog: ModuleCatalog, state: Dictionary, index: int) -> ModuleDef:
-	if index < 0:
-		return null
-	return catalog.module(StringName(state["modules"][index]["id"]))
+## Owned rank of a part; 0 when not owned.
+static func rank_of(state: Dictionary, id: StringName) -> int:
+	return int(state["parts"].get(String(id), 0))
 
 
-static func level_of(catalog: ModuleCatalog, state: Dictionary, index: int) -> int:
-	var def := def_at(catalog, state, index)
-	return def.level_for(int(state["modules"][index]["ap"])) if def else 0
+static func part_at(catalog: HangarCatalog, state: Dictionary, mount: StringName) -> PartDef:
+	var id := String(state["mounts"].get(String(mount), ""))
+	return catalog.part(StringName(id)) if id != "" else null
 
 
-## Module index in `slot`, or -1 when the slot is empty or outside the frame.
-static func in_slot(catalog: ModuleCatalog, state: Dictionary, slot: int) -> int:
-	return int(state["equipped"][slot]) if slot < frame_of(catalog, state).slots else -1
+## Mount the part sits on, or &"" when it isn't fitted.
+static func mount_of(state: Dictionary, id: StringName) -> StringName:
+	for mount: String in state["mounts"]:
+		if state["mounts"][mount] == String(id):
+			return StringName(mount)
+	return &""
 
 
-## True when a support module in `slot` has a partner it can boost.
-static func link_active(catalog: ModuleCatalog, state: Dictionary, slot: int) -> bool:
-	var def := def_at(catalog, state, in_slot(catalog, state, slot))
-	var partner := frame_of(catalog, state).partner(slot)
-	if def == null or def.kind != ModuleDef.Kind.SUPPORT or partner < 0:
+## True when the owned part fits `mount`: the mount takes its kind, and the ship has a free slot
+## of that type (moving the part, or swapping out what sits there, frees one).
+static func can_place(catalog: HangarCatalog, state: Dictionary, mount: StringName, def: PartDef) -> bool:
+	var ship := ship_of(catalog, state)
+	if rank_of(state, def.id) == 0 or not ship.accepts(mount, def):
 		return false
-	var other := def_at(catalog, state, in_slot(catalog, state, partner))
-	return other != null and other.kind != ModuleDef.Kind.SUPPORT and (def.link_kind < 0 or other.kind == def.link_kind)
+	var used := 0
+	for other in ship.mounts:
+		var part := part_at(catalog, state, other)
+		if other != mount and part and part != def and part.slot() == def.slot():
+			used += 1
+	return used < int(ship.slots.get(def.slot(), 0))
 
 
-## Level the module in `slot` works at, including amplify from a linked support module.
-static func slot_level(catalog: ModuleCatalog, state: Dictionary, slot: int) -> int:
-	var level := level_of(catalog, state, in_slot(catalog, state, slot))
-	var partner := frame_of(catalog, state).partner(slot)
-	if partner >= 0 and link_active(catalog, state, partner):
-		level += def_at(catalog, state, in_slot(catalog, state, partner)).amplify
-	return level
+## Fits part `id` on `mount` (moving it off any other mount); "" empties the mount. Returns false
+## when it doesn't fit.
+static func place(catalog: HangarCatalog, state: Dictionary, mount: StringName, id: StringName) -> bool:
+	if id != &"":
+		var def := catalog.part(id)
+		if def == null or not can_place(catalog, state, mount, def):
+			return false
+		var old := mount_of(state, id)
+		if old != &"":
+			state["mounts"][String(old)] = ""
+	state["mounts"][String(mount)] = String(id)
+	return true
 
 
-## Every effect the frame and equipped modules give, for GameState.set_meta_effects.
-static func effects(catalog: ModuleCatalog, state: Dictionary) -> Array[Dictionary]:
-	var frame := frame_of(catalog, state)
-	var result: Array[Dictionary] = frame.effects.duplicate()
-	for slot in frame.slots:
-		var def := def_at(catalog, state, in_slot(catalog, state, slot))
-		if def == null or (def.kind == ModuleDef.Kind.SUPPORT and not link_active(catalog, state, slot)):
-			continue
-		result.append_array(def.effects)
-		for i in slot_level(catalog, state, slot) - 1:
-			result.append_array(def.per_level)
+## Every effect the fitted parts give, with their rank and where they sit, for GameState.
+static func effects(catalog: HangarCatalog, state: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for mount in ship_of(catalog, state).mounts:
+		var def := part_at(catalog, state, mount)
+		if def:
+			result.append_array(def.effects_at(rank_of(state, def.id)))
+			result.append_array(catalog.placement_effects(def, mount))
 	return result
 
 
-## Puts module `index` in `slot` (moving it if it was equipped elsewhere); -1 empties the slot.
-static func equip(state: Dictionary, slot: int, index: int) -> void:
-	var equipped: Array = state["equipped"]
-	if index >= 0:
-		for s in equipped.size():
-			if equipped[s] == index:
-				equipped[s] = -1
-	equipped[slot] = index
+## Scrap for the next rank of a part (buying it is rank 1); -1 when it is maxed.
+static func next_price(state: Dictionary, def: PartDef) -> int:
+	var rank := rank_of(state, def.id)
+	return def.price(rank + 1) if rank < PartDef.MAX_RANK else -1
 
 
-## Adds AP to every equipped module. Newly mastered modules spawn a level-1 copy (once each).
-## Returns the defs mastered by this call.
-static func add_ap(catalog: ModuleCatalog, state: Dictionary, amount: int) -> Array[ModuleDef]:
-	var mastered: Array[ModuleDef] = []
-	for slot in frame_of(catalog, state).slots:
-		var index := in_slot(catalog, state, slot)
-		if index < 0:
+## Raises a part one rank (buying it at rank 1). The caller pays.
+static func rank_up(state: Dictionary, def: PartDef) -> void:
+	state["parts"][String(def.id)] = mini(rank_of(state, def.id) + 1, PartDef.MAX_RANK)
+
+
+## A copy of the state with `def` at `rank` fitted on the best mount for it, for store previews.
+static func preview(catalog: HangarCatalog, state: Dictionary, def: PartDef, rank: int) -> Dictionary:
+	var copy := state.duplicate(true)
+	copy["parts"][String(def.id)] = rank
+	if mount_of(copy, def.id) != &"":
+		return copy
+	var ship := ship_of(catalog, copy)
+	var target: StringName = &""
+	for mount in ship.mounts:
+		var part := part_at(catalog, copy, mount)
+		if not ship.accepts(mount, def):
 			continue
-		var module: Dictionary = state["modules"][index]
-		var def := def_at(catalog, state, index)
-		var before := def.level_for(int(module["ap"]))
-		module["ap"] = int(module["ap"]) + amount
-		if before < def.max_level() and def.level_for(module["ap"]) == def.max_level():
-			mastered.append(def)
-			if not module.get("born", false):
-				module["born"] = true
-				(state["modules"] as Array).append({"id": module["id"], "ap": 0, "born": true})
-	return mastered
-
-
-static func owns(state: Dictionary, id: StringName) -> bool:
-	return (state["modules"] as Array).any(func(m: Dictionary) -> bool: return StringName(m["id"]) == id)
-
-
-static func is_mastered(catalog: ModuleCatalog, state: Dictionary, id: StringName) -> bool:
-	var def := catalog.module(id)
-	return def != null and (state["modules"] as Array).any(func(m: Dictionary) -> bool: return StringName(m["id"]) == id and def.level_for(int(m["ap"])) == def.max_level())
-
-
-## Shown in the shop: not owned yet, and its chain requirement (if any) is mastered.
-static func in_shop(catalog: ModuleCatalog, state: Dictionary, def: ModuleDef) -> bool:
-	return not owns(state, def.id) and (def.requires_mastered == &"" or is_mastered(catalog, state, def.requires_mastered))
-
-
-static func set_frame(catalog: ModuleCatalog, state: Dictionary, id: StringName) -> void:
-	state["frame"] = String(id)
-	var slots := frame_of(catalog, state).slots
-	for slot in range(slots, SLOTS):
-		state["equipped"][slot] = -1
+		if part and part.slot() == def.slot():
+			target = mount  # swap out the part in the same slot type
+			break
+		if part == null and target == &"":
+			target = mount
+	if target != &"":
+		copy["mounts"][String(target)] = ""
+		place(catalog, copy, target, def.id)
+	return copy

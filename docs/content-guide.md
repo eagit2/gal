@@ -23,7 +23,7 @@ To test a stage without playing up to it, add URL options to the build: `?stage=
 Create `data/weapons/<id>.tres` of type `WeaponDef` (fire_rate, projectile_scene, projectile_speed, spread_count, spread_angle, damage).
 
 ## Upgrade
-Upgrades live in the hangar: add a `ModuleDef` under `data/hangar/modules/` and list it in `data/hangar/catalog.tres` (see docs/hangar.md). Effects use {"stat", "op", "value"} with a stat from `UpgradeSystem.BASE_STATS`.
+Upgrades live in the hangar: add a `PartDef` under `data/hangar/parts/` and list it in `data/hangar/catalog.tres` (see docs/hangar.md). Effects use {"stat", "op", "value"} with a stat from `UpgradeSystem.BASE_STATS`.
 
 ### Add an elite
 Create `data/elites/<id>.tres` (`EliteDef`): name, hint (shown on arrival: what it does and how to beat it), hp, score, scrap, patrol speed, fire pattern, visual (an enemy visual scene, scaled and tinted), and `trait_logic`, a sub-resource of an `EliteTrait` script in `scenes/enemies/elites/` (Frost Shell, Rock Tow, Shield Link). A new trait is a new script overriding `begin`, `tick`, `absorb` and `end`; keep per-elite state in `elite.state`. Put elites in a stage with `StageDef.elites`. Test one anywhere with the dev option `elite=<id>`.
@@ -39,11 +39,11 @@ Scrap: `EnemyDef.scrap_chance` and `scrap`; `DifficultyDef.drop_mult`; pity step
 ## Combo mode
 `data/combos/<id>.tres` (`ComboDef`): style (theme id), threshold, decay_delay, decay_rate, duration, effects (same format as upgrades), HUD color. What fills each meter is in `systems/combo_tracker.gd`; thresholds scale with `DifficultyDef.combo_threshold`.
 
-## Hangar module
-`data/hangar/modules/<id>.tres` (`ModuleDef`): kind (weapon, support, system, hull), cost, effects (level 1), per_level (added per level above 1), ap_levels, part (sprite in `assets/art/dusk_armada/parts/`), and for support modules amplify and link_kind. Set `requires_mastered` to make it a chain unlock. Register it in `data/hangar/catalog.tres` (a test fails if you forget).
+## Hangar part
+`data/hangar/parts/<id>.tres` (`PartDef`): category (weapon, shield, power, engine, extra, chip), tier (sets the scrap price per rank), rank_text (3 lines for the store), effects (each with an optional "rank" it starts at), and part (sprite in `assets/art/dusk_armada/parts/`). Register it in `data/hangar/catalog.tres` (a test fails if you forget). Placement bonuses by category and mount are `placement` in the catalog.
 
-## Hangar frame
-`data/hangar/frames/<id>.tres` (`FrameDef`): slots, pairs, effects, cost, sprite. Register it in the catalog. Hull palettes are `FRAME_PALS` in `tools/art/gen_dusk_armada.py`.
+## Hangar ship
+`data/hangar/ships/<id>.tres` (`ShipDef`): slots per type (weapon, shield, power, bonus), mounts, sprite. Register it in the catalog. Hull palettes are `FRAME_PALS` in `tools/art/gen_dusk_armada.py`.
 
 ## Pilot
 `data/hangar/pilots/<id>.tres` (`PilotDef`): bio, cost, color, power (Overclock, Bulwark, Phase Dash, Nova), power_name, power_text, cooldown, duration, effects (Overclock), distance (dash), damage (Nova). Register it in the catalog's `pilots`; the first one is free.

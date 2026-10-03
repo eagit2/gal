@@ -1,39 +1,46 @@
-# Hangar: frames, modules and upgrade chains
+# Hangar: ship slots, parts, placement and the store
 
-Status: v2 built 2026-10-03 (Ship upgrade hangar thread). Eric asked for a deeper, materia-style menu with upgrade chains, and a visible change on the ship for every upgrade. All numbers are data in `data/hangar/` and `data/medals/`.
+Status: v3 step 1 built 2026-10-03 (Ship upgrade hangar thread). The full design Eric approved is the doc "Hangar Redesign: Slots, Combos and Upgrade Tree" (https://claude.ai/code/artifact/28501082-1279-4104-9dd3-e3d3fa056c6f). Build order (Eric): 1 base ship slots and placement (this), 2 combos and the rest of the parts catalog, 3 one upgrade tree per ship. All numbers are data in `data/hangar/` and `data/medals/`.
 
 ## Economy
-- **Scrap** is the currency (shown as SCRAP; saved as `currency`). Destroyed ships leave scrap piles, and **stage medals** (one optional goal per stage, `StageDef.medal`) pay a scrap bonus once per run. Both scale by `DifficultyDef.score_multiplier` and the `scrap_mult` stat. Scrap banks on pickup and saves at stage clear and run end.
-- Credits buy **modules** and **frames** in the shop.
-- **AP:** every equipped module earns 1 AP per kill (granted at stage clear and run end). AP raises its level.
+- **Scrap** is the currency (shown as SCRAP; saved as `currency`). Destroyed ships leave scrap piles, and **stage medals** (one optional goal per stage, `StageDef.medal`) pay a scrap bonus once per run. Both scale by `DifficultyDef.score_multiplier` and the `scrap_mult` stat.
+- Scrap buys **parts** and their **ranks** in the store. Each part has ranks 1-3; rank 1 costs the tier price (Starter is free), rank 2 the same again, rank 3 twice that (`PartDef.TIER_COST`: Starter 60, Common 100, Uncommon 200, Rare 400, Epic 800).
 
-## Frames (the ship)
-| Frame | Slots | Linked pairs | Perk | Cost |
-|---|---|---|---|---|
-| Kestrel | 3 | 1 | starter | 0 |
-| Talon | 4 | 2 | +5% speed | 200 |
-| Bastion | 5 | 2 | +1 shield layer, -5% speed | 450 |
-| Seraph | 6 | 3 | +5% fire rate | 900 |
+## The ship (ShipDef)
+The Kestrel (base ship) has one slot each of **weapon, shield, power and bonus**. The weapon sits on the **nose**. The other three go on the **left, rear and right** mounts in any order the player picks. Engines, extras and (later) chips share the bonus slot. Advanced ships with more slots come from the upgrade tree (step 3).
 
-Each frame has its own hull colors. Slots 1-2, 3-4 and 5-6 are linked when the frame has that many pairs.
+## Placement (Eric picked "mild asymmetry")
+Where a part sits adds the effects in `HangarCatalog.placement`:
 
-## Modules (materia)
-Colors: green weapon, blue support, yellow system, purple hull. Each module levels 1 to 3 from AP. Each level adds its `per_level` effect. **Mastery** (max level) spawns a free level-1 copy once and unlocks its chain module in the shop.
+| Part | Left | Rear | Right |
+|---|---|---|---|
+| Engine | +25% strafe right | +15% speed | +25% strafe left |
+| Shield | recharge 20% faster | normal | recharge 20% faster |
+| Power, extra | look only (for now) | look only | look only |
 
-- **Weapon:** Twin Cannon, Heavy Rounds, Pierce Lens, Missile Pod, Drone Bay. Chains: Twin Cannon to Spread Cannon, Missile Pod to Swarm Rack.
-- **Support** (works only in a linked slot): Amplifier (partner +1 level; chain to Overlink, +2), Seeker (homing), Volatile (kill blasts), Rapid Link (fire rate). The last three need a weapon partner.
-- **System:** Magnet Coil, Salvage Scanner, Score Uplink (chain to Jackpot Uplink), Graze Coil, Combo Primer.
-- **Hull:** Thrusters, Capacitor (chain to Bubble Layer).
-- New saves start with Thrusters and Magnet Coil.
+Stats: `strafe_left` / `strafe_right` scale horizontal speed in `Player` (keyboard and touch).
+
+## Parts (PartDef)
+Categories: weapon (green), shield (purple), power (yellow, the C/L / pad Y / FREEZE button), engine and extra (blue), chip (step 2). Effects carry an optional `rank` key: they apply once the part reaches that rank.
+
+| Category | Parts built in step 1 |
+|---|---|
+| Weapons | Pulse Laser (starter), Twin Cannon, Needle Gun, Missile Pod |
+| Shields | Bubble (starter), Regen Field, Ablative Armor |
+| Powers | Cryo Pulse (starter) |
+| Engines | Ion Thruster (starter), Vector Jet |
+| Extras | Scrap Magnet (starter, free to buy), Scrap Compactor, Drone Bay, Combo Amp |
+
+A new save flies Pulse Laser (nose), Bubble (left), Ion Thruster (rear) and Cryo Pulse (right). Saves from the materia hangar keep their pilots and start this fresh loadout.
 
 ## Ship visuals
-Every equipped module adds a pixel part at its slot (wingtips, nose, tail, shoulders), with an orb in its color. It glows brighter as it levels. Parts are drawn by `assets/art/dusk_armada/ship_parts.gd` inside the player's Dusk Armada visual only (drones and other styles don't show them). Art: `PARTS` and `FRAME_PALS` in `tools/art/gen_dusk_armada.py`.
+Every fitted part draws its pixel sprite at its mount, sticking out past the hull. Rank 2 adds a glow in the slot color; rank 3 doubles the part. Drawn by `assets/art/dusk_armada/ship_parts.gd` (its `preview` property draws any loadout for the store).
 
 ## Menu
-Title > HANGAR: a ship preview, then LOADOUT (choose a slot, then a module), MODULES (levels and AP), SHOP (modules, locked chains show what unlocks them), and FRAMES (buy or switch). Cancel goes back one level.
+Title > HANGAR: ship preview, then PILOT, LOADOUT (pick a mount, then a part; the preview shows the result before you choose) and STORE. The store (`scenes/main/hangar_store.gd`) has six category tabs; each card shows your ship wearing that part. A card opens NOW / AFTER previews, the look of each rank, what each rank does, BUY / RANK UP, and FIT TO SHIP. Cancel goes back one level.
 
 ## Pilots
-Picked on the hangar's PILOT page. Each pilot brings one active power (Eric picked "active button"): press SHIFT/X/K, gamepad B/X, or tap with a second finger. It recharges over the pilot's cooldown, and the HUD shows its charge under the shield.
+Picked on the hangar's PILOT page. Each pilot brings one active power on its own button (SHIFT/X/K, gamepad B/X, or a two-finger tap), separate from the ship's Power slot (Eric kept two buttons).
 
 | Pilot | Power | Effect | Recharge | Cost |
 |---|---|---|---|---|
@@ -42,7 +49,9 @@ Picked on the hangar's PILOT page. Each pilot brings one active power (Eric pick
 | Nyx | Phase Dash | blink 170 px in the move direction, untouchable mid-dash | 6s | 400 |
 | Juno | Nova | clears enemy shots, 2 damage to every enemy | 30s | 600 |
 
-Data: `data/hangar/pilots/` (`PilotDef`), run by `scenes/player/pilot_power.gd`. A new power type is one enum value and one `match` branch.
+Data: `data/hangar/pilots/` (`PilotDef`), run by `scenes/player/pilot_power.gd`.
 
 ## Next
-- Medals for stages 4 to 10 and the real Sector 1 goals (M5).
+- Step 2: chips and FF7-style combos (base + element + pattern, named secret combos), parts that add combo sockets, and the rest of the catalog (Wave Gun, Flak Burst, Saw Disc, Plasma Orb, Rail Driver, the other shields, powers, engines and extras). The Power slot then needs a general ship-power runner beside the freeze system.
+- Step 3: one upgrade tree per ship; Talon, Bastion and Seraph unlock from it (their hull sprites are already in `assets/art/dusk_armada/`).
+- Medals for stages 4 to 10 (M5).

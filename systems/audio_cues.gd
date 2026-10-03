@@ -22,7 +22,6 @@ const OPTIONAL_CUES := {
 	&"wingman_lost": &"explode_small",
 	&"power_used": &"combo_start",
 	&"medal_earned": &"pickup",
-	&"module_mastered": &"synergy",
 }
 
 var _shield_up := true

@@ -51,7 +51,6 @@ func _ready() -> void:
 	EventBus.run_ended.connect(_on_run_ended)
 	EventBus.power_changed.connect(_on_power_changed)
 	EventBus.power_used.connect(func(p: PilotDef) -> void: show_toast(p.power_name, p.color))
-	EventBus.module_mastered.connect(func(m: ModuleDef) -> void: show_toast("%s MASTERED" % m.display_name.to_upper(), Color(0.5, 1, 0.75)))
 	_build_meters()
 	_on_power_changed(1.0)
 	_mode.visible = false
