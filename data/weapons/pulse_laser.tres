@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1")
 id = &"pulse_laser"
-fire_rate = 8.0
+fire_rate = 4.8
 projectile_scene = ExtResource("2")
 projectile_speed = 1000.0
 spread_count = 1

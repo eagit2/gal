@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1")
 id = &"missile_pod"
-fire_rate = 2.0
+fire_rate = 1.2
 projectile_scene = ExtResource("2")
 projectile_speed = 520.0
 spread_count = 2

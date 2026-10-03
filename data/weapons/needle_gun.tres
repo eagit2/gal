@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1")
 id = &"needle_gun"
-fire_rate = 11.0
+fire_rate = 6.6
 projectile_scene = ExtResource("2")
 projectile_speed = 1350.0
 spread_count = 1

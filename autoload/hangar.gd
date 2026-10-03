@@ -11,6 +11,8 @@ var _paid: Array[StringName] = []  # medal ids already paid this run
 var _tracker := MedalTracker.new()
 var _power_effects: Array[Dictionary] = []  # an active pilot power (Overclock)
 var _rng := RandomNumberGenerator.new()
+## Development mode: everything owned, tree nodes toggle for free (DevUnlock).
+var dev_unlock := DevOptions.from_environment().unlock
 
 
 func _ready() -> void:
@@ -30,6 +32,8 @@ func _ready() -> void:
 ## Normalizes the active save slot's hangar state and applies it.
 func _load_state() -> void:
 	SaveManager.data["hangar"] = Loadout.normalize(SaveManager.data.get("hangar"), CATALOG)
+	if dev_unlock:
+		DevUnlock.grant_all(CATALOG, state())
 	if (state()["stock"] as Array).is_empty():
 		HangarStock.roll(CATALOG, state(), _rng)
 	apply()
@@ -122,6 +126,12 @@ func buy_node(node: TreeNodeDef) -> bool:
 		return false
 	_spend(price)
 	return true
+
+
+## Dev unlock: steps a tree node's rank, free and without needing its parents.
+func toggle_node(node: TreeNodeDef) -> void:
+	DevUnlock.toggle(state(), ship(), node)
+	_changed()
 
 
 ## New store stock for a fee. Returns false when it can't be afforded.

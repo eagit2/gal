@@ -28,6 +28,7 @@ const SLOT_OF: Array[StringName] = [&"weapon", &"shield", &"extra", &"engine", &
 @export var effects: Array[Dictionary] = []
 ## Upgradable attributes: {"id", "name", "text", "max", "effects": [{"stat", "op", "value"}]}. Each
 ## level applies the effects once more (add: value x level, mul: value ^ level).
+## Optional "final": effects added once at max level, so the last step is the big jump.
 @export var attributes: Array[Dictionary] = []
 ## Combo link sockets (chips go in them) and how many pairs of them are linked, so the two chips
 ## combo. Linked pairs come first.
@@ -77,6 +78,8 @@ func effects_at(levels: Dictionary) -> Array[Dictionary]:
 		var level := int(levels.get(String(a["id"]), 0))
 		if level > 0:
 			result.append_array(scaled(a["effects"], level))
+		if level >= int(a["max"]) and a.has("final"):
+			result.append_array(scaled(a["final"], 1))
 	return result
 
 

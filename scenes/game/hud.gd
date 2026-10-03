@@ -44,7 +44,6 @@ func _ready() -> void:
 	EventBus.player_captured.connect(func(_c: Node2D) -> void: show_toast("SHIP CAPTURED!\nSHOOT ITS CAPTOR\nWHILE IT ATTACKS", Color(1, 0.45, 0.45)))
 	EventBus.ship_rescued.connect(func() -> void: show_toast("SHIP RESCUED!\nDUAL FIGHTER", Color(0.5, 1, 0.75)))
 	EventBus.captive_lost.connect(func() -> void: show_toast("CAPTURED SHIP LOST", Color(1, 0.45, 0.45)))
-	EventBus.elite_spawned.connect(func(e: EliteDef) -> void: show_banner("ELITE\n%s\n\n%s" % [e.display_name.to_upper(), e.hint.to_upper()], 3.0))
 	EventBus.run_ended.connect(_on_run_ended)
 	EventBus.power_changed.connect(_on_power_changed)
 	EventBus.power_used.connect(func(p: PilotDef) -> void: show_toast(p.power_name, p.color))

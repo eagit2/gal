@@ -3,12 +3,14 @@ extends RefCounted
 ## Playtest shortcuts, so a level can be tested without playing up to it.
 ## Web: URL query, e.g. https://eagit2.github.io/gal/?stage=3&god=1&repeat=1&difficulty=ace
 ## Desktop: user args after `--`, e.g. godot -- stage=3 god=1
-##   stage       1-based stage number, or a stage id (challenge_1)
+##   stage       1-based stage number, or a stage id (stage_2)
 ##   god         player hits cost no lives
 ##   repeat      replay the same stage instead of advancing
 ##   difficulty  cadet | pilot | ace | nightmare
 ##   capture     capture runs start at 3s and repeat every few seconds
 ##   elite       an elite id (a file name in data/elites, e.g. puppeteer) that joins every stage at 4s
+##   unlock      0 turns off dev unlock (on by default during development: all items owned,
+##               tree nodes toggle for free)
 
 var stage := ""
 var god := false
@@ -16,6 +18,7 @@ var repeat := false
 var difficulty: StringName = &""
 var elite: StringName = &""
 var capture := false
+var unlock := true
 
 
 static func from_environment() -> DevOptions:
@@ -46,6 +49,8 @@ static func parse(args: PackedStringArray) -> DevOptions:
 				opts.capture = value != "0"
 			"elite":
 				opts.elite = StringName(value.to_lower())
+			"unlock":
+				opts.unlock = value != "0"
 	return opts
 
 

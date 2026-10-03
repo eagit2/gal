@@ -4,7 +4,7 @@ extends TestCase
 
 func test_sector_stages_load() -> void:
 	var sector: SectorDef = load("res://data/sectors/sector_1.tres")
-	expect_eq(sector.stages.size(), 3, "stage count")
+	expect_eq(sector.stages.size(), 2, "stage count (challenge stages are out for now)")
 
 
 func test_formation_stages_fill_unique_slots() -> void:
