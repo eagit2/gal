@@ -20,8 +20,10 @@ BULLET_RED = "#ff4d6d"
 
 
 def rgba(hex_color: str, alpha: int = 255) -> tuple:
+    """'#rrggbb' or '#rrggbbaa'."""
     h = hex_color.lstrip("#")
-    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), alpha)
+    a = int(h[6:8], 16) if len(h) == 8 else alpha
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), a)
 
 
 def frame_image(rows: list, pal: dict, outline: bool = True) -> Image.Image:
@@ -53,9 +55,43 @@ def strip(frames: list) -> Image.Image:
     return out
 
 
-def sprite(name: str, frames: list, pal: dict, flip: bool = False, outline: bool = True) -> None:
+DAMAGE_PAL = {"K": OUTLINE, "X": "#4a3046", "E": "#ff9f62"}
+
+
+def damaged(frames: list, seed: int) -> list:
+    """Battle-damaged copies of `frames`: a crack, scorch marks and a chipped edge,
+    identical across frames so the damage doesn't flicker."""
+    rnd = random.Random(seed)
+    h, w = len(frames[0]), len(frames[0][0])
+    body = [(i, j) for j in range(h) for i in range(w) if frames[0][j][i] != "."]
+    marks = {}
+    i, j = rnd.choice([b for b in body if abs(b[0] - w / 2) < w / 4] or body)
+    for n in range(rnd.randint(6, 8)):  # crack: short random walk, glowing embers inside
+        marks[(i, j)] = "E" if n % 3 == 1 else "K"
+        i, j = i + rnd.choice((-1, 0, 1)), j + rnd.choice((-1, 1))
+    for b in rnd.sample(body, max(2, len(body) // 9)):
+        marks.setdefault(b, "X" if rnd.random() < 0.8 else "E")
+    edge = [b for b in body if b[0] in (0, w - 1) or b[1] in (0, h - 1)]
+    for b in rnd.sample(edge, min(2, len(edge))):
+        marks[b] = "."
+    out = []
+    for f in frames:
+        rows = [list(r) for r in f]
+        for (x, y), k in marks.items():
+            if 0 <= y < h and 0 <= x < w and rows[y][x] != ".":
+                rows[y][x] = k
+        out.append(["".join(r) for r in rows])
+    return out
+
+
+def sprite(name: str, frames: list, pal: dict, flip: bool = False, outline: bool = True,
+           damage: bool = False) -> None:
+    """With damage=True the strip holds the normal frames, then the damaged frames."""
     if flip:  # enemies face down (toward the player) at rotation 0
         frames = [list(reversed(f)) for f in frames]
+    if damage:
+        frames = frames + damaged(frames, len(name))
+        pal = {**pal, **DAMAGE_PAL}
     strip([frame_image(f, pal, outline) for f in frames]).save(OUT / f"{name}.png")
 
 
@@ -292,11 +328,37 @@ def spinner_frames() -> list:
 SPINNER_PAL = {"a": "#ffe08a", "b": "#561b5b", "c": "#2bb5a8", "d": "#fff4d0", "w": "#fca54d"}
 
 # ---------------------------------------------------------------- shots and pickups
-PLAYER_BULLET = [["ww", "ww", "bb", "bb", "bb", "bb", "bb", "bb"]]
-PLAYER_BULLET_PAL = {"w": "#ffffff", "b": "#7ef0ff"}
+# Energy tracer: white-hot head, cyan body, a trail that fades out. No outline: it glows.
+PLAYER_BULLET = [
+    ["..w..", ".wcw.", ".wcw.", ".cbc.", ".cbc.", "..b..", "..b..", "..t..", "..t..", "..t..", "..d..", "..d..", "..e..", "..e.."],
+    ["..w..", ".www.", ".wcw.", ".cbc.", "..b..", "..b..", "..b..", "..t..", "..t..", "..d..", "..d..", "..d..", "..e..", "..e.."],
+]
+PLAYER_BULLET_PAL = {"w": "#ffffff", "c": "#d8fbff", "b": "#7ef0ff", "t": "#4cc8e8c0", "d": "#3a9fd080", "e": "#3a9fd040"}
 
-ENEMY_BULLET = [[".rrr.", "rryrr", "ryyyr", "rryrr", ".rrr."]]
-ENEMY_BULLET_PAL = {"r": BULLET_RED, "y": "#ffe08a"}
+# Plasma orb in the reserved red: white-hot core, hot ring, darker rim; core pulses.
+ENEMY_BULLET = [
+    ["..rrr..", ".rpppr.", "rppwppr", "rpwwwpr", "rppwppr", ".rpppr.", "..rrr.."],
+    ["..rrr..", ".rpwpr.", "rpwwwpr", "rwwwwwr", "rpwwwpr", ".rpwpr.", "..rrr.."],
+]
+ENEMY_BULLET_PAL = {"r": "#b3203c", "p": BULLET_RED, "w": "#fff0f2"}
+
+MUZZLE = [
+    ["...w...", "..wcw..", ".wcbcw.", "w.cbc.w", "...b..."],
+    [".......", "...w...", "..wcw..", "..cbc..", "...b..."],
+]
+MUZZLE_PAL = {"w": "#ffffff", "c": "#d8fbff", "b": "#7ef0ff"}
+
+
+def glow(w: int, h: int) -> Image.Image:
+    """Soft white falloff, tinted and added on top of shots in the engine."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    for y in range(h):
+        for x in range(w):
+            dx, dy = (x + 0.5 - w / 2) / (w / 2), (y + 0.5 - h / 2) / (h / 2)
+            a = max(0.0, 1 - math.hypot(dx, dy)) ** 2
+            img.putpixel((x, y), (255, 255, 255, round(a * 255)))
+    return img
+
 
 PICKUP = [
     ["..aaa..", ".abbba.", "abbcbba", "abcccba", "abbcbba", ".abbba.", "..aaa.."],
@@ -438,13 +500,15 @@ def main() -> None:
     sprite("player", PLAYER, PLAYER_PAL)
     sprite("enemies/bee", BEE, BEE_PAL, flip=True)
     sprite("enemies/moth", MOTH, MOTH_PAL, flip=True)
-    sprite("enemies/warden", WARDEN, WARDEN_PAL, flip=True)
+    sprite("enemies/warden", WARDEN, WARDEN_PAL, flip=True, damage=True)
     sprite("enemies/fusewing", FUSEWING, FUSEWING_PAL, flip=True)
-    sprite("enemies/lancer", LANCER, LANCER_PAL)
-    sprite("enemies/spinner", spinner_frames(), SPINNER_PAL)
-    sprite("enemies/shieldbearer", SHIELDBEARER, SHIELDBEARER_PAL)
-    sprite("projectiles/player_bullet", PLAYER_BULLET, PLAYER_BULLET_PAL)
-    sprite("projectiles/enemy_bullet", ENEMY_BULLET, ENEMY_BULLET_PAL)
+    sprite("enemies/lancer", LANCER, LANCER_PAL, damage=True)
+    sprite("enemies/spinner", spinner_frames(), SPINNER_PAL, damage=True)
+    sprite("enemies/shieldbearer", SHIELDBEARER, SHIELDBEARER_PAL, damage=True)
+    sprite("projectiles/player_bullet", PLAYER_BULLET, PLAYER_BULLET_PAL, outline=False)
+    sprite("projectiles/enemy_bullet", ENEMY_BULLET, ENEMY_BULLET_PAL, outline=False)
+    sprite("projectiles/muzzle_flash", MUZZLE, MUZZLE_PAL, outline=False)
+    glow(32, 32).save(OUT / "projectiles" / "glow_round.png")
     sprite("pickup", PICKUP, PICKUP_PAL)
     sprite("fx/explosion", explosion_frames(), EXPLOSION_PAL, outline=False)
     sky().save(OUT / "background" / "sky.png")

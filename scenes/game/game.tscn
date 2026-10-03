@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1"]
 [ext_resource type="Resource" path="res://data/difficulty/pilot.tres" id="2"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://systems/dive_controller.gd" id="9"]
 [ext_resource type="Script" path="res://scenes/fx/explosion_spawner.gd" id="10"]
 [ext_resource type="PackedScene" path="res://assets/art/dusk_armada/fx/explosion.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/fx/player_explosion.tscn" id="12"]
 
 [node name="Game" type="Node2D"]
 process_mode = 3
@@ -33,9 +34,11 @@ script = ExtResource("8")
 [node name="DiveController" type="Node" parent="Entities"]
 script = ExtResource("9")
 
-[node name="Explosions" type="Node2D" parent="Entities"]
+[node name="Explosions" type="Node2D" parent="Entities" node_paths=PackedStringArray("player")]
 script = ExtResource("10")
 explosion_scene = ExtResource("11")
+player_explosion_scene = ExtResource("12")
+player = NodePath("../Player")
 
 [node name="Player" parent="Entities" instance=ExtResource("4")]
 
