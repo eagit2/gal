@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"spare_hull"
+display_name = "Spare Hull"
+category = 4
+tier = 3
+rank_text = Array[String](["+1 ship per run", "+2 ships", "+3 ships"])
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"extra_lives",
+"value": 1
+}, {
+"op": &"add",
+"stat": &"extra_lives",
+"value": 1,
+"rank": 2
+}, {
+"op": &"add",
+"stat": &"extra_lives",
+"value": 1,
+"rank": 3
+}])
+part = &"bay_hull"

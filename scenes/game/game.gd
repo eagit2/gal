@@ -39,7 +39,7 @@ func _ready() -> void:
 	GameState.resume_requested = false
 	_load_difficulty(_dev.difficulty if _dev.difficulty != &"" else StringName(run.get("difficulty", GameState.difficulty_id)))
 	if run.is_empty():
-		GameState.start_run(difficulty.id, difficulty.lives)
+		GameState.start_run(difficulty.id, difficulty.lives + int(GameState.stats[&"extra_lives"]))
 	else:
 		GameState.restore(run)
 	EventBus.enemy_killed.connect(_on_enemy_killed)
@@ -78,12 +78,19 @@ func _load_difficulty(id: StringName) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if game_over:
-		if event.is_action_pressed("fire") or (event is InputEventScreenTouch and event.pressed):
+		var tap: bool = event is InputEventScreenTouch and event.pressed
+		if tap and (event as InputEventScreenTouch).position.y > get_viewport_rect().size.y * 0.66:
+			StyleDirector.set_stage_style(&"")
+			SceneRouter.go_to("res://scenes/main/hangar.tscn")
+		elif event.is_action_pressed("fire") or tap:
 			StyleDirector.set_stage_style(&"")
 			get_tree().reload_current_scene()
 		elif event.is_action_pressed("pause"):
 			StyleDirector.set_stage_style(&"")
 			SceneRouter.go_to("res://scenes/main/title.tscn")
+		elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_H:
+			StyleDirector.set_stage_style(&"")
+			SceneRouter.go_to("res://scenes/main/hangar.tscn")
 	elif event.is_action_pressed("pause"):
 		get_tree().paused = not get_tree().paused
 		_hud.show_message("PAUSED" if get_tree().paused else "")
@@ -175,4 +182,4 @@ func _end_run() -> void:
 	if GameState.score > SaveManager.data["high_score"]:
 		SaveManager.data["high_score"] = GameState.score
 	SaveManager.save()
-	_hud.show_message("GAME OVER\n\nFIRE TO RETRY")
+	_hud.show_message("GAME OVER\n\nFIRE  RETRY\nH  HANGAR\n\n(TAP LOW FOR HANGAR)")

@@ -41,6 +41,8 @@ var quirk := randf()
 var aim_facing := false
 var leader: Enemy
 var escort_offset := Vector2.ZERO
+## Per-enemy state for the EnemyDef's trait (EnemyTrait).
+var trait_state := {}
 
 var _path: Curve2D
 var _distance := 0.0
@@ -68,6 +70,8 @@ func _ready() -> void:
 	_health.died.connect(_on_died)
 	# Ramming (or hitting the player's shield) destroys the enemy.
 	$ContactHitbox.hit.connect(func(_h: Hurtbox) -> void: _health.take_damage(_health.hp))
+	if def.trait_logic:
+		def.trait_logic.begin(self)
 
 
 func _physics_process(delta: float) -> void:
@@ -83,6 +87,8 @@ func _physics_process(delta: float) -> void:
 		State.IN_FORMATION:
 			position = formation.slot_position(slot)
 			rotation = lerp_angle(rotation, 0.0, minf(1.0, TURN_RATE * delta))
+	if def.trait_logic:
+		def.trait_logic.tick(self, delta)
 
 
 # --- Attacks ---------------------------------------------------------------------------------
@@ -95,6 +101,19 @@ func start_attack(player: Player, stage_aggression: float, attack_brain: EnemyBr
 	target = player
 	aggression = stage_aggression
 	_begin_attack(chosen)
+
+
+## Attacks right away from wherever it is (spawned by a hive pod: no slot, freed when done).
+func launch(player: Player, stage_aggression: float, attack_brain: EnemyBrain) -> void:
+	target = player
+	aggression = stage_aggression
+	_begin_attack(attack_brain)
+
+
+## Breaks off the current attack and flies home (a Puppeteer let go).
+func recall() -> void:
+	if state == State.DIVING:
+		_end_attack()
 
 
 ## Called by a squad leader's brain: fly alongside `squad_leader` at `offset`.
@@ -148,6 +167,9 @@ func _end_attack() -> void:
 	leader = null
 	aim_facing = false
 	state = State.RETURNING
+	if slot == NO_SLOT:
+		remove_from_group(&"enemies")
+		queue_free()
 
 
 func set_phase(value: int) -> void:

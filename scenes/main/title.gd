@@ -72,7 +72,7 @@ func _refresh() -> void:
 		_continue.text = "CONTINUE  STAGE %d %s" % [int(run.get("stage", 0)) + 1, name]
 	var def := _difficulties[_difficulty_index]
 	_difficulty_button.text = "<   %s   >" % def.display_name.to_upper()
-	_difficulty_info.text = "%d LIVES   SCORE x%s" % [def.lives, str(def.score_multiplier)]
+	_difficulty_info.text = "%d SHIP%s   SCORE x%s" % [def.lives, "" if def.lives == 1 else "S", str(def.score_multiplier)]
 
 
 func _find_difficulty(id: StringName) -> int:

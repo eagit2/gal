@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EliteDef" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://resources/elite_def.gd" id="def"]
+[ext_resource type="Script" path="res://scenes/enemies/elites/phase_trait.gd" id="trait"]
+[ext_resource type="PackedScene" path="res://assets/art/dusk_armada/enemies/moth.tscn" id="visual"]
+
+[sub_resource type="Resource" id="trait_logic"]
+script = ExtResource("trait")
+
+[resource]
+script = ExtResource("def")
+id = &"phase_stalker"
+display_name = "Phase Stalker"
+hint = "Shots pass through it while faded. Hit it when solid"
+hp = 34
+score = 2800
+scrap = 24
+speed = 90.0
+fire_interval = 1.6
+fan_shots = 5
+visual_scene = ExtResource("visual")
+visual_scale = 1.9
+tint = Color(0.8, 1.1, 1.25, 1)
+trait_logic = SubResource("trait_logic")

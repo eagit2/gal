@@ -29,9 +29,16 @@ func test_challenge_stage_has_no_slots() -> void:
 
 
 func test_every_enemy_has_a_visual() -> void:
-	for id in ["bee", "moth", "warden"]:
+	for file in DirAccess.get_files_at("res://data/enemies"):
+		if file.ends_with(".tres"):
+			var def: EnemyDef = load("res://data/enemies/" + file)
+			expect_true(def.visual_scene != null and def.brain != null, file)
+
+
+func test_new_enemy_types_have_traits() -> void:
+	for id in ["blinker", "dasher", "rock_dropper"]:
 		var def: EnemyDef = load("res://data/enemies/%s.tres" % id)
-		expect_true(def.visual_scene != null, id)
+		expect_true(def.trait_logic != null, id)
 
 
 func test_elites_load_with_a_trait_and_visual() -> void:
