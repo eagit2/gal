@@ -8,6 +8,7 @@
 script = ExtResource("1")
 id = &"warden"
 hp = 2
+death_sound = &"explode_big"
 score = 150
 dive_score = 400
 speed = 230.0

@@ -35,3 +35,8 @@ Effects are `{"stat": &"...", "op": &"add"|"mul"|"max", "value": ...}`. Stats an
 
 ## Combo mode
 `data/combos/<id>.tres` (`ComboDef`): style (theme id), threshold, decay_delay, decay_rate, duration, effects (same format as upgrades), HUD color. What fills each meter is in `systems/combo_tracker.gd`; thresholds scale with `DifficultyDef.combo_threshold`.
+
+## Sound and music
+- New sound effect: add a function to `tools/audio/gen_sfx.py` and its entry in `SOUNDS`, run `python3 tools/audio/gen_sfx.py`, then add an `SfxDef` to `data/audio/sound_bank.tres` (id, stream, volume, cooldown, priority). Play it from `systems/audio_cues.gd` on an EventBus signal, or with `AudioManager.play(&"id")` from UI.
+- New music: add a track function to `tools/audio/tracks.py`, run `python3 tools/audio/gen_music.py <name>`, set `loop=true` in its `.ogg.import`, then point a `ThemeDef.music`, `SoundBank.boss_music` or a `SoundBank.scene_music` entry at it.
+- Enemy death sound: `EnemyDef.death_sound` (a SoundBank id).

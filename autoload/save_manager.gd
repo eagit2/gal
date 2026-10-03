@@ -17,7 +17,7 @@ static func default_data() -> Dictionary:
 		"currency": 0,
 		"high_score": 0,
 		"unlocks": [],
-		"settings": {"music_volume": 0.8, "sfx_volume": 0.8, "auto_fire": false},
+		"settings": {"music_volume": 0.8, "sfx_volume": 0.8, "muted": false, "auto_fire": false},
 	}
 
 

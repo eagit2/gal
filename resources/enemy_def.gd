@@ -3,6 +3,8 @@ extends Resource
 
 @export var id: StringName
 @export var hp: int = 1
+## SoundBank id played when it dies.
+@export var death_sound: StringName = &"explode_small"
 @export var score: int = 50
 ## Score when killed mid-dive.
 @export var dive_score: int = 100
