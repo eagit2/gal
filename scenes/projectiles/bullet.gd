@@ -1,7 +1,9 @@
 class_name Bullet
 extends Hitbox
 ## Pooled projectile. Flies straight, or curves toward the nearest enemy when homing.
-## Returns to the pool on hit (unless it still pierces) or when off screen.
+## Returns to the pool on hit (unless it still pierces), when off screen, or past its range.
+## Special player shots (scrap ball, mine, rubber duck, bubble) extend this and read their extra
+## WeaponDef fields in configure().
 
 const BOUNDS := Rect2(-40, -40, 620, 1040)
 const RETARGET_TIME := 0.15
@@ -21,6 +23,11 @@ var chill := 0
 var chain := 0
 ## Set once the player has grazed this shot.
 var grazed := false
+## Pixels this shot flies before it fizzles; 0 = until it leaves the screen.
+var max_range := 0.0
+var _travelled := 0.0
+## Group this shot counts in while out (capped weapons: the weapon id), or empty.
+var _cap_group := &""
 var _pool_scene: PackedScene
 var _active := false
 var _target: Node2D
@@ -43,6 +50,8 @@ func launch(parent: Node, from: Vector2, vel: Vector2, dmg: int, pool_scene: Pac
 	chill = 0
 	chain = 0
 	grazed = false
+	max_range = 0.0
+	_travelled = 0.0
 	spent = false
 	_active = true
 	_target = null
@@ -54,13 +63,23 @@ func launch(parent: Node, from: Vector2, vel: Vector2, dmg: int, pool_scene: Pac
 	global_position = from
 
 
+## A player shot just launched from `weapon` with run `stats`: picks up the weapon's extras.
+func configure(weapon: WeaponDef, _stats: Dictionary) -> void:
+	max_range = weapon.max_range
+	if weapon.active_cap > 0:
+		_cap_group = weapon.id
+		add_to_group(_cap_group)
+
+
 func _physics_process(delta: float) -> void:
 	if grazeable and GameState.freeze_left > 0.0:
 		return  # Enemy shots hang in the air during a Cryo Pulse.
 	if homing > 0.0 and _active:
 		_steer(delta)
 	position += velocity * delta
-	if _active and not BOUNDS.has_point(position):
+	if max_range > 0.0:
+		_travelled += velocity.length() * delta
+	if _active and (not BOUNDS.has_point(position) or (max_range > 0.0 and _travelled >= max_range)):
 		if reports_miss:
 			EventBus.shot_missed.emit()
 		release()
@@ -105,4 +124,12 @@ func release() -> void:
 	_active = false
 	if grazeable:
 		remove_from_group(&"enemy_shots")
+	leave_cap_group()
 	Pools.release.call_deferred(_pool_scene, self)
+
+
+## Stops counting toward the weapon's cap (a mine that has gone off).
+func leave_cap_group() -> void:
+	if _cap_group != &"" and is_in_group(_cap_group):
+		remove_from_group(_cap_group)
+	_cap_group = &""

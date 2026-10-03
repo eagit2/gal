@@ -20,6 +20,8 @@ const FORMATS := {
 	&"scrap_mult": ["Scrap value", "pct"], &"extra_lives": ["Ships", "lives"], &"spread": ["Spread", "plain"],
 	&"shield_reflect": ["Reflect", "plain"], &"shield_combo": ["Shield combo", "plain"], &"blink": ["Blink", "plain"],
 	&"ricochet": ["Ricochet", "plain"], &"wingman": ["Wingman", "plain"],
+	&"bounces": ["Bounces", "plain"], &"shrapnel": ["Shrapnel", "plain"], &"blast_radius": ["Blast radius", "px"],
+	&"max_active": ["Mines out", "plain"], &"shot_size": ["Bubble size", "pct"],
 }
 
 
@@ -36,6 +38,14 @@ static func value(stat: StringName, v: float, weapon: WeaponDef = null) -> Strin
 				return str(roundi(weapon.spread_count + v))
 			&"fire_rate":
 				return "%.1f/s" % (weapon.fire_rate * v)
+			&"bounces":
+				return str(roundi(weapon.bounces + v))
+			&"shrapnel":
+				return str(roundi(weapon.shrapnel + v))
+			&"blast_radius":
+				return "%d" % roundi(weapon.blast_radius + v)
+			&"max_active":
+				return str(weapon.cap(roundi(v)))
 	match kind:
 		"pct":
 			return "%d%%" % roundi(v * 100.0)

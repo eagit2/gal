@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/bubble_blower.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"bubble_blower"
+display_name = "Bubble Blower"
+category = 0
+tier = 3
+text = "Slow bubbles trap an enemy, float it up and pop for big damage. Elites just pop them."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"shot_size",
+"value": 0.15
+}],
+"id": &"size",
+"max": 4,
+"name": "BUBBLE SIZE",
+"text": "+15% bubble size per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"damage",
+"value": 1
+}],
+"id": &"pop",
+"max": 3,
+"name": "POP DAMAGE",
+"text": "+1 damage per level (pops for 4x)"
+}])
+sockets = 3
+links = 1
+part = &"fin_weapon"
+weapon = ExtResource("2")

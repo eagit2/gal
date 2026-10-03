@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/mine_launcher.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"mine_launcher"
+display_name = "Mine Launcher"
+category = 0
+tier = 2
+text = "Drops mines ahead that hold their spot and blow when enemies or their shots touch them."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"blast_radius",
+"value": 15.0
+}],
+"id": &"blast",
+"max": 4,
+"name": "BLAST RADIUS",
+"text": "+15 px blast radius per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"max_active",
+"value": 1
+}],
+"id": &"mines",
+"max": 3,
+"name": "MINES OUT",
+"text": "+1 mine out at once per level"
+}])
+sockets = 2
+links = 1
+part = &"booster_weapon"
+weapon = ExtResource("2")
