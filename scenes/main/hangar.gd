@@ -45,9 +45,9 @@ func _build() -> void:
 	column.offset_bottom = -24
 	column.add_theme_constant_override("separation", 6)
 	add_child(column)
-	_title = HangarUI.label("HANGAR", 34, HangarUI.GOLD, HORIZONTAL_ALIGNMENT_CENTER)
+	_title = HangarUI.label("HANGAR", 24, HangarUI.GOLD, HORIZONTAL_ALIGNMENT_CENTER)
 	column.add_child(_title)
-	_credits = HangarUI.label("", 20, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER)
+	_credits = HangarUI.label("", 16, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER)
 	column.add_child(_credits)
 	_preview = Control.new()
 	_preview.custom_minimum_size.y = 170
@@ -72,7 +72,7 @@ func _build() -> void:
 	_detail = HangarUI.label("", 16)
 	_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_detail.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	_detail.custom_minimum_size = Vector2(0, 66)
+	_detail.custom_minimum_size = Vector2(0, 104)
 	column.add_child(HangarUI.panel(_detail))
 
 

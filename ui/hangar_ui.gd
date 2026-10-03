@@ -1,6 +1,7 @@
 class_name HangarUI
 extends RefCounted
-## Widgets and Dusk Armada colors for the hangar menus. Fonts come from the project theme.
+## Widgets and Dusk Armada colors for the hangar menus. Fonts come from the project theme
+## (Press Start 2P: use sizes in multiples of 8).
 
 const GOLD := Color(0.95, 0.77, 0.43)
 const ROSE := Color(0.85, 0.52, 0.55)
@@ -35,15 +36,20 @@ static func row(left: String, mid := "", right := "", dot := Color.TRANSPARENT, 
 	parts.offset_left = 12
 	parts.offset_right = -12
 	parts.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parts.add_theme_constant_override("separation", 10)
 	button.add_child(parts)
 	if dot.a > 0:
-		parts.add_child(label("●", 16, dot))
-	var name_label := label(left, 17)
+		var swatch := ColorRect.new()
+		swatch.color = dot
+		swatch.custom_minimum_size = Vector2(8, 8)
+		swatch.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		parts.add_child(swatch)
+	var name_label := label(left, 16)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parts.add_child(name_label)
-	parts.add_child(label(mid, 15, GOOD))
+	parts.add_child(label(mid, 16, GOOD))
 	var right_label := label(right, 16, right_color, HORIZONTAL_ALIGNMENT_RIGHT)
-	right_label.custom_minimum_size.x = 84
+	right_label.custom_minimum_size.x = 112
 	parts.add_child(right_label)
 	return button
 

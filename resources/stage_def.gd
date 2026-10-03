@@ -16,3 +16,5 @@ extends Resource
 @export_range(0, 3) var music_intensity: int = 1
 ## Optional goal that pays hangar credits once per run (see MedalTracker).
 @export var medal: MedalDef
+## Boss stage: plays SoundBank.boss_music instead of the style's music.
+@export var boss: bool = false

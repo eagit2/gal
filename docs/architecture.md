@@ -180,7 +180,7 @@ Decided 2026-10-02 (concepts from the Art style concepts thread, https://claude.
 - **AudioManager:** pooled `AudioStreamPlayer`s, per-sound cooldown and pitch variance to avoid machine-gun repetition, priority so explosions beat shots.
 - **Adaptive music:** each track has stems (base, drums, lead); intensity layers fade in with enemy count, boss phase, low lives.
 - **Web caveat:** browsers block audio until first input; the title screen "Press to start" unlocks it.
-- **Placeholder:** jsfxr/sfxr generated SFX, swapped later.
+- **Generated:** all SFX and music are synthesized by `tools/audio/` (original, no licensing). Data: `data/audio/sound_bank.tres` (`SoundBank`, `SfxDef`), `ThemeDef.music` per style. `AudioCues` maps EventBus signals to sounds.
 
 ## 8. Iterations (milestones)
 

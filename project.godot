@@ -27,6 +27,10 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="keep"
 window/handheld/orientation=1
 
+[gui]
+
+theme/custom="res://ui/theme.tres"
+
 [layer_names]
 
 2d_physics/layer_1="player_hurtbox"

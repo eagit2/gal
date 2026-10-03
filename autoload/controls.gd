@@ -8,6 +8,7 @@ const KEYS := {
 	"move_down": [KEY_DOWN, KEY_S],
 	"fire": [KEY_SPACE, KEY_Z, KEY_J],
 	"pause": [KEY_ESCAPE, KEY_P],
+	"mute": [KEY_M],
 	"debug_style": [KEY_F2],
 }
 const PAD_BUTTONS := {
