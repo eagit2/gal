@@ -22,43 +22,53 @@ def build(bars: int) -> str:
 
 
 def title(Track):
-    """Menu: euphoric trance in A minor, chip lead over a gated supersaw."""
-    t = Track(132, 16, ["Am", "F", "C", "G", "Am", "F", "G", "E"])
-    t.drums("trance_kick", FOUR, 0.9)
-    t.drums("open_hat", OFFBEAT_HAT, 0.45, pan=0.25)
-    t.drums("clap", CLAP, 0.4, reverb=(1.4, 0.3))
-    t.drums("snare", build(8), 0.5)
+    """Menu: mid-tempo trance in A minor with a full percussion kit under the chip lead."""
+    t = Track(110, 16, ["Am", "F", "C", "G", "Am", "F", "G", "E"])
+    t.drums("trance_kick", "x...x...x...x.x.x...x...x..x..x.", 1.0)
+    t.drums("clap", CLAP, 0.5, reverb=(1.4, 0.3))
+    t.drums("snare", "....x.......x..." + "....x.......x.oo", 0.45)
+    t.drums("shaker", "xoxoxoxoxoxoxoxo", 0.6, pan=0.35)
+    t.drums("open_hat", OFFBEAT_HAT, 0.4, pan=-0.2)
+    t.drums("conga", "...x..x....x..x.", 0.5, pan=-0.35)
+    t.drums("low_conga", "x.....x...x.....", 0.45, pan=0.3)
+    t.drums("rim", "..x..x....x..x..", 0.35, pan=0.45)
+    t.drums("tom", "." * 112 + "........x.x.xxxx", 0.75)
     t.drums("crash", "x" + "." * 127, 0.5)
     t.bass("roll_bass", 2, ROLL, 0.85, pump=0.5)
-    t.pad("supersaw", 4, 0.55, gate=GATE, pump=0.6, width=0.015, reverb=(1.4, 0.25))
-    t.trill(5, "x-------x-------", 0.25, pan=-0.35, echo=(0.75, 0.3, 0.25))
+    t.pad("supersaw", 4, 0.45, gate=GATE, pump=0.6, width=0.015, reverb=(1.4, 0.25))
+    t.trill(5, "x-------x-------", 0.2, pan=-0.35, echo=(0.75, 0.3, 0.25))
     melody = ("A5 - - E5 - - C6 - - B5 - - A5 - E5 - | F5 - - - - - A5 - C6 - - - - - - - |"
               "G5 - - E5 - - C5 - - E5 - - G5 - C6 - | B5 - - - - - D6 - - - B5 - G5 - - - |"
               "A5 - - E5 - - C6 - - B5 - - A5 - C6 - | D6 - - - C6 - - - A5 - - - F5 - A5 - |"
               "B5 - - G5 - - D6 - - B5 - - G5 - D6 - | E6 - - - - - - - G#5 - - - B5 - D6 - |")
-    t.notes("chip_lead", melody, 0.75, echo=(0.75, 0.35, 0.3), reverb=(1.2, 0.2))
-    t.notes("supersaw", rest(8) + " " + melody, 0.3, transpose_oct=-1, pump=0.4)
+    t.notes("chip_lead", melody, 0.7, echo=(0.75, 0.35, 0.3), reverb=(1.2, 0.2))
+    t.notes("supersaw", rest(8) + " " + melody, 0.28, transpose_oct=-1, pump=0.4)
     return t
 
 
 def dusk_armada(Track):
-    """Main stage theme: driving trance in D minor with an RPG battle chip lead."""
-    t = Track(150, 16, ["Dm", "Bb", "C", "Am", "Dm", "Bb", "Gm", "A"])
-    t.drums("trance_kick", FOUR, 1.0)
-    t.drums("open_hat", OFFBEAT_HAT, 0.5, pan=0.25)
-    t.drums("hat", "x.x.x.x.x.x.x.xx", 0.35, pan=-0.25)
-    t.drums("clap", CLAP, 0.5, reverb=(1.2, 0.25))
-    t.drums("snare", build(8), 0.55)
+    """Main stage theme: D minor trance at a steadier tempo, kick-heavy with layered percussion."""
+    t = Track(128, 16, ["Dm", "Bb", "C", "Am", "Dm", "Bb", "Gm", "A"])
+    t.drums("trance_kick", "x...x...x...x..." + "x...x..xx...x.x.", 1.0)
+    t.drums("clap", CLAP, 0.55, reverb=(1.2, 0.25))
+    t.drums("snare", "....x.......x..." * 3 + "....x.......xoxx", 0.5)
+    t.drums("shaker", "xoxoxoxoxoxoxoxo", 0.55, pan=0.35)
+    t.drums("open_hat", OFFBEAT_HAT, 0.45, pan=-0.25)
+    t.drums("ride", "x.x.x.x.x.x.x.x.", 0.35, pan=0.2)
+    t.drums("conga", "...x..x.x..x..x.", 0.5, pan=-0.4)
+    t.drums("low_conga", "x.....x...x...x.", 0.45, pan=0.4)
+    t.drums("tom", "." * 112 + "........x.x.xxxx", 0.8)
+    t.drums("snare", build(16), 0.5)
     t.drums("crash", "x" + "." * 127, 0.6)
     t.bass("roll_bass", 2, ".rro.rro.rro.rrf", 0.9, pump=0.55)
-    t.pad("supersaw", 4, 0.45, gate=GATE, pump=0.65, width=0.015, reverb=(1.2, 0.2))
-    t.trill(5, "x-------x-------", 0.22, pan=-0.4, echo=(0.75, 0.3, 0.2))
+    t.pad("supersaw", 4, 0.4, gate=GATE, pump=0.65, width=0.015, reverb=(1.2, 0.2))
+    t.trill(5, "x-------x-------", 0.2, pan=-0.4, echo=(0.75, 0.3, 0.2))
     melody = ("D5 - - D5 - - F5 - A5 - - G5 - - F5 - | F5 - - D5 - - Bb4 - D5 - F5 - Bb5 - A5 - |"
               "G5 - - E5 - - C5 - E5 - G5 - C6 - Bb5 - | A5 - - - - - E5 - - - - - C5 - E5 - |"
               "D6 - - A5 - - F5 - D5 - F5 - A5 - D6 - | C6 - - Bb5 - - A5 - F5 - - - D5 - F5 - |"
               "G5 - - Bb5 - - D6 - G6 - - F6 - - D6 - | E6 - - - C#6 - - - A5 - - - E5 - G5 - |")
-    t.notes("chip_lead", melody, 0.8, echo=(0.75, 0.3, 0.25), reverb=(1.0, 0.15))
-    t.notes("saw_lead", rest(8) + " " + melody, 0.4, transpose_oct=-1, echo=(0.75, 0.25, 0.2))
+    t.notes("chip_lead", melody, 0.75, echo=(0.75, 0.3, 0.25), reverb=(1.0, 0.15))
+    t.notes("saw_lead", rest(8) + " " + melody, 0.38, transpose_oct=-1, echo=(0.75, 0.25, 0.2))
     return t
 
 

@@ -207,6 +207,33 @@ def trance_kick(_note: str, _held: float) -> np.ndarray:
     return np.tanh((body + click) * 2.2) * 0.95
 
 
+def shaker(_note: str, _held: float) -> np.ndarray:
+    m = n(0.06)
+    return bandpass(osc("noise", 0, m), 5000, 11000) * env(m, 0.008, 0.03, 0.0, 0.01) * 0.4
+
+
+def rim(_note: str, _held: float) -> np.ndarray:
+    m = n(0.05)
+    x = osc("tri", 1700, m) * 0.6 + bandpass(osc("noise", 0, m), 2000, 6000) * 0.5
+    return x * decay(m, 0.025) * 0.5
+
+
+def conga(_note: str, _held: float) -> np.ndarray:
+    m = n(0.22)
+    return osc("sine", sweep(330, 240, m, 0.4), m) * decay(m, 0.18) * 0.6
+
+
+def low_conga(_note: str, _held: float) -> np.ndarray:
+    m = n(0.26)
+    return osc("sine", sweep(230, 165, m, 0.4), m) * decay(m, 0.22) * 0.65
+
+
+def ride(_note: str, _held: float) -> np.ndarray:
+    m = n(0.4)
+    x = sum(osc("square", f, m, 0.5) for f in (3120, 4370, 5380, 6830)) / 4
+    return highpass(x + osc("noise", 0, m) * 0.3, 5000) * decay(m, 0.35) * 0.22
+
+
 def chip_kick(_note: str, _held: float) -> np.ndarray:
     m = n(0.12)
     return osc("square", sweep(220, 45, m, 0.5), m) * decay(m, 0.12) * 0.6
