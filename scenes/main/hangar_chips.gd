@@ -22,7 +22,7 @@ func fills(def: PartDef) -> Array[Color]:
 	return result
 
 
-## Lists the part's sockets (linked pairs have gold borders and a gold bridge), then the combos
+## Lists the part's sockets (each linked pair shares a color and a bridge), then the combos
 ## its socketed chips make. `back` returns to the part.
 func open(def: PartDef, back: Callable, focus_row := 0) -> void:
 	var state := Hangar.state()
@@ -32,9 +32,9 @@ func open(def: PartDef, back: Callable, focus_row := 0) -> void:
 	for i in list.size():
 		var chip := _catalog.chip(StringName(list[i]))
 		var row := HangarUI.row("SOCKET %d" % (i + 1), "", chip.display_name.to_upper() + " >" if chip else "EMPTY >", chip.color if chip else Color.TRANSPARENT)
-		for pair in pairs:
-			if pair.x == i or pair.y == i:
-				HangarCards.link_line(row, pair.x == i)
+		for k in pairs.size():
+			if pairs[k].x == i or pairs[k].y == i:
+				HangarCards.link_line(row, k, pairs[k].x == i)
 		menu.add(row, chip.text + "." if chip else "Pick a chip for this socket.", pick.bind(def, i, back))
 	menu.add(HangarUI.row("< BACK"), "", back)
 	var active := Loadout.part_combos(_catalog, state, def)

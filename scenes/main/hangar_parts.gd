@@ -9,6 +9,9 @@ var menu: Control  # scenes/main/hangar.gd
 var chips: HangarChips
 var _catalog: HangarCatalog = preload("res://data/hangar/catalog.tres")
 var _open_card: Button
+var _opened_at := 0
+## Milliseconds a card must have been open before a click opens the part (the first click expands it).
+const OPEN_DELAY := 200
 
 
 func _init(owner: Control) -> void:
@@ -35,8 +38,8 @@ func slot(mount: StringName, focus_row := -1) -> void:
 	menu.focus(maxi(focus_row, 0))
 
 
-## A category's owned parts for `mount`. The highlighted one opens in place; selecting it opens
-## the part. Its EQUIPPED / UNEQUIPPED tag (or the E key) equips or removes it on `mount`.
+## A category's owned parts for `mount`. A click expands a part in place; a click on the expanded
+## one opens the part. Its EQUIPPED / UNEQUIPPED tag (or the E key) equips or removes it on `mount`.
 func category(mount: StringName, cat: int, focus_part: PartDef = null) -> void:
 	var state := Hangar.state()
 	var back: Callable = menu.home.bind(_mount_row(mount)) if mount == &"nose" else slot.bind(mount, PartDef.MENU_CATEGORIES.find(cat))
@@ -50,9 +53,8 @@ func category(mount: StringName, cat: int, focus_part: PartDef = null) -> void:
 		var card := HangarCards.drop_card(row, _final_stats(state, mount, def), Loadout.sockets(_catalog, state, def), chips.fills(def), HangarUI.CATEGORY_COLORS[def.category])
 		var toggle := _toggle.bind(mount, cat, def)
 		HangarCards.status_tag(card, "EQUIPPED" if here else "UNEQUIPPED", HangarUI.GOOD if here else HangarUI.DIM, toggle)
-		menu.add(card, describe(def, mount), part.bind(mount, def, category.bind(mount, cat, def)), _fitted(state, mount, def))
+		menu.add(card, describe(def, mount), _press.bind(card, part.bind(mount, def, category.bind(mount, cat, def))), _fitted(state, mount, def))
 		card.focus_entered.connect(_open.bind(card))
-		card.mouse_entered.connect(_open.bind(card))
 		card.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_E:
 				toggle.call())
@@ -96,7 +98,16 @@ func _open(card: Button) -> void:
 	if is_instance_valid(_open_card):
 		HangarCards.set_open(_open_card, false)
 	_open_card = card
+	_opened_at = Time.get_ticks_msec()
 	HangarCards.set_open(card, true)
+
+
+## A click expands a closed card; a click on an open card runs `action` (opens the part).
+func _press(card: Button, action: Callable) -> void:
+	if _open_card != card:
+		_open(card)
+	elif Time.get_ticks_msec() - _opened_at >= OPEN_DELAY:
+		action.call()
 
 
 ## A part: its attributes with an upgrade per level, its link sockets, then fit, buy or back.
