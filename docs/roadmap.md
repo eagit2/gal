@@ -71,6 +71,7 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [ ] Hangar v3 step 2b: rest of the parts catalog
 - [ ] Hangar v3 step 3: ship trees for Talon, Bastion and Seraph, and tree capstones that unlock ships and a 5th slot
 - [x] Title screen: Continue (resumes the saved run at its last stage), New Game with difficulty pick and an overwrite confirm. Hangar button hook in `title.gd`.
+- [x] 3 save slots with autosave (new games start with 5000 scrap; settings shared), slot picker for New Game / Continue / Load, game over menu (Restart level, Hangar, Load, Options, Quit to menu or game).
 - [x] Stage medals (goal per stage) pay meta currency, scaled by difficulty (v1 goals on stages 1, 2 and challenge 1)
 ## M5 Sector 1 complete
 Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
