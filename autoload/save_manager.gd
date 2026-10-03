@@ -20,7 +20,7 @@ static func default_data() -> Dictionary:
 		## Checkpoint of the run in progress (GameState.snapshot), empty when there is none.
 		"run": {},
 		"last_difficulty": "pilot",
-		"settings": {"music_volume": 0.8, "sfx_volume": 0.8, "auto_fire": false},
+		"settings": {"music_volume": 0.8, "sfx_volume": 0.8, "muted": false, "auto_fire": false},
 	}
 
 

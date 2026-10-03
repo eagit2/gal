@@ -1,13 +1,10 @@
 extends Control
 ## Title screen: Continue (resumes the saved run at the start of its last stage), New Game (with a
 ## difficulty pick, and a confirm when it would overwrite a save). Any click or key also unlocks
-## browser audio. Menu items are built in code: add a screen with one `_add_item` line.
+## browser audio (title music comes from SoundBank.scene_music). Menu items are built in code: add a screen with one `_add_item` line.
 
 const GAME_SCENE := "res://scenes/game/game.tscn"
 const DIFFICULTY_DIR := "res://data/difficulty"
-
-## Title music. Left empty until audio lands; set it in title.tscn.
-@export var music: AudioStream
 
 var _difficulties: Array[DifficultyDef] = []
 var _difficulty_index := 0
@@ -21,8 +18,6 @@ var _difficulty_info := Label.new()
 
 
 func _ready() -> void:
-	if music:
-		AudioManager.play_music(music)
 	$HighScore.text = "HIGH SCORE  %d" % SaveManager.data["high_score"]
 	_difficulties = load_difficulties()
 	_difficulty_index = maxi(_find_difficulty(StringName(SaveManager.data["last_difficulty"])), 0)

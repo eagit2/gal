@@ -72,6 +72,10 @@ Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
 - [x] Shield bubble art with absorb flash, shatter on pop and grow-in on recharge (`shield.tscn`, ready for the shield in m2.5)
 - [ ] The Matriarch boss art
 - [ ] Combo style treatments: P1 and P3 palette shaders, N2 and N3 vector looks
+- [x] Audio system: SoundBank data, AudioManager crossfades and voice priority, AudioCues on EventBus, mute key
+- [x] 19 generated SFX (shots, hits, explosions, shield pop/restore, graze, combos, jingles, UI) and 8 music loops (title, stage, boss, 5 combo styles) (`tools/audio/`)
+- [x] Combo-style tracks wired into the M3 ThemeDefs
+- [ ] Adaptive music layers (stems by intensity), classic SFX set for Arcade '81
 ## M7 Content scale
 - [ ] Consider: in-game level editor scene (place waves visually, press play to test)
 ## M8 Release polish
