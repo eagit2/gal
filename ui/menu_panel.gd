@@ -56,11 +56,13 @@ func focus_first() -> void:
 			return
 
 
-## Opens `panel` on top of this one and refocuses here when it closes.
+## Opens `panel` in place of this one's buttons and brings them back when it closes.
 func open(panel: MenuPanel) -> void:
+	box.visible = false
 	add_child(panel)
 	panel.closed.connect(func() -> void:
 		panel.queue_free()
+		box.visible = true
 		focus_first())
 
 
