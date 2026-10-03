@@ -57,3 +57,5 @@ signal player_captured(captor: Node2D)
 signal captive_lost()
 ## The dual fighter's wingman took a hit and is gone.
 signal wingman_lost(at: Vector2)
+## SaveManager switched to (or started fresh in) a save slot; `data` now holds that slot.
+signal save_slot_loaded(slot: int)

@@ -14,9 +14,8 @@ var _rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
-	SaveManager.data["hangar"] = Loadout.normalize(SaveManager.data.get("hangar"), CATALOG)
-	if (state()["stock"] as Array).is_empty():
-		HangarStock.roll(CATALOG, state(), _rng)
+	_load_state()
+	EventBus.save_slot_loaded.connect(func(_slot: int) -> void: _load_state())
 	EventBus.run_started.connect(_on_run_started)
 	EventBus.stage_started.connect(_on_stage_started)
 	EventBus.stage_cleared.connect(_on_stage_cleared)
@@ -26,7 +25,15 @@ func _ready() -> void:
 	EventBus.bullet_grazed.connect(func(_p: Vector2) -> void: _tracker.grazes += 1)
 	EventBus.player_died.connect(func(_l: int) -> void: _tracker.ships_lost += 1)
 	EventBus.enemy_escaped.connect(func(_e: Node2D) -> void: _tracker.escapes += 1)
+
+
+## Normalizes the active save slot's hangar state and applies it.
+func _load_state() -> void:
+	SaveManager.data["hangar"] = Loadout.normalize(SaveManager.data.get("hangar"), CATALOG)
+	if (state()["stock"] as Array).is_empty():
+		HangarStock.roll(CATALOG, state(), _rng)
 	apply()
+	EventBus.credits_changed.emit(credits())
 
 
 func state() -> Dictionary:

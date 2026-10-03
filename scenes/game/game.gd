@@ -1,6 +1,6 @@
 extends Node2D
 ## Game loop: plays the sector's stages in order (looping with rising aggression) with an upgrade
-## card pick between stages, and handles score multipliers, lives, challenge bonuses, game over and restart. Root runs while paused (to read the pause key); Entities pause.
+## card pick between stages, and handles score multipliers, lives, challenge bonuses and the game over menu. Root runs while paused (to read the pause key); Entities pause.
 
 const PLAYER_START := Vector2(270, 860)
 const RESPAWN_DELAY := 1.2
@@ -39,7 +39,7 @@ func _ready() -> void:
 	GameState.resume_requested = false
 	_load_difficulty(_dev.difficulty if _dev.difficulty != &"" else StringName(run.get("difficulty", GameState.difficulty_id)))
 	if run.is_empty():
-		GameState.start_run(difficulty.id, difficulty.lives + int(GameState.stats[&"extra_lives"]))
+		GameState.start_run(difficulty.id, _starting_lives())
 	else:
 		GameState.restore(run)
 	EventBus.enemy_killed.connect(_on_enemy_killed)
@@ -77,21 +77,7 @@ func _load_difficulty(id: StringName) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if game_over:
-		var tap: bool = event is InputEventScreenTouch and event.pressed
-		if tap and (event as InputEventScreenTouch).position.y > get_viewport_rect().size.y * 0.66:
-			StyleDirector.set_stage_style(&"")
-			SceneRouter.go_to("res://scenes/main/hangar.tscn")
-		elif event.is_action_pressed("fire") or tap:
-			StyleDirector.set_stage_style(&"")
-			get_tree().reload_current_scene()
-		elif event.is_action_pressed("pause"):
-			StyleDirector.set_stage_style(&"")
-			SceneRouter.go_to("res://scenes/main/title.tscn")
-		elif event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_H:
-			StyleDirector.set_stage_style(&"")
-			SceneRouter.go_to("res://scenes/main/hangar.tscn")
-	elif event.is_action_pressed("pause"):
+	if not game_over and event.is_action_pressed("pause"):
 		get_tree().paused = not get_tree().paused
 		_hud.show_message("PAUSED" if get_tree().paused else "")
 
@@ -179,9 +165,22 @@ func _end_run() -> void:
 	_dives.active = false
 	_combos.stop()
 	EventBus.run_ended.emit(false)
-	if not _dev.is_set():
-		SaveManager.data["run"] = {}
+	# The checkpoint stays (with a full set of ships) so Restart level and Continue replay this stage.
+	if not _dev.is_set() and SaveManager.has_run():
+		SaveManager.data["run"]["lives"] = _starting_lives()
 	if GameState.score > SaveManager.data["high_score"]:
 		SaveManager.data["high_score"] = GameState.score
 	SaveManager.save()
-	_hud.show_message("GAME OVER\n\nFIRE  RETRY\nH  HANGAR\n\n(TAP LOW FOR HANGAR)")
+	var menu := GameOverMenu.new()
+	menu.restart_requested.connect(_restart_level)
+	_hud.add_child(menu)
+
+
+func _restart_level() -> void:
+	GameState.resume_requested = not _dev.is_set()
+	StyleDirector.set_stage_style(&"")
+	get_tree().reload_current_scene()
+
+
+func _starting_lives() -> int:
+	return difficulty.lives + int(GameState.stats[&"extra_lives"])

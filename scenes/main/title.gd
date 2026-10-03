@@ -1,6 +1,6 @@
 extends Control
-## Title screen: Continue (resumes the saved run at the start of its last stage), New Game (with a
-## difficulty pick, and a confirm when it would overwrite a save). Any click or key also unlocks
+## Title screen: Continue (pick a save slot and resume it), New Game (difficulty pick, then a save
+## slot; overwriting a used slot asks to confirm), Hangar and Options. Any click or key also unlocks
 ## browser audio (title music comes from SoundBank.scene_music). Menu items are built in code: add a screen with one `_add_item` line.
 
 const GAME_SCENE := "res://scenes/game/game.tscn"
@@ -14,7 +14,6 @@ var _difficulty_button: Button
 var _difficulty_info := Label.new()
 
 @onready var _menu: VBoxContainer = $Menu
-@onready var _confirm: PanelContainer = $Confirm
 
 
 func _ready() -> void:
@@ -29,10 +28,8 @@ func _ready() -> void:
 	_difficulty_info.add_theme_font_size_override(&"font_size", 16)
 	_menu.add_child(_difficulty_info)
 	_add_item("HANGAR   %d SCRAP" % Hangar.credits(), SceneRouter.go_to.bind("res://scenes/main/hangar.tscn"))
+	_add_item("OPTIONS", func() -> void: _open(OptionsPanel.new()))
 	_refresh()
-	$Confirm/Box/Buttons/Yes.pressed.connect(_start_new)
-	$Confirm/Box/Buttons/No.pressed.connect(_close_confirm)
-	_confirm.visible = false
 	(_new_game if _continue.disabled else _continue).grab_focus()
 
 
@@ -47,12 +44,6 @@ static func load_difficulties() -> Array[DifficultyDef]:
 	return list
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if _confirm.visible and event.is_action_pressed("ui_cancel"):
-		get_viewport().set_input_as_handled()
-		_close_confirm()
-
-
 func _add_item(text: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
@@ -63,13 +54,8 @@ func _add_item(text: String, action: Callable) -> Button:
 
 
 func _refresh() -> void:
-	var run: Dictionary = SaveManager.data["run"]
-	_continue.disabled = run.is_empty()
-	_continue.text = "CONTINUE"
-	if not run.is_empty():
-		var i := _find_difficulty(StringName(run.get("difficulty", "")))
-		var name := _difficulties[i].display_name.to_upper() if i >= 0 else ""
-		_continue.text = "CONTINUE  STAGE %d %s" % [int(run.get("stage", 0)) + 1, name]
+	var used := range(SaveManager.SLOT_COUNT).filter(SaveManager.slot_exists)
+	_continue.disabled = used.is_empty()
 	var def := _difficulties[_difficulty_index]
 	_difficulty_button.text = "<   %s   >" % def.display_name.to_upper()
 	_difficulty_info.text = "%d SHIP%s   SCORE x%s" % [def.lives, "" if def.lives == 1 else "S", str(def.score_multiplier)]
@@ -95,29 +81,30 @@ func _on_difficulty_input(event: InputEvent) -> void:
 
 
 func _on_continue() -> void:
-	GameState.resume_requested = true
-	SceneRouter.go_to(GAME_SCENE)
+	var picker := SlotPicker.new()
+	picker.picked.connect(SlotPicker.play_slot)
+	_open(picker)
 
 
 func _on_new_game() -> void:
-	if SaveManager.has_run():
-		_menu.visible = false
-		_confirm.visible = true
-		$Confirm/Box/Buttons/No.grab_focus()
-	else:
-		_start_new()
+	var picker := SlotPicker.new(true)
+	picker.picked.connect(_start_new)
+	_open(picker)
 
 
-func _close_confirm() -> void:
-	_confirm.visible = false
-	_menu.visible = true
-	_new_game.grab_focus()
+func _open(panel: MenuPanel) -> void:
+	_menu.visible = false
+	add_child(panel)
+	panel.closed.connect(func() -> void:
+		panel.queue_free()
+		_menu.visible = true
+		_refresh()
+		(_new_game if _continue.disabled else _continue).grab_focus())
 
 
-func _start_new() -> void:
+func _start_new(slot: int) -> void:
 	var def := _difficulties[_difficulty_index]
-	SaveManager.data["last_difficulty"] = String(def.id)
-	SaveManager.clear_run()
+	SaveManager.new_game(slot, def.id)
 	GameState.resume_requested = false
 	GameState.difficulty_id = def.id
 	SceneRouter.go_to(GAME_SCENE)
