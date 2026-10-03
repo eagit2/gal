@@ -1,0 +1,12 @@
+id,visual,scale,tint,brain,hp,speed,score,dive_score,bullet_speed,scrap_chance,scrap,can_capture,traits
+bee,bee,1.0,1.0 1.0 1.0,swarmer,1,280.0,50,100,300.0,0.3,1,false,
+blinker,spinner,1.0,1.0 1.0 1.0,swarmer,1,270.0,80,160,300.0,0.35,1,false,blink
+dasher,lancer,1.0,1.0 1.0 1.0,strafer,2,270.0,100,200,300.0,0.4,2,false,dash
+fragment,fragment,1.0,1.0 1.0 1.0,puppet,1,270.0,30,60,300.0,0.1,1,false,
+mender,mender,1.0,1.0 1.0 1.0,strafer,1,270.0,120,240,300.0,0.5,2,false,mend
+mine_layer,mine_layer,1.0,1.0 1.0 1.0,swarmer,2,270.0,100,200,300.0,0.4,2,false,mine
+moth,moth,1.0,1.0 1.0 1.0,strafer,1,270.0,80,160,300.0,0.4,2,false,
+plated,plated,1.0,1.0 1.0 1.0,strafer,1,270.0,90,180,300.0,0.4,2,false,plate
+rock_dropper,fusewing,1.0,1.0 1.0 1.0,swarmer,2,270.0,100,200,300.0,0.45,2,false,rock_drop
+splitter,splitter,1.0,1.0 1.0 1.0,swarmer,2,270.0,100,200,300.0,0.4,2,false,split
+warden,warden,1.0,1.0 1.0 1.0,hunter,2,230.0,150,400,300.0,1.0,5,true,

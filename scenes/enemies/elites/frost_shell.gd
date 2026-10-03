@@ -14,50 +14,50 @@ extends EliteTrait
 @export var ring_interval := 4.5
 @export var ring_shards := 12
 @export var ring_speed := 110.0
-@export var shell_visual: PackedScene
+@export var shell_visual: PackedScene = preload("res://assets/art/dusk_armada/elites/ice_shell.tscn")
 
 
 func begin(elite: Elite) -> void:
-	elite.state["layers"] = layers
-	elite.state["ice"] = layer_hp
-	elite.state["since_hit"] = 0.0
-	elite.state["ring"] = ring_interval
+	state(elite)["layers"] = layers
+	state(elite)["ice"] = layer_hp
+	state(elite)["since_hit"] = 0.0
+	state(elite)["ring"] = ring_interval
 	var visual: Node2D = shell_visual.instantiate()
 	elite.add_child(visual)
-	elite.state["visual"] = visual
+	state(elite)["visual"] = visual
 	_show(elite)
 
 
 func tick(elite: Elite, delta: float) -> void:
-	elite.state["since_hit"] += delta
-	if elite.state["layers"] < layers and elite.state["since_hit"] >= regrow_delay:
-		elite.state["layers"] += 1
-		elite.state["ice"] = layer_hp
-		elite.state["since_hit"] = regrow_delay - regrow_interval
+	state(elite)["since_hit"] += delta
+	if state(elite)["layers"] < layers and state(elite)["since_hit"] >= regrow_delay:
+		state(elite)["layers"] += 1
+		state(elite)["ice"] = layer_hp
+		state(elite)["since_hit"] = regrow_delay - regrow_interval
 		_show(elite)
-	if elite.state["layers"] > 0 and elite.entered:
-		elite.state["ring"] -= delta
-		if elite.state["ring"] <= 0.0:
-			elite.state["ring"] = ring_interval
+	if state(elite)["layers"] > 0 and elite.entered:
+		state(elite)["ring"] -= delta
+		if state(elite)["ring"] <= 0.0:
+			state(elite)["ring"] = ring_interval
 			var turn := randf() * TAU
 			for i in ring_shards:
 				elite.fire(Vector2.DOWN.rotated(turn + TAU * i / ring_shards), ring_speed)
 
 
 func absorb(elite: Elite, amount: int, hitbox: Hitbox) -> int:
-	elite.state["since_hit"] = 0.0
-	if elite.state["layers"] <= 0:
+	state(elite)["since_hit"] = 0.0
+	if state(elite)["layers"] <= 0:
 		return amount
 	var pierce: Variant = hitbox.get("pierce")
 	var heavy: bool = amount >= 2 or (pierce is int and pierce > 0)
-	elite.state["ice"] -= amount * (heavy_mult if heavy else 1)
-	while elite.state["ice"] <= 0 and elite.state["layers"] > 0:
-		elite.state["layers"] -= 1
-		elite.state["ice"] += layer_hp
+	state(elite)["ice"] -= amount * (heavy_mult if heavy else 1)
+	while state(elite)["ice"] <= 0 and state(elite)["layers"] > 0:
+		state(elite)["layers"] -= 1
+		state(elite)["ice"] += layer_hp
 		EventBus.elite_trait_broken.emit(elite.global_position)
 	_show(elite)
 	return 0
 
 
 func _show(elite: Elite) -> void:
-	(elite.state["visual"] as Node).call("set_layers", elite.state["layers"], layers)
+	(state(elite)["visual"] as Node).call("set_layers", state(elite)["layers"], layers)

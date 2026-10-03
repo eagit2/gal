@@ -38,14 +38,14 @@ func test_every_enemy_has_a_visual() -> void:
 func test_new_enemy_types_have_traits() -> void:
 	for id in ["blinker", "dasher", "rock_dropper", "splitter", "plated", "mender", "mine_layer"]:
 		var def: EnemyDef = load("res://data/enemies/%s.tres" % id)
-		expect_true(def.trait_logic != null, id)
+		expect_true(not def.all_traits().is_empty(), id)
 
 
 func test_elites_load_with_a_trait_and_visual() -> void:
 	for file in DirAccess.get_files_at("res://data/elites"):
 		if file.ends_with(".tres"):
 			var def: EliteDef = load("res://data/elites/" + file)
-			expect_true(def.trait_logic != null and def.visual_scene != null and not def.hint.is_empty(), file)
+			expect_true(not def.traits_for_phase(0).is_empty() and def.visual_scene != null and not def.hint.is_empty(), file)
 
 
 func test_dev_elite_joins_the_queue_early() -> void:

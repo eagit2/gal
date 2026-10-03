@@ -1,0 +1,12 @@
+id,name,hint,visual,scale,tint,hp,score,scrap,speed,fire_interval,fan_shots,bullet_speed,traits
+frost_shell,Frost Shell,Ice soaks hits and regrows. Keep firing!,moth,1.9,0.75 0.95 1.2,36,2500,24,80.0,1.9,3,260.0,frost_shell
+gravity_well,Gravity Well,Pulls you in. Its core opens after each pulse,moth,2.1,1.05 0.8 1.3,36,2800,26,55.0,2.6,3,260.0,gravity
+hive_carrier,Hive Carrier,Its pod hatches swarms. Shoot the pod down,warden,1.8,1.2 1.05 0.7,40,3000,28,60.0,2.3,3,260.0,hive_tow
+meteor_caller,Meteor Caller,Stay out of the marked lanes. Meteors crush enemies too,warden,1.8,1.3 0.75 0.6,38,2800,26,65.0,2.4,3,260.0,meteor_call
+mirror_knight,Mirror Knight,Its mirror bounces shots back. Fire while it's down,shieldbearer,1.8,0.95 1.0 1.2,40,2800,26,70.0,2.0,3,260.0,mirror
+phase_stalker,Phase Stalker,Shots pass through it while faded. Hit it when solid,moth,1.9,0.8 1.1 1.25,34,2800,24,90.0,1.6,5,260.0,phase
+puppeteer,Puppeteer,Hurls your foes at you. Kill it to cut the strings,shieldbearer,1.8,1.25 0.7 0.75,40,3000,26,70.0,2.2,3,260.0,puppeteer
+rock_hauler,Rock Hauler,"Cut the tether from the side, or grind the rock down",warden,1.8,1.15 0.9 0.75,40,3000,30,60.0,2.1,3,260.0,rock_tow
+shield_warden,Shield Warden,Shields its escorts. Take it out first,warden,1.8,0.9 0.8 1.25,45,2500,24,75.0,1.7,5,260.0,shield_link
+sweeper,Sweeper,"Watch the aiming line, then get behind the sweep",fusewing,1.9,1.25 0.8 0.8,40,2800,26,60.0,2.4,3,260.0,sweep
+twin_sentinels,Twin Sentinels,Each rebuilds the other. Kill both within 3 seconds,lancer,1.7,0.75 1.1 1.25,24,1800,14,80.0,2.2,3,260.0,twin

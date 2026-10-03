@@ -4,7 +4,7 @@ extends EliteTrait
 ## below it. The beam costs a life on contact. Counter: watch the aiming line and get behind the
 ## sweep (it only goes one way), or freeze it.
 
-@export var beam_scene: PackedScene
+@export var beam_scene: PackedScene = preload("res://scenes/enemies/elites/sweep_beam.tscn")
 @export var interval := 6.5
 @export var aim_time := 1.1
 @export var sweep_time := 1.6
@@ -13,25 +13,25 @@ extends EliteTrait
 
 
 func begin(elite: Elite) -> void:
-	elite.state["t"] = 0.0
-	elite.state["phase"] = 0
+	state(elite)["t"] = 0.0
+	state(elite)["phase"] = 0
 	var beam: Node2D = beam_scene.instantiate()
 	elite.add_child(beam)
-	elite.state["beam"] = beam
+	state(elite)["beam"] = beam
 
 
 func tick(elite: Elite, delta: float) -> void:
 	if not elite.entered:
 		return
-	var t: float = elite.state["t"] + delta
-	var beam: Node2D = elite.state["beam"]
-	var side: float = elite.state.get("side", 1.0)
-	match elite.state["phase"]:
+	var t: float = state(elite)["t"] + delta
+	var beam: Node2D = state(elite)["beam"]
+	var side: float = state(elite).get("side", 1.0)
+	match state(elite)["phase"]:
 		0:
 			if t >= interval:
 				# Start on the player's side and sweep away across them.
 				side = 1.0 if is_instance_valid(elite.target) and elite.target.global_position.x > elite.global_position.x else -1.0
-				elite.state["side"] = side
+				state(elite)["side"] = side
 				_next(elite, 1)
 				t = 0.0
 		1:
@@ -49,8 +49,12 @@ func tick(elite: Elite, delta: float) -> void:
 				elite.can_fire = true
 				_next(elite, 0)
 				t = 0.0
-	elite.state["t"] = t
+	state(elite)["t"] = t
+
+
+func end(elite: Elite) -> void:
+	elite.can_fire = true
 
 
 func _next(elite: Elite, phase: int) -> void:
-	elite.state["phase"] = phase
+	state(elite)["phase"] = phase

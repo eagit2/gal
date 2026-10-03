@@ -10,10 +10,10 @@ extends EnemyTrait
 
 func tick(enemy: Enemy, delta: float) -> void:
 	if enemy.state != Enemy.State.DIVING:
-		enemy.trait_state["t"] = 0.0
+		state(enemy)["t"] = 0.0
 		enemy.modulate.a = 1.0
 		return
-	var t: float = enemy.trait_state.get("t", 0.0) + delta
+	var t: float = state(enemy).get("t", 0.0) + delta
 	if t >= interval:
 		var side := 1.0 if enemy.position.x < 270.0 else -1.0
 		if randf() < 0.35:
@@ -23,4 +23,4 @@ func tick(enemy: Enemy, delta: float) -> void:
 		t = 0.0
 	elif t >= interval - telegraph:
 		enemy.modulate.a = 0.25 + 0.75 * absf(sin(t * 30.0))
-	enemy.trait_state["t"] = t
+	state(enemy)["t"] = t

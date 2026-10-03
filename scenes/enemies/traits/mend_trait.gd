@@ -7,7 +7,7 @@ extends EnemyTrait
 @export var interval := 2.0
 @export var amount := 1
 @export var elite_amount := 3
-@export var beam_visual: PackedScene
+@export var beam_visual: PackedScene = preload("res://assets/art/dusk_armada/elites/mend_beams.tscn")
 
 const BEAM_TIME := 0.5
 
@@ -15,19 +15,19 @@ const BEAM_TIME := 0.5
 func begin(enemy: Enemy) -> void:
 	var beams: Node2D = beam_visual.instantiate()
 	enemy.add_child(beams)
-	enemy.trait_state["beams"] = beams
-	enemy.trait_state["t"] = randf() * interval
+	state(enemy)["beams"] = beams
+	state(enemy)["t"] = randf() * interval
 
 
 func tick(enemy: Enemy, delta: float) -> void:
-	var t: float = enemy.trait_state["t"] + delta
-	var beams: Node2D = enemy.trait_state["beams"]
+	var t: float = state(enemy)["t"] + delta
+	var beams: Node2D = state(enemy)["beams"]
 	if t >= BEAM_TIME and t - delta < BEAM_TIME:
 		beams.call("set_targets", [] as Array[Vector2])
 	if t >= interval:
 		t = 0.0
 		beams.call("set_targets", _mend(enemy))
-	enemy.trait_state["t"] = t
+	state(enemy)["t"] = t
 
 
 func _mend(enemy: Enemy) -> Array[Vector2]:

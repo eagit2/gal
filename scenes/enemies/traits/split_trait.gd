@@ -3,7 +3,7 @@ extends EnemyTrait
 ## Bursts into `count` fast fragments when destroyed. Counter: piercing shots, or kill it high up
 ## so the fragments have farther to fly.
 
-@export var fragment: EnemyDef
+@export var fragment: EnemyDef = preload("res://data/enemies/fragment.tres")
 @export var count := 2
 
 

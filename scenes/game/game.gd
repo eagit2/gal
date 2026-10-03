@@ -49,8 +49,10 @@ func _ready() -> void:
 	_runner.formation = _formation
 	_runner.target = _player
 	_runner.entities = _entities
-	if _dev.elite != &"" and ResourceLoader.exists("res://data/elites/%s.tres" % _dev.elite):
-		_runner.extra_elite = load("res://data/elites/%s.tres" % _dev.elite)
+	if _dev.elite != &"":
+		_runner.extra_elite = Roster.elite(_dev.elite)
+	if _dev.spawn != &"":
+		_runner.only_enemy = Roster.enemy(_dev.spawn)
 	_runner.finished.connect(_on_stage_finished)
 	_dives.difficulty = difficulty
 	_dives.target = _player

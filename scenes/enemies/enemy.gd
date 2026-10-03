@@ -41,7 +41,7 @@ var quirk := randf()
 var aim_facing := false
 var leader: Enemy
 var escort_offset := Vector2.ZERO
-## Per-enemy state for the EnemyDef's trait (EnemyTrait).
+## Per-enemy state for the EnemyDef's traits, keyed by trait (EnemyTrait.state).
 var trait_state := {}
 ## Stage HP multiplier, set by the StageRunner before it joins the tree.
 var hp_scale := 1.0
@@ -68,14 +68,16 @@ func _ready() -> void:
 	add_to_group(&"enemies")
 	_visual = def.visual_scene.instantiate()
 	_visual.name = "Visual"
+	_visual.scale *= def.visual_scale
+	_visual.modulate *= def.tint
 	add_child(_visual)
 	_tint = _visual.modulate
 	_health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp * hp_scale)))
 	_health.died.connect(_on_died)
 	# Ramming (or hitting the player's shield) destroys the enemy.
 	$ContactHitbox.hit.connect(func(_h: Hurtbox) -> void: _health.take_damage(_health.hp))
-	if def.trait_logic:
-		def.trait_logic.begin(self)
+	for t in def.all_traits():
+		t.begin(self)
 
 
 func _physics_process(delta: float) -> void:
@@ -92,8 +94,8 @@ func _physics_process(delta: float) -> void:
 		State.IN_FORMATION:
 			position = formation.slot_position(slot)
 			rotation = lerp_angle(rotation, 0.0, minf(1.0, TURN_RATE * delta))
-	if def.trait_logic:
-		def.trait_logic.tick(self, delta)
+	for t in def.all_traits():
+		t.tick(self, delta)
 
 
 # --- Attacks ---------------------------------------------------------------------------------

@@ -28,6 +28,9 @@ var _dir := 1.0
 var _t := randf() * TAU
 var _fire := 1.5
 var _visual: Node2D
+## Traits running now (the def's own plus the current boss phase's).
+var _traits: Array[EliteTrait] = []
+var _phase := 0
 
 @onready var health: Health = $Health
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -50,9 +53,13 @@ func _ready() -> void:
 	add_child(_visual)
 	health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp * hp_scale)))
 	health.died.connect(_on_died)
-	hurtbox.hurt.connect(func(hitbox: Hitbox) -> void: health.take_damage(def.trait_logic.absorb(self, hitbox.damage, hitbox)))
+	hurtbox.hurt.connect(_on_hurt)
+	# Deferred: hits land inside physics callbacks, where phase traits can't add areas.
+	health.damaged.connect(func(_amount: int) -> void: _check_phase.call_deferred())
 	$ContactHitbox.hit.connect(func(_h: Hurtbox) -> void: health.take_damage(RAM_DAMAGE))
-	def.trait_logic.begin(self)
+	_traits = def.traits_for_phase(0)
+	for t in _traits:
+		t.begin(self)
 	EventBus.elite_spawned.emit(def)
 
 
@@ -74,7 +81,8 @@ func _physics_process(delta: float) -> void:
 		if _fire <= 0.0 and can_fire:
 			_fire = def.fire_interval * fire_scale
 			fire_fan()
-	def.trait_logic.tick(self, delta)
+	for t in _traits:
+		t.tick(self, delta)
 
 
 ## A fan of `def.fan_shots` aimed at the player.
@@ -92,6 +100,31 @@ func fire(direction: Vector2, speed: float) -> void:
 	bullet.launch(entities, global_position + direction * 26.0, direction * speed * difficulty.enemy_bullet_speed, 1, ENEMY_BULLET)
 
 
+func _on_hurt(hitbox: Hitbox) -> void:
+	var amount := hitbox.damage
+	for t in _traits:
+		amount = t.absorb(self, amount, hitbox)
+	health.take_damage(amount)
+
+
+## Boss phases: swap the phase traits once hp drops past the next phase's threshold.
+func _check_phase() -> void:
+	var next := def.phase_at(float(health.hp) / health.max_hp)
+	if next == _phase or health.hp <= 0:
+		return
+	var keep := def.traits_for_phase(-1)
+	for t in _traits:
+		if t not in keep:
+			t.end(self)
+			t.clear(self)
+	_phase = next
+	_traits = def.traits_for_phase(next)
+	for t in _traits:
+		if t not in keep:
+			t.begin(self)
+	EventBus.elite_trait_broken.emit(global_position)
+
+
 ## Damage from outside a hitbox (kill blasts, pilot powers).
 func damage(amount: int) -> void:
 	health.take_damage(amount)
@@ -99,7 +132,8 @@ func damage(amount: int) -> void:
 
 func _on_died() -> void:
 	remove_from_group(&"elites")
-	def.trait_logic.end(self)
+	for t in _traits:
+		t.end(self)
 	EventBus.enemy_killed.emit(self, global_position, def.score)
 	EventBus.elite_killed.emit(def, global_position)
 	queue_free()

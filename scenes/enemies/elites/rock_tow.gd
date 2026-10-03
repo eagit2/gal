@@ -5,7 +5,7 @@ extends EliteTrait
 ## Counter: shoot the thin tether from an angle to drop the rock (the elite then fires faster),
 ## or grind the rock down and dodge the chunks.
 
-@export var rock_scene: PackedScene
+@export var rock_scene: PackedScene = preload("res://scenes/enemies/elites/towed_rock.tscn")
 @export var rock_hp := 240
 @export var chunks := 6
 @export var tether_length := 150.0
@@ -17,16 +17,16 @@ func begin(elite: Elite) -> void:
 	var rock: Node2D = rock_scene.instantiate()
 	rock.call("setup", elite, maxi(chunks, roundi(rock_hp * elite.difficulty.enemy_hp)), chunks, tether_length)
 	elite.entities.add_child.call_deferred(rock)
-	elite.state["rock"] = rock
+	state(elite)["rock"] = rock
 
 
 func tick(elite: Elite, _delta: float) -> void:
-	var rock: Variant = elite.state.get("rock")
+	var rock: Variant = state(elite).get("rock")
 	if not is_instance_valid(rock) or not rock.get("tethered"):
 		elite.fire_scale = enraged_fire
 
 
 func end(elite: Elite) -> void:
-	var rock: Variant = elite.state.get("rock")
+	var rock: Variant = state(elite).get("rock")
 	if is_instance_valid(rock):
 		rock.call("cut")
