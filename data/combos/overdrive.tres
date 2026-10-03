@@ -5,11 +5,11 @@
 [resource]
 script = ExtResource("1")
 id = &"overdrive"
-display_name = "OVERDRIVE"
+display_name = "OVERKILL"
 style = &""
-threshold = 12.0
+threshold = 30.0
 decay_delay = 2.0
-decay_rate = 0.1
+decay_rate = 0.0
 duration = 8.0
 effects = Array[Dictionary]([{
 "op": &"mul",

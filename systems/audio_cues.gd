@@ -20,6 +20,7 @@ const OPTIONAL_CUES := {
 	&"elite_trait_broken": &"shield_pop",
 	&"player_captured": &"player_hit",
 	&"wingman_lost": &"explode_small",
+	&"companion_lost": &"explode_small",
 	&"power_used": &"combo_start",
 	&"medal_earned": &"pickup",
 }

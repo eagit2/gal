@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/twin_needle.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"twin_needle"
+display_name = "Twin Needle"
+category = 0
+tier = 3
+text = "Two parallel lines of rapid thin darts."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"fire_rate",
+"value": 0.1
+}],
+"final": [{
+"op": &"add",
+"stat": &"fire_rate",
+"value": 1.0
+}],
+"id": &"fire_rate",
+"max": 5,
+"name": "FIRE RATE",
+"text": "+10% fire rate per level; the last level is a big jump"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"pierce",
+"value": 1
+}],
+"id": &"pierce",
+"max": 3,
+"name": "PIERCE",
+"text": "Pierces 1 more enemy per level"
+}])
+sockets = 3
+links = 1
+part = &"coil_weapon"
+weapon = ExtResource("2")

@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/rail_spike.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"rail_spike"
+display_name = "Rail Spike"
+category = 0
+tier = 3
+text = "A slow, heavy rail a tenth of the screen wide that pierces everything."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"damage",
+"value": 2
+}],
+"id": &"power",
+"max": 3,
+"name": "POWER",
+"text": "+2 damage per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"fire_rate",
+"value": 0.1
+}],
+"final": [{
+"op": &"add",
+"stat": &"fire_rate",
+"value": 1.0
+}],
+"id": &"charge",
+"max": 5,
+"name": "CHARGE SPEED",
+"text": "+10% charge speed per level; the last level is a big jump"
+}])
+sockets = 3
+links = 1
+part = &"antenna_weapon"
+weapon = ExtResource("2")

@@ -4,7 +4,7 @@ extends CanvasLayer
 ## and center messages (pause, game over).
 
 const METER_SIZE := Vector2(74, 7)
-const METER_LABELS := {&"overdrive": "OD", &"lock_on": "LK", &"chain_reaction": "CH", &"graze": "GZ"}
+const METER_LABELS := {&"overdrive": "OK", &"lock_on": "CL", &"chain_reaction": "CR", &"graze": "GZ"}
 
 @onready var _score: Label = $Score
 @onready var _lives: Label = $Lives

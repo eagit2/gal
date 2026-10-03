@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="HangarCatalog" load_steps=50 format=3]
+[gd_resource type="Resource" script_class="HangarCatalog" load_steps=57 format=3]
 
 [ext_resource type="Script" path="res://resources/hangar_catalog.gd" id="1"]
 [ext_resource type="Script" path="res://resources/ship_def.gd" id="sdef"]
@@ -29,6 +29,13 @@
 [ext_resource type="Resource" path="res://data/hangar/parts/phase_engine.tres" id="pt_phase_engine"]
 [ext_resource type="Resource" path="res://data/hangar/parts/prism_shield.tres" id="pt_prism_shield"]
 [ext_resource type="Resource" path="res://data/hangar/parts/arc_lance.tres" id="pt_arc_lance"]
+[ext_resource type="Resource" path="res://data/hangar/parts/flak_cannon.tres" id="pt_flak_cannon"]
+[ext_resource type="Resource" path="res://data/hangar/parts/rail_spike.tres" id="pt_rail_spike"]
+[ext_resource type="Resource" path="res://data/hangar/parts/scrap_cannon.tres" id="pt_scrap_cannon"]
+[ext_resource type="Resource" path="res://data/hangar/parts/twin_needle.tres" id="pt_twin_needle"]
+[ext_resource type="Resource" path="res://data/hangar/parts/mine_launcher.tres" id="pt_mine_launcher"]
+[ext_resource type="Resource" path="res://data/hangar/parts/rubber_duck_gun.tres" id="pt_rubber_duck_gun"]
+[ext_resource type="Resource" path="res://data/hangar/parts/bubble_blower.tres" id="pt_bubble_blower"]
 [ext_resource type="Resource" path="res://data/hangar/chips/power_chip.tres" id="c_power_chip"]
 [ext_resource type="Resource" path="res://data/hangar/chips/rapid_chip.tres" id="c_rapid_chip"]
 [ext_resource type="Resource" path="res://data/hangar/chips/split_chip.tres" id="c_split_chip"]
@@ -53,7 +60,7 @@
 [resource]
 script = ExtResource("1")
 ships = Array[ExtResource("sdef")]([ExtResource("s_kestrel"), ExtResource("s_talon"), ExtResource("s_bastion")])
-parts = Array[ExtResource("ptdef")]([ExtResource("pt_pulse_laser"), ExtResource("pt_twin_cannon"), ExtResource("pt_needle_gun"), ExtResource("pt_missile_pod"), ExtResource("pt_arc_lance"), ExtResource("pt_bubble"), ExtResource("pt_regen_field"), ExtResource("pt_ablative_armor"), ExtResource("pt_prism_shield"), ExtResource("pt_cryo_pulse"), ExtResource("pt_ion_thruster"), ExtResource("pt_vector_jet"), ExtResource("pt_phase_engine"), ExtResource("pt_scrap_magnet"), ExtResource("pt_scrap_compactor"), ExtResource("pt_drone_bay"), ExtResource("pt_combo_amp"), ExtResource("pt_spare_hull")])
+parts = Array[ExtResource("ptdef")]([ExtResource("pt_pulse_laser"), ExtResource("pt_twin_cannon"), ExtResource("pt_needle_gun"), ExtResource("pt_missile_pod"), ExtResource("pt_arc_lance"), ExtResource("pt_flak_cannon"), ExtResource("pt_rail_spike"), ExtResource("pt_scrap_cannon"), ExtResource("pt_twin_needle"), ExtResource("pt_mine_launcher"), ExtResource("pt_rubber_duck_gun"), ExtResource("pt_bubble_blower"), ExtResource("pt_bubble"), ExtResource("pt_regen_field"), ExtResource("pt_ablative_armor"), ExtResource("pt_prism_shield"), ExtResource("pt_cryo_pulse"), ExtResource("pt_ion_thruster"), ExtResource("pt_vector_jet"), ExtResource("pt_phase_engine"), ExtResource("pt_scrap_magnet"), ExtResource("pt_scrap_compactor"), ExtResource("pt_drone_bay"), ExtResource("pt_combo_amp"), ExtResource("pt_spare_hull")])
 chips = Array[ExtResource("cdef")]([ExtResource("c_power_chip"), ExtResource("c_rapid_chip"), ExtResource("c_split_chip"), ExtResource("c_seeker_chip"), ExtResource("c_pierce_chip"), ExtResource("c_ember_chip"), ExtResource("c_frost_chip"), ExtResource("c_volt_chip")])
 combos = Array[ExtResource("kdef")]([ExtResource("k_inferno"), ExtResource("k_firestorm"), ExtResource("k_blizzard"), ExtResource("k_glacier_lance"), ExtResource("k_storm_net"), ExtResource("k_thunder_seeker"), ExtResource("k_hammer_burst"), ExtResource("k_needle_hunt"), ExtResource("k_plasma_arc"), ExtResource("k_shatter")])
 pilots = Array[ExtResource("pdef")]([ExtResource("p_vega"), ExtResource("p_rook"), ExtResource("p_nyx"), ExtResource("p_juno")])

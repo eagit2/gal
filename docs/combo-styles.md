@@ -12,14 +12,15 @@ The game runs in the **Dusk Armada** style (P2). Playing in a specific way fills
 
 | Mode | Trigger (what fills the meter) | Art style | Buff while active | Feel |
 |---|---|---|---|---|
-| **Overdrive** | Kill streak: each kill within 1.2s of the last adds a point. The meter fills at 12. | N1 Outrun Grid | Fire rate x1.5, ship speed x1.2 | Aggression |
-| **Lock-On** | Accuracy: each consecutive hit without a missed shot adds a point. The meter fills at 25. A miss resets it. | N3 Cold Hologram | Shots home slightly, and weak points are highlighted | Precision |
+| **Overkill** (id overdrive) | Every 30 kills (no streak window, no decay). | N1 Outrun Grid | Fire rate x1.5, ship speed x1.2 | Aggression |
+| **Chain** (id lock_on) | 30 hits in a row with no missed shot; a miss resets it. | N3 Cold Hologram | Every hit arcs big lightning to 5 nearby enemies | Precision |
 | **Chain Reaction** | Multi-kills: 3 or more kills from one shot or explosion, or killing a diver mid-dive. The meter fills at 6 events. | N2 Particle Storm | Kills explode and damage neighbors | Chaos |
 | **Graze** | Near misses: enemy bullets passing within a small radius of the hitbox without hitting. The meter fills at 30. | P3 Pocket Four | Time slows to 0.6x, and grazes give score | Risk |
 
 Bonus: rescuing a captured ship (tractor beam) triggers **Arcade '81** in P1 Arcade Classic+ style for 8s. It uses classic sounds, and its buff is double score. It's a tribute moment.
 
 ## Rules
+- **Upgrade bubbles (2026-10-03, Eric):** a full meter does not start the mode. It drops an upgrade bubble that falls at twice scrap pace; catching it starts the mode (chaining if one is running). A missed bubble empties the meter. Triggered extras (Cryo Pulse, the no-hit companion drone) drop bubbles at scrap pace.
 - **Duration:** 8 seconds per mode. A HUD ring shows the remaining time.
 - **One at a time.** While a mode is active, the other meters keep filling but can't trigger.
 - **Style Chain:** if another meter is full when the current mode ends, it triggers right away and gives a +1 chain multiplier on score (x2, x3...). That's the high-skill goal.

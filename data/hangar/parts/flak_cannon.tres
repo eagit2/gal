@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="PartDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/part_def.gd" id="1"]
+[ext_resource type="Resource" path="res://data/weapons/flak_cannon.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"flak_cannon"
+display_name = "Flak Cannon"
+category = 0
+tier = 1
+text = "A short cone of pellets that hits hard up close and fizzles past 220 px."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"damage",
+"value": 1
+}],
+"id": &"power",
+"max": 2,
+"name": "POWER",
+"text": "+1 damage per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"extra_shots",
+"value": 1
+}],
+"id": &"pellets",
+"max": 3,
+"name": "PELLETS",
+"text": "+1 pellet per level"
+}])
+sockets = 1
+links = 0
+part = &"bay_weapon"
+weapon = ExtResource("2")
