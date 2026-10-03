@@ -2,6 +2,9 @@
 
 Newest first. One line per decision with the reason.
 
+- 2026-10-03: Hangar credits come only from stage medals, paid once per medal per run and scaled by `DifficultyDef.score_multiplier` (architecture uses one score/currency multiplier). Credits save immediately so a death never loses them.
+- 2026-10-03: Hangar nodes are data (`HangarNodeDef` in `data/hangar/`, registered in `hangar_tree.tres`) whose effects use the UpgradeDef format and feed `GameState.set_meta_effects`, so the hangar adds no new stat code. v1 is 9 stat nodes in Hull, Weapons and Systems; card unlocks and ships come next.
+- 2026-10-03: Medals are `MedalDef` resources referenced by `StageDef.medal` (instead of a goal id + `medal_currency`), tracked from EventBus counts by `MedalTracker`.
 - 2026-10-03: Continue resumes at the start of the last stage reached, with its score, lives and upgrades (a checkpoint `SaveManager.data.run` written as each stage starts, cleared on game over). Mid-stage progress isn't saved: simple, and can't save a doomed state. Dev URL runs never touch the save. Difficulty is picked on the title screen and remembered.
 - 2026-10-03: M3 run stats are one Dictionary (`GameState.stats`) recomputed from owned upgrades + synergies + the active combo whenever any of them changes. Systems read stats; nothing applies deltas in place, so stacking and expiring buffs can't drift.
 - 2026-10-03: Card pick after every stage, including challenge stages. A perfect challenge also drops a guaranteed pickup. Pickups roll their upgrade on collect; once everything is maxed they pay 1000 points.

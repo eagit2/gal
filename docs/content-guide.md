@@ -35,3 +35,9 @@ Effects are `{"stat": &"...", "op": &"add"|"mul"|"max", "value": ...}`. Stats an
 
 ## Combo mode
 `data/combos/<id>.tres` (`ComboDef`): style (theme id), threshold, decay_delay, decay_rate, duration, effects (same format as upgrades), HUD color. What fills each meter is in `systems/combo_tracker.gd`; thresholds scale with `DifficultyDef.combo_threshold`.
+
+## Hangar node
+`data/hangar/<id>.tres` (`HangarNodeDef`): display_name, description, branch (Hull, Weapons, Systems), costs (one per rank), effects (same format as upgrades, applied once per rank), requires (node ids). Register it in `data/hangar/hangar_tree.tres` (a test fails if you forget). The hangar screen builds itself from the tree. Design and numbers: `docs/hangar.md`.
+
+## Stage medal
+`data/medals/<id>.tres` (`MedalDef`): goal (`NO_DAMAGE`, `PERFECT`, `ACCURACY`, `GRAZES`), target, currency. Point `StageDef.medal` at it. It pays once per run, scaled by `DifficultyDef.score_multiplier`.
