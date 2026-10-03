@@ -17,7 +17,7 @@ static func default_data() -> Dictionary:
 		"currency": 0,  # hangar credits
 		"high_score": 0,
 		"unlocks": [],
-		"hangar": {},  # hangar node id -> rank
+		"hangar": {},  # loadout state, see Loadout.default_state
 		## Checkpoint of the run in progress (GameState.snapshot), empty when there is none.
 		"run": {},
 		"last_difficulty": "pilot",

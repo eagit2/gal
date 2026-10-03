@@ -36,8 +36,11 @@ Effects are `{"stat": &"...", "op": &"add"|"mul"|"max", "value": ...}`. Stats an
 ## Combo mode
 `data/combos/<id>.tres` (`ComboDef`): style (theme id), threshold, decay_delay, decay_rate, duration, effects (same format as upgrades), HUD color. What fills each meter is in `systems/combo_tracker.gd`; thresholds scale with `DifficultyDef.combo_threshold`.
 
-## Hangar node
-`data/hangar/<id>.tres` (`HangarNodeDef`): display_name, description, branch (Hull, Weapons, Systems), costs (one per rank), effects (same format as upgrades, applied once per rank), requires (node ids). Register it in `data/hangar/hangar_tree.tres` (a test fails if you forget). The hangar screen builds itself from the tree. Design and numbers: `docs/hangar.md`.
+## Hangar module
+`data/hangar/modules/<id>.tres` (`ModuleDef`): kind (weapon, support, system, hull), cost, effects (level 1), per_level (added per level above 1), ap_levels, part (sprite in `assets/art/dusk_armada/parts/`), and for support modules amplify and link_kind. Set `requires_mastered` to make it a chain unlock. Register it in `data/hangar/catalog.tres` (a test fails if you forget).
+
+## Hangar frame
+`data/hangar/frames/<id>.tres` (`FrameDef`): slots, pairs, effects, cost, sprite. Register it in the catalog. Hull palettes are `FRAME_PALS` in `tools/art/gen_dusk_armada.py`.
 
 ## Stage medal
 `data/medals/<id>.tres` (`MedalDef`): goal (`NO_DAMAGE`, `PERFECT`, `ACCURACY`, `GRAZES`), target, currency. Point `StageDef.medal` at it. It pays once per run, scaled by `DifficultyDef.score_multiplier`.

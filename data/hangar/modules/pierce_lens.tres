@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"pierce_lens"
+display_name = "Pierce Lens"
+description = "Shots pass through one enemy. Levels speed up shots."
+kind = 0
+cost = 180
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"pierce",
+"value": 1
+}])
+per_level = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"projectile_speed",
+"value": 1.1
+}])
+ap_levels = Array[int]([80, 240])
+amplify = 0
+link_kind = -1
+requires_mastered = &""
+part = &"lens_weapon"

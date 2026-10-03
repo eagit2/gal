@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="FrameDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/frame_def.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/dusk_armada/player.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"kestrel"
+display_name = "Kestrel"
+description = "Starter frame. 3 slots, one linked pair."
+cost = 0
+slots = 3
+pairs = 1
+effects = Array[Dictionary]([])
+sprite = ExtResource("2")

@@ -56,8 +56,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] Styles: Cold Hologram, Particle Storm, Pocket Four (post shader), Arcade Classic+ (post shader + starfield)
 - [ ] Playtest and tune: drop rate, meter thresholds, upgrade values
 ## M4 Difficulty + meta
-- [x] Hangar: credits from stage medals, 9 permanent upgrades in 3 branches, saved; hangar screen from the title menu (`docs/hangar.md`)
-- [ ] Hangar: Armory card unlocks, Spare Hull, Extra Card, ships
+- [x] Hangar v2 (materia style): 4 frames with linked slots, 21 modules that level from AP, mastery copies and upgrade chains, ship parts per module, deeper menu (`docs/hangar.md`)
+- [ ] Pilots with unique powers
 - [x] Title screen: Continue (resumes the saved run at its last stage), New Game with difficulty pick and an overwrite confirm. Hangar button hook in `title.gd`.
 - [x] Stage medals (goal per stage) pay meta currency, scaled by difficulty (v1 goals on stages 1, 2 and challenge 1)
 ## M5 Sector 1 complete

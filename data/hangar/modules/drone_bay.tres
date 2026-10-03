@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"drone_bay"
+display_name = "Drone Bay"
+description = "A wing drone fires with you. Levels raise fire rate."
+kind = 0
+cost = 320
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"drones",
+"value": 1
+}])
+per_level = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"fire_rate",
+"value": 1.04
+}])
+ap_levels = Array[int]([100, 300])
+amplify = 0
+link_kind = -1
+requires_mastered = &""
+part = &"bay_weapon"

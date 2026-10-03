@@ -33,6 +33,7 @@ func _ready() -> void:
 	EventBus.synergy_activated.connect(func(s: SynergyDef) -> void: show_toast("SYNERGY: %s" % s.display_name.to_upper(), Color(1, 0.55, 0.95)))
 	EventBus.medal_earned.connect(func(m: MedalDef, credits: int) -> void: show_toast("MEDAL: %s  +%d CREDITS" % [m.display_name.to_upper(), credits], Color(0.95, 0.77, 0.43)))
 	EventBus.run_ended.connect(_on_run_ended)
+	EventBus.module_mastered.connect(func(m: ModuleDef) -> void: show_toast("%s MASTERED" % m.display_name.to_upper(), Color(0.5, 1, 0.75)))
 	_build_meters()
 	_mode.visible = false
 	_mode_bar.visible = false

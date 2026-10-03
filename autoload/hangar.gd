@@ -1,19 +1,26 @@
 extends Node
-## Meta progress: hangar credits and owned node ranks (stored in SaveManager), the permanent
-## effects they give every run, and stage medal payouts.
+## Meta progress: hangar credits, owned frames and modules and the loadout (stored in the meta save
+## beside the run checkpoint), the permanent effects they give every run, module AP from kills, and
+## stage medal payouts.
 
-const TREE: HangarTree = preload("res://data/hangar/hangar_tree.tres")
+const CATALOG: ModuleCatalog = preload("res://data/hangar/catalog.tres")
+## AP every equipped module earns per kill.
+const AP_PER_KILL := 1
 
 ## Credits earned by medals in the current run (for the game over screen).
 var run_earned := 0
 var _paid: Array[StringName] = []  # medal ids already paid this run
 var _tracker := MedalTracker.new()
+var _kills := 0  # kills not yet turned into AP
 
 
 func _ready() -> void:
+	SaveManager.data["hangar"] = Loadout.normalize(SaveManager.data.get("hangar"), CATALOG)
 	EventBus.run_started.connect(_on_run_started)
+	EventBus.run_ended.connect(func(_v: bool) -> void: _grant_ap())
 	EventBus.stage_started.connect(_on_stage_started)
 	EventBus.stage_cleared.connect(_on_stage_cleared)
+	EventBus.enemy_killed.connect(func(_e: Node2D, _p: Vector2, _s: int) -> void: _kills += 1)
 	EventBus.shot_fired.connect(func() -> void: _tracker.shots += 1)
 	EventBus.shot_hit.connect(func() -> void: _tracker.hits += 1)
 	EventBus.bullet_grazed.connect(func(_p: Vector2) -> void: _tracker.grazes += 1)
@@ -22,37 +29,65 @@ func _ready() -> void:
 	apply()
 
 
+func state() -> Dictionary:
+	return SaveManager.data["hangar"]
+
+
 func credits() -> int:
 	return int(SaveManager.data["currency"])
 
 
-func ranks() -> Dictionary:
-	return SaveManager.data["hangar"]
+func frame() -> FrameDef:
+	return Loadout.frame_of(CATALOG, state())
 
 
-func rank_of(id: StringName) -> int:
-	return HangarRules.rank_of(ranks(), id)
+func owns_frame(id: StringName) -> bool:
+	return String(id) in (state()["frames"] as Array)
 
 
-func can_buy(node: HangarNodeDef) -> bool:
-	return HangarRules.can_buy(node, ranks(), credits())
-
-
-## Spends credits on the next rank of `node`. Returns false when it can't be bought.
-func buy(node: HangarNodeDef) -> bool:
-	if not can_buy(node):
+func buy_module(def: ModuleDef) -> bool:
+	if not Loadout.in_shop(CATALOG, state(), def) or def.cost > credits():
 		return false
-	_add_credits(-HangarRules.next_cost(node, ranks()))
-	ranks()[String(node.id)] = rank_of(node.id) + 1
-	SaveManager.save()
-	apply()
-	EventBus.hangar_changed.emit()
+	(state()["modules"] as Array).append({"id": String(def.id), "ap": 0, "born": false})
+	_spend(def.cost)
 	return true
 
 
-## Pushes the owned ranks into the run stats.
+func buy_frame(def: FrameDef) -> bool:
+	if owns_frame(def.id) or def.cost > credits():
+		return false
+	(state()["frames"] as Array).append(String(def.id))
+	Loadout.set_frame(CATALOG, state(), def.id)
+	_spend(def.cost)
+	return true
+
+
+func use_frame(id: StringName) -> void:
+	if owns_frame(id):
+		Loadout.set_frame(CATALOG, state(), id)
+		_changed()
+
+
+## Puts module `index` in `slot`; -1 empties it.
+func equip(slot: int, index: int) -> void:
+	Loadout.equip(state(), slot, index)
+	_changed()
+
+
+## Pushes the loadout into the run stats.
 func apply() -> void:
-	GameState.set_meta_effects(HangarRules.effects(TREE, ranks()))
+	GameState.set_meta_effects(Loadout.effects(CATALOG, state()))
+
+
+func _spend(amount: int) -> void:
+	_add_credits(-amount)
+	_changed()
+
+
+func _changed() -> void:
+	SaveManager.save()
+	apply()
+	EventBus.hangar_changed.emit()
 
 
 func _add_credits(amount: int) -> void:
@@ -60,8 +95,19 @@ func _add_credits(amount: int) -> void:
 	EventBus.credits_changed.emit(credits())
 
 
+func _grant_ap() -> void:
+	if _kills == 0:
+		return
+	var mastered := Loadout.add_ap(CATALOG, state(), _kills * AP_PER_KILL)
+	_kills = 0
+	_changed()
+	for def in mastered:
+		EventBus.module_mastered.emit(def)
+
+
 func _on_run_started(_difficulty: StringName) -> void:
 	run_earned = 0
+	_kills = 0
 	_paid.clear()
 	apply()
 
@@ -73,11 +119,12 @@ func _on_stage_started(stage_id: StringName) -> void:
 
 
 func _on_stage_cleared(_stage_id: StringName) -> void:
+	_grant_ap()
 	var medal := _tracker.medal
 	if not _tracker.earned() or medal.id in _paid:
 		return
 	_paid.append(medal.id)
-	var amount := HangarRules.payout(medal, _currency_mult())
+	var amount := roundi(medal.currency * _currency_mult())
 	run_earned += amount
 	_add_credits(amount)
 	SaveManager.save()

@@ -1,219 +1,215 @@
 extends Control
-## Hangar: spend medal credits on permanent ship upgrades between runs. Built in code from
-## the hangar tree data so new nodes need only data. Keyboard, gamepad (focus) and touch all work.
+## Hangar menus: a ship preview with the current loadout, then Loadout (slot modules into the
+## frame's linked slots), Modules (levels and AP), Shop (modules and upgrade chains) and Frames.
+## Built in code from the module catalog, so new content needs only data. Keyboard, gamepad
+## (focus) and touch all work; cancel goes back one menu.
 
-var _tree: HangarTree = preload("res://data/hangar/hangar_tree.tres")
-const BRANCH_NAMES := ["HULL", "WEAPONS", "SYSTEMS"]
-const GOLD := Color(0.95, 0.77, 0.43)
-const ROSE := Color(0.85, 0.52, 0.55)
-const INK := Color(0.07, 0.08, 0.17, 0.88)
-const DIM := Color(0.6, 0.6, 0.7)
-const OWNED := Color(0.55, 0.9, 0.75)
-const ROW_SIZE := Vector2(480, 46)
+const TITLE_SCENE := "res://scenes/main/title.tscn"
+const SHIP_VISUAL := preload("res://assets/art/dusk_armada/player.tscn")
+const SHIP_PARTS := preload("res://assets/art/dusk_armada/ship_parts.gd")
 
-var _rows := {}  # node id -> Button
+var _catalog: ModuleCatalog = preload("res://data/hangar/catalog.tres")
+var _title: Label
 var _credits: Label
+var _list: VBoxContainer
 var _detail: Label
-var _focused: HangarNodeDef
+var _back := Callable()
+var _ship: Node2D
+var _preview: Control
 
 
 func _ready() -> void:
 	_build()
-	_refresh()
-	EventBus.credits_changed.connect(func(_c: int) -> void: _refresh())
-	(_rows.values()[0] as Button).grab_focus()
+	EventBus.credits_changed.connect(func(_c: int) -> void: _credits.text = "CREDITS  %d" % Hangar.credits())
+	_credits.text = "CREDITS  %d" % Hangar.credits()
+	_home()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
-		SceneRouter.go_to("res://scenes/main/title.tscn")
+		_back.call()
 
 
 func _build() -> void:
 	var sky := TextureRect.new()
 	sky.set_anchors_preset(Control.PRESET_FULL_RECT)
-	sky.texture = _sky_texture()
+	sky.texture = HangarUI.sky()
 	sky.stretch_mode = TextureRect.STRETCH_SCALE
 	add_child(sky)
 	var column := VBoxContainer.new()
 	column.set_anchors_preset(Control.PRESET_FULL_RECT)
-	column.offset_left = 30
-	column.offset_right = -30
-	column.offset_top = 36
-	column.offset_bottom = -30
+	column.offset_left = 28
+	column.offset_right = -28
+	column.offset_top = 24
+	column.offset_bottom = -24
 	column.add_theme_constant_override("separation", 6)
 	add_child(column)
-	column.add_child(_label("HANGAR", 40, GOLD, HORIZONTAL_ALIGNMENT_CENTER))
-	_credits = _label("", 22, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER)
+	_title = HangarUI.label("HANGAR", 34, HangarUI.GOLD, HORIZONTAL_ALIGNMENT_CENTER)
+	column.add_child(_title)
+	_credits = HangarUI.label("", 20, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER)
 	column.add_child(_credits)
-	for branch in BRANCH_NAMES.size():
-		var header := _label(BRANCH_NAMES[branch], 18, ROSE, HORIZONTAL_ALIGNMENT_LEFT)
-		header.custom_minimum_size.y = 34
-		header.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-		column.add_child(header)
-		for node: HangarNodeDef in _tree.nodes:
-			if node.branch == branch:
-				column.add_child(_make_row(node))
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	column.add_child(spacer)
-	_detail = _label("", 17, Color.WHITE, HORIZONTAL_ALIGNMENT_LEFT)
+	_preview = Control.new()
+	_preview.custom_minimum_size.y = 170
+	_ship = SHIP_VISUAL.instantiate()
+	_preview.resized.connect(func() -> void: _ship.position = _preview.size / 2)
+	column.add_child(_preview)
+	_ship.scale = Vector2(3, 3)
+	_preview.add_child(_ship)
+	var parts := Node2D.new()
+	parts.set_script(SHIP_PARTS)
+	parts.set("hull", _ship.get_node("dusk_armada/Sprite"))
+	_ship.get_node("dusk_armada").add_child(parts)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	column.add_child(scroll)
+	_list = VBoxContainer.new()
+	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_list.add_theme_constant_override("separation", 5)
+	scroll.add_child(_list)
+	_detail = HangarUI.label("", 16)
 	_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_detail.custom_minimum_size = Vector2(0, 72)
-	column.add_child(_panel(_detail))
-	var buttons := HBoxContainer.new()
-	buttons.add_theme_constant_override("separation", 16)
-	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
-	column.add_child(buttons)
-	buttons.add_child(_action_button("BACK", func() -> void: SceneRouter.go_to("res://scenes/main/title.tscn")))
+	_detail.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_detail.custom_minimum_size = Vector2(0, 66)
+	column.add_child(HangarUI.panel(_detail))
 
 
-func _make_row(node: HangarNodeDef) -> Button:
-	var row := Button.new()
-	row.custom_minimum_size = ROW_SIZE
-	_style_button(row)
-	var parts := HBoxContainer.new()
-	parts.name = "Parts"
-	parts.set_anchors_preset(Control.PRESET_FULL_RECT)
-	parts.offset_left = 14
-	parts.offset_right = -14
-	parts.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for part_name in ["Name", "Pips", "Cost"]:
-		var part := _label("", 18, Color.WHITE, HORIZONTAL_ALIGNMENT_LEFT)
-		part.name = part_name
-		part.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		part.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		parts.add_child(part)
-	parts.get_node("Name").size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	parts.get_node("Cost").custom_minimum_size.x = 70
-	parts.get_node("Cost").horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	row.add_child(parts)
-	row.focus_entered.connect(_show_detail.bind(node))
-	row.mouse_entered.connect(_show_detail.bind(node))
-	row.pressed.connect(_on_row_pressed.bind(node))
-	_rows[node.id] = row
-	return row
+## Clears the list for a new menu. `back` runs on cancel.
+func _page(title: String, back: Callable) -> void:
+	_title.text = title
+	_back = back
+	for child in _list.get_children():
+		_list.remove_child(child)
+		child.queue_free()
 
 
-func _on_row_pressed(node: HangarNodeDef) -> void:
-	var row: Button = _rows[node.id]
-	if Hangar.buy(node):
-		_refresh()
-		row.pivot_offset = row.size / 2
-		var tween := create_tween()
-		tween.tween_property(row, "scale", Vector2(1.04, 1.04), 0.06)
-		tween.tween_property(row, "scale", Vector2.ONE, 0.12)
-	else:
-		var tween := create_tween()
-		tween.tween_property(row, "position:x", row.position.x + 6, 0.04)
-		tween.tween_property(row, "position:x", row.position.x, 0.08)
-
-
-func _refresh() -> void:
-	_credits.text = "CREDITS  %d" % Hangar.credits()
-	for node: HangarNodeDef in _tree.nodes:
-		var row: Button = _rows[node.id]
-		var rank := Hangar.rank_of(node.id)
-		var cost := HangarRules.next_cost(node, Hangar.ranks())
-		var unlocked := HangarRules.is_unlocked(node, Hangar.ranks())
-		var name_label: Label = row.get_node("Parts/Name")
-		var pips: Label = row.get_node("Parts/Pips")
-		var cost_label: Label = row.get_node("Parts/Cost")
-		name_label.text = node.display_name.to_upper()
-		pips.text = "◆".repeat(rank) + "◇".repeat(node.max_rank() - rank)
-		pips.modulate = OWNED if rank > 0 else DIM
-		if cost < 0:
-			cost_label.text = "MAX"
-			cost_label.modulate = OWNED
-		elif not unlocked:
-			cost_label.text = "LOCKED"
-			cost_label.modulate = DIM
-		else:
-			cost_label.text = str(cost)
-			cost_label.modulate = GOLD if cost <= Hangar.credits() else ROSE
-		name_label.modulate = Color.WHITE if unlocked else DIM
-	if _focused:
-		_show_detail(_focused)
-
-
-func _show_detail(node: HangarNodeDef) -> void:
-	_focused = node
-	var rank := Hangar.rank_of(node.id)
-	var cost := HangarRules.next_cost(node, Hangar.ranks())
-	var status := "Rank %d / %d.  " % [rank, node.max_rank()]
-	if cost < 0:
-		status += "Fully upgraded."
-	elif not HangarRules.is_unlocked(node, Hangar.ranks()):
-		var names: Array[String] = []
-		for id in node.requires:
-			names.append(_tree.find(id).display_name)
-		status += "Needs %s." % ", ".join(names)
-	elif cost > Hangar.credits():
-		status += "Needs %d more credits. Earn medals in stages." % (cost - Hangar.credits())
-	else:
-		status += "Press fire to buy for %d." % cost
-	_detail.text = "%s\n%s\n%s" % [node.display_name.to_upper(), node.description, status]
-
-
-func _label(text: String, size: int, color: Color, align: HorizontalAlignment) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = align
-	label.add_theme_font_size_override("font_size", size)
-	label.add_theme_color_override("font_color", color)
-	label.add_theme_color_override("font_outline_color", Color(0.05, 0.04, 0.1))
-	label.add_theme_constant_override("outline_size", 4)
-	return label
-
-
-func _panel(content: Control) -> PanelContainer:
-	var panel := PanelContainer.new()
-	var box := _box(INK, ROSE.darkened(0.3))
-	box.content_margin_left = 14
-	box.content_margin_right = 14
-	box.content_margin_top = 10
-	box.content_margin_bottom = 10
-	panel.add_theme_stylebox_override("panel", box)
-	panel.add_child(content)
-	return panel
-
-
-func _action_button(text: String, action: Callable) -> Button:
-	var button := Button.new()
-	button.text = text
-	button.custom_minimum_size = Vector2(170, 52)
-	button.add_theme_font_size_override("font_size", 22)
-	_style_button(button)
+func _add(button: Button, detail: String, action: Callable) -> Button:
+	button.focus_entered.connect(func() -> void: _detail.text = detail)
+	button.mouse_entered.connect(func() -> void: _detail.text = detail)
 	button.pressed.connect(action)
+	_list.add_child(button)
 	return button
 
 
-func _style_button(button: Button) -> void:
-	button.add_theme_stylebox_override("normal", _box(INK, Color(0.3, 0.28, 0.45)))
-	button.add_theme_stylebox_override("hover", _box(INK.lightened(0.08), ROSE))
-	button.add_theme_stylebox_override("pressed", _box(INK.lightened(0.15), GOLD))
-	button.add_theme_stylebox_override("focus", _box(Color(0, 0, 0, 0), GOLD, 3))
+func _focus(index := 0) -> void:
+	var rows := _list.get_children()
+	if not rows.is_empty():
+		(rows[clampi(index, 0, rows.size() - 1)] as Button).grab_focus()
 
 
-func _box(fill: Color, border: Color, width := 2) -> StyleBoxFlat:
-	var box := StyleBoxFlat.new()
-	box.bg_color = fill
-	box.border_color = border
-	box.set_border_width_all(width)
-	box.set_corner_radius_all(3)
-	return box
+func _module_text(def: ModuleDef) -> String:
+	var chain := ""
+	for other in _catalog.modules:
+		if other.requires_mastered == def.id:
+			chain = "\nMaster it to unlock %s." % other.display_name
+	return "%s  (%s)\n%s%s" % [def.display_name.to_upper(), HangarUI.KIND_NAMES[def.kind], def.description, chain]
 
 
-## Dusk sky: night blue at the top fading through slate violet to dusty rose (no dithering).
-func _sky_texture() -> GradientTexture2D:
-	var gradient := Gradient.new()
-	gradient.offsets = PackedFloat32Array([0.0, 0.55, 1.0])
-	gradient.colors = PackedColorArray([Color(0.08, 0.1, 0.24), Color(0.26, 0.22, 0.4), Color(0.6, 0.38, 0.45)])
-	var texture := GradientTexture2D.new()
-	texture.gradient = gradient
-	texture.fill_from = Vector2(0, 0)
-	texture.fill_to = Vector2(0, 1)
-	texture.width = 4
-	texture.height = 256
-	return texture
+func _home(focus := 0) -> void:
+	_page("HANGAR", SceneRouter.go_to.bind(TITLE_SCENE))
+	var frame := Hangar.frame()
+	var state := Hangar.state()
+	var used := range(frame.slots).filter(func(s: int) -> bool: return Loadout.in_slot(_catalog, state, s) >= 0).size()
+	_add(HangarUI.row("LOADOUT", "", "%d / %d" % [used, frame.slots]), "Slot modules into your frame. Linked slots let blue support modules boost their partner.", _loadout)
+	_add(HangarUI.row("MODULES", "", str((state["modules"] as Array).size())), "Your modules. Equipped modules earn AP from kills and level up. A mastered module spawns a fresh copy.", _modules)
+	_add(HangarUI.row("SHOP", "", ""), "Buy modules with medal credits. Mastering a module unlocks its upgrade in the shop.", _shop)
+	_add(HangarUI.row("FRAMES", "", frame.display_name.to_upper()), "Frames set how many slots and linked pairs your ship has.", _frames)
+	_add(HangarUI.row("BACK"), "Back to the title screen.", SceneRouter.go_to.bind(TITLE_SCENE))
+	_focus(focus)
+
+
+func _loadout(focus := 0) -> void:
+	var frame := Hangar.frame()
+	var state := Hangar.state()
+	_page("LOADOUT  %s" % frame.display_name.to_upper(), _home.bind(0))
+	for slot in frame.slots:
+		var index := Loadout.in_slot(_catalog, state, slot)
+		var def := Loadout.def_at(_catalog, state, index)
+		var partner := frame.partner(slot)
+		var link := "" if partner < 0 else ("LINK %d-%d" % [mini(slot, partner) + 1, maxi(slot, partner) + 1])
+		var dot := HangarUI.KIND_COLORS[def.kind] if def else Color.TRANSPARENT
+		var stars := HangarUI.stars(Loadout.slot_level(_catalog, state, slot), def.max_level()) if def else ""
+		var link_color := HangarUI.KIND_COLORS[1] if partner >= 0 and (Loadout.link_active(_catalog, state, slot) or Loadout.link_active(_catalog, state, partner)) else HangarUI.DIM
+		var text := _module_text(def) if def else "Empty slot."
+		if def and def.kind == ModuleDef.Kind.SUPPORT and not Loadout.link_active(_catalog, state, slot):
+			text += "\nInactive: link it to a %s module." % ("weapon" if def.link_kind == ModuleDef.Kind.WEAPON else "non-support")
+		_add(HangarUI.row("%d  %s" % [slot + 1, def.display_name.to_upper() if def else "- EMPTY -"], stars, link, dot, link_color), text, _picker.bind(slot))
+	_focus(focus)
+
+
+func _picker(slot: int) -> void:
+	var state := Hangar.state()
+	_page("SLOT %d" % (slot + 1), _loadout.bind(slot))
+	_add(HangarUI.row("- EMPTY -"), "Leave this slot empty.", _equip.bind(slot, -1))
+	var modules: Array = state["modules"]
+	for index in modules.size():
+		var def := Loadout.def_at(_catalog, state, index)
+		var where := (state["equipped"] as Array).find(index)
+		var right := "SLOT %d" % (where + 1) if where >= 0 and where < Hangar.frame().slots else ""
+		_add(HangarUI.row(def.display_name.to_upper(), HangarUI.stars(Loadout.level_of(_catalog, state, index), def.max_level()), right, HangarUI.KIND_COLORS[def.kind], HangarUI.DIM), _module_text(def), _equip.bind(slot, index))
+	_focus(maxi((state["equipped"] as Array)[slot] + 1, 0))
+
+
+func _equip(slot: int, index: int) -> void:
+	Hangar.equip(slot, index)
+	_loadout(slot)
+
+
+func _modules() -> void:
+	var state := Hangar.state()
+	_page("MODULES", _home.bind(1))
+	var modules: Array = state["modules"]
+	for index in modules.size():
+		var def := Loadout.def_at(_catalog, state, index)
+		var ap := int(modules[index]["ap"])
+		var level := def.level_for(ap)
+		var next := "MASTER" if level >= def.max_level() else "AP %d/%d" % [ap, def.ap_levels[level - 1]]
+		_add(HangarUI.row(def.display_name.to_upper(), HangarUI.stars(level, def.max_level()), next, HangarUI.KIND_COLORS[def.kind], HangarUI.GOOD if level >= def.max_level() else Color.WHITE), _module_text(def), func() -> void: pass)
+	_focus()
+
+
+func _shop(focus := 0) -> void:
+	var state := Hangar.state()
+	_page("SHOP", _home.bind(2))
+	for def in _catalog.modules:
+		if Loadout.owns(state, def.id):
+			continue
+		if Loadout.in_shop(_catalog, state, def):
+			var color := HangarUI.GOLD if def.cost <= Hangar.credits() else HangarUI.ROSE
+			_add(HangarUI.row(def.display_name.to_upper(), "", str(def.cost), HangarUI.KIND_COLORS[def.kind], color), _module_text(def), _buy_module.bind(def))
+		else:
+			var req := _catalog.module(def.requires_mastered)
+			_add(HangarUI.row(def.display_name.to_upper(), "", "LOCKED", HangarUI.DIM, HangarUI.DIM), "%s\nMaster %s to unlock." % [_module_text(def), req.display_name], func() -> void: pass)
+	if _list.get_child_count() == 0:
+		_add(HangarUI.row("SOLD OUT"), "You own every module.", _home.bind(2))
+	_focus(focus)
+
+
+func _buy_module(def: ModuleDef) -> void:
+	var index := _list.get_children().find(get_viewport().gui_get_focus_owner())
+	if Hangar.buy_module(def):
+		_shop(index)
+		_detail.text = "Bought %s. Equip it in LOADOUT." % def.display_name.to_upper()
+	else:
+		_detail.text = "Needs %d more credits. Earn medals in stages." % (def.cost - Hangar.credits())
+
+
+func _frames(focus := 0) -> void:
+	_page("FRAMES", _home.bind(3))
+	for frame in _catalog.frames:
+		var right := "IN USE" if frame == Hangar.frame() else ("USE" if Hangar.owns_frame(frame.id) else str(frame.cost))
+		var color := HangarUI.GOOD if Hangar.owns_frame(frame.id) else (HangarUI.GOLD if frame.cost <= Hangar.credits() else HangarUI.ROSE)
+		var text := "%s\n%s" % [frame.display_name.to_upper(), frame.description]
+		_add(HangarUI.row(frame.display_name.to_upper(), "%d SLOTS" % frame.slots, right, Color.TRANSPARENT, color), text, _pick_frame.bind(frame, _catalog.frames.find(frame)))
+	_focus(focus)
+
+
+func _pick_frame(frame: FrameDef, index: int) -> void:
+	if Hangar.owns_frame(frame.id):
+		Hangar.use_frame(frame.id)
+	elif not Hangar.buy_frame(frame):
+		_detail.text = "Needs %d more credits." % (frame.cost - Hangar.credits())
+		return
+	_frames(index)

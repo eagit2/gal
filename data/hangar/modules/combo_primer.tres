@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="ModuleDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/module_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"combo_primer"
+display_name = "Combo Primer"
+description = "Overdrive and Chain Reaction meters fill 15% faster."
+kind = 2
+cost = 140
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"overdrive_window",
+"value": 1.15
+}, {
+"op": &"mul",
+"stat": &"chain_gain",
+"value": 1.15
+}])
+per_level = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"overdrive_window",
+"value": 1.05
+}, {
+"op": &"mul",
+"stat": &"chain_gain",
+"value": 1.05
+}])
+ap_levels = Array[int]([60, 200])
+amplify = 0
+link_kind = -1
+requires_mastered = &""
+part = &"antenna_system"

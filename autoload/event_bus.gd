@@ -33,5 +33,7 @@ signal combo_meter_changed(combo_id: StringName, fill: float)
 ## A stage medal was earned and paid `credits` hangar credits.
 signal medal_earned(medal: MedalDef, credits: int)
 signal credits_changed(credits: int)
-## A hangar node rank was bought.
+## The hangar loadout, frames or modules changed.
 signal hangar_changed()
+## An equipped module reached max level (it also spawned a fresh copy the first time).
+signal module_mastered(module: ModuleDef)
