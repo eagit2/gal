@@ -85,21 +85,28 @@ static func status_tag(row: Button, text: String, color: Color, action: Callable
 	return tag
 
 
-## Marks a row as half of a linked pair: gold border, and a gold bar in the middle bridging the
-## gap down to the row below (`down`).
-static func link_line(row: Button, down: bool) -> void:
-	row.add_theme_stylebox_override("normal", HangarUI.box(HangarUI.INK, SOCKET_GOLD))
+## One color per linked pair on a part, in socket order.
+const PAIR_COLORS: Array[Color] = [Color("f2c46e"), Color("6fd6c8"), Color("ef7fa6"), Color("a98bff")]
+
+
+## Marks a row as half of linked pair `pair`: both rows share the pair's border and tint, and a
+## thick bar of the same color bridges the middle of the gap to the row below (`down`).
+static func link_line(row: Button, pair: int, down: bool) -> void:
+	var color := PAIR_COLORS[pair % PAIR_COLORS.size()]
+	row.add_theme_stylebox_override("normal", HangarUI.box(HangarUI.INK.lerp(color, 0.14), color, 3))
+	row.add_theme_stylebox_override("hover", HangarUI.box(HangarUI.INK.lerp(color, 0.24), color, 3))
 	if not down:
 		return
 	var bar := ColorRect.new()
-	bar.color = SOCKET_GOLD
+	bar.color = color
+	bar.z_index = 1
 	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bar.anchor_left = 0.5
 	bar.anchor_right = 0.5
-	bar.offset_left = -8
-	bar.offset_right = 8
-	bar.offset_top = HangarUI.ROW_HEIGHT - 2
-	bar.offset_bottom = HangarUI.ROW_HEIGHT + 7  # spans the list's 5 px row spacing
+	bar.offset_left = -13
+	bar.offset_right = 13
+	bar.offset_top = HangarUI.ROW_HEIGHT - 14
+	bar.offset_bottom = HangarUI.ROW_HEIGHT + 19  # into the next row, across the 5 px spacing
 	row.add_child(bar)
 
 
