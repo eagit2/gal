@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"capacitor"
+display_name = "Capacitor"
+text = "+1 shield layer"
+mount = &"left"
+min_tier = 2
+requires = &"plating"
+max_rank = 1
+cost = 240
+effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"shield_layers",
+"value": 1
+}])

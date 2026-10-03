@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"rail_coil"
+display_name = "Rail Coil"
+text = "+10% shot speed"
+mount = &"nose"
+min_tier = 2
+requires = &"focus_lens"
+max_rank = 2
+cost = 160
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"projectile_speed",
+"value": 1.1
+}])

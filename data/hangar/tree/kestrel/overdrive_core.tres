@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"overdrive_core"
+display_name = "Overdrive Core"
+text = "Combo window 25% longer"
+mount = &"rear"
+min_tier = 3
+requires = &"slip_jets"
+max_rank = 1
+cost = 400
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"overdrive_window",
+"value": 1.25
+}])

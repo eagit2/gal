@@ -4,17 +4,31 @@
 
 [resource]
 script = ExtResource("1")
-id = &"regen_field"
-display_name = "Regen Field"
+id = &"prism_shield"
+display_name = "Prism Shield"
 category = 1
-tier = 1
-text = "Recharges 40% faster."
+tier = 3
+text = "An extra layer that recharges fast."
 effects = Array[Dictionary]([{
+"op": &"add",
+"stat": &"shield_layers",
+"value": 1
+}, {
 "op": &"mul",
 "stat": &"shield_recharge",
-"value": 0.6
+"value": 0.8
 }])
 attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"shield_layers",
+"value": 1
+}],
+"id": &"layers",
+"max": 2,
+"name": "LAYERS",
+"text": "Absorbs 1 more hit per level"
+}, {
 "effects": [{
 "op": &"mul",
 "stat": &"shield_recharge",
@@ -27,12 +41,12 @@ attributes = Array[Dictionary]([{
 }, {
 "effects": [{
 "op": &"add",
-"stat": &"shield_layers",
-"value": 1
+"stat": &"explode_radius",
+"value": 12.0
 }],
-"id": &"layers",
-"max": 1,
-"name": "LAYERS",
-"text": "Absorbs 1 more hit"
+"id": &"shock",
+"max": 3,
+"name": "SHOCK",
+"text": "Kills burst and hurt nearby enemies"
 }])
-part = &"fin_hull"
+part = &"lens_support"

@@ -1,6 +1,6 @@
 extends Node2D
 ## Draws the hangar loadout on the player ship: the ship's hull sprite, and each fitted part's
-## sprite at its mount: rank 2 adds a glow, rank 3 doubles the part. Lives inside the
+## sprite at its mount: 4+ attribute levels add a glow, 9+ double the part (Loadout.look). Lives inside the
 ## `dusk_armada` child, so other styles never show it. Reads the Hangar autoload (or a `preview`
 ## loadout for the store); gameplay never touches it.
 
@@ -34,7 +34,7 @@ func rebuild() -> void:
 		if def == null or not ResourceLoader.exists(PARTS_DIR % def.part):
 			continue
 		var anchor: Vector2 = ShipDef.ANCHORS[mount] * PIXEL
-		var rank := Loadout.rank_of(state, def.id)
+		var rank := Loadout.look(state, def.id)
 		if rank > 1:
 			var glow := Sprite2D.new()
 			glow.texture = GLOW

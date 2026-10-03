@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="TreeNodeDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/tree_node_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"slip_jets"
+display_name = "Slip Jets"
+text = "Strafe 8% faster"
+mount = &"rear"
+min_tier = 2
+requires = &"afterburn"
+max_rank = 2
+cost = 160
+effects = Array[Dictionary]([{
+"op": &"mul",
+"stat": &"strafe_left",
+"value": 1.08
+}, {
+"op": &"mul",
+"stat": &"strafe_right",
+"value": 1.08
+}])

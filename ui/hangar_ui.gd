@@ -12,6 +12,12 @@ const GOOD := Color(0.55, 0.9, 0.75)
 const CATEGORY_COLORS: Array[Color] = [Color("5fe06a"), Color("b98bff"), Color("ffd34f"), Color("4fa6ff"), Color("4fa6ff"), Color("ff8f6b")]
 const CATEGORY_NAMES := ["WEAPONS", "SHIELDS", "POWERS", "ENGINES", "EXTRAS", "CHIPS"]
 const TIER_NAMES := ["STARTER", "COMMON", "UNCOMMON", "RARE", "EPIC"]
+const TIER_COLORS: Array[Color] = [Color("9a9ab3"), Color("f4efe6"), Color("8ce6bf"), Color("6fb8ff"), Color("e58cff")]
+## What a category does from a side or rear mount (%s = the mount), for the slot menu.
+const CATEGORY_HINTS := ["", "Shields on the sides recharge faster.", "Your power button.", "Engines push you: from the %s they change your strafe or speed.", "Drones, magnets and combo boosters.", "Arrive with combos."]
+## Placement effects in words, by stat. Lower shield_recharge is faster.
+const STAT_WORDS := {&"strafe_right": "strafe right", &"strafe_left": "strafe left", &"move_speed": "speed", &"shield_recharge": "shield recharge"}
+const BLUEPRINT_INK := Color(0.06, 0.13, 0.25, 0.9)
 const SHIP_VISUAL := preload("res://assets/art/dusk_armada/player.tscn")
 const SHIP_PARTS := preload("res://assets/art/dusk_armada/ship_parts.gd")
 const ROW_HEIGHT := 44
@@ -58,8 +64,60 @@ static func row(left: String, mid := "", right := "", dot := Color.TRANSPARENT, 
 	return button
 
 
-static func stars(level: int, max_level: int) -> String:
-	return "★".repeat(mini(level, max_level)) + "☆".repeat(maxi(max_level - level, 0)) + ("+%d" % (level - max_level) if level > max_level else "")
+## Level pips for an attribute: filled up to `level`, hollow up to `max_level`, padded to `width`.
+static func pips(level: int, max_level: int, width: int) -> String:
+	return "■".repeat(level) + "□".repeat(maxi(max_level - level, 0)) + " ".repeat(maxi(width - max_level, 0))
+
+
+## "P3 S2 T1": each attribute's first letter and level.
+static func levels_short(state: Dictionary, def: PartDef) -> String:
+	if not Loadout.owns(state, def.id):
+		return ""
+	var words: PackedStringArray = []
+	for a in def.attributes:
+		words.append("%s%d" % [String(a["name"]).left(1), Loadout.level(state, def.id, a["id"])])
+	return " ".join(words)
+
+
+## "+25% strafe right, recharge 20% faster" for placement effects.
+static func effect_words(effects: Array[Dictionary]) -> String:
+	var words: PackedStringArray = []
+	for effect in effects:
+		var value: float = effect["value"]
+		var name: String = STAT_WORDS.get(effect["stat"], String(effect["stat"]))
+		if effect["stat"] == &"shield_recharge":
+			words.append("%s %d%% faster" % [name, roundi((1.0 - value) * 100.0)])
+		else:
+			words.append("+%d%% %s" % [roundi((value - 1.0) * 100.0), name])
+	return ", ".join(words)
+
+
+## A store card: the ship wearing the part (`preview` state) on the left; name, rarity, category
+## and price on the right.
+static func part_card(def: PartDef, preview: Dictionary, credits: int) -> Button:
+	var card := Button.new()
+	card.custom_minimum_size.y = 112
+	style(card)
+	var row := HBoxContainer.new()
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 8
+	row.offset_right = -12
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 12)
+	card.add_child(row)
+	var ship := ship_preview(preview, 1.75, 104)
+	ship.custom_minimum_size.x = 112
+	row.add_child(ship)
+	var text := VBoxContainer.new()
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text.alignment = BoxContainer.ALIGNMENT_CENTER
+	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(text)
+	text.add_child(label(def.display_name.to_upper(), 16))
+	text.add_child(label(TIER_NAMES[def.tier], 16, TIER_COLORS[def.tier]))
+	text.add_child(label(CATEGORY_NAMES[def.category], 16, CATEGORY_COLORS[def.category]))
+	text.add_child(label(str(def.price()), 16, GOLD if def.price() <= credits else ROSE))
+	return card
 
 
 ## A box showing the ship with its parts, centered. `state` empty = the saved loadout.
@@ -76,6 +134,49 @@ static func ship_preview(state: Dictionary, zoom: float, height: float) -> Contr
 	ship.get_node("dusk_armada").add_child(parts)
 	holder.add_child(ship)
 	holder.resized.connect(func() -> void: ship.position = holder.size / 2)
+	return holder
+
+
+## The saved ship on a blueprint grid, with a marker on each mount and the hull: gold when a tree
+## node there is bought and powered, and "owned/total" ranks beside it.
+static func blueprint(zoom: float, height: float) -> Control:
+	var holder := Control.new()
+	holder.custom_minimum_size.y = height
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var back := ColorRect.new()
+	back.color = BLUEPRINT_INK
+	back.set_anchors_preset(Control.PRESET_FULL_RECT)
+	holder.add_child(back)
+	var ship := ship_preview({}, zoom, height)
+	ship.set_anchors_preset(Control.PRESET_FULL_RECT)
+	ship.modulate = Color(0.6, 0.8, 1.0, 0.55)
+	holder.add_child(ship)
+	var catalog := Hangar.CATALOG
+	var state := Hangar.state()
+	var def := Loadout.ship_of(catalog, state)
+	var anchors := ShipDef.ANCHORS.duplicate()
+	anchors[&"hull"] = Vector2(0, 0)
+	var markers := {}
+	for mount: StringName in anchors:
+		var owned := 0
+		var total := 0
+		var lit := false
+		for node in def.tree:
+			if node.mount == mount:
+				total += node.max_rank
+				owned += ShipTree.rank(state, def, node)
+				lit = lit or (ShipTree.rank(state, def, node) > 0 and ShipTree.powered(catalog, state, node))
+		if total == 0:
+			continue
+		var marker := label("%d/%d" % [owned, total], 8, GOLD if lit else Color(0.55, 0.7, 0.95), HORIZONTAL_ALIGNMENT_CENTER)
+		marker.custom_minimum_size = Vector2(48, 16)
+		var b := box(Color(0.05, 0.1, 0.2, 0.9), GOLD if lit else Color(0.35, 0.5, 0.75))
+		marker.add_theme_stylebox_override("normal", b)
+		holder.add_child(marker)
+		markers[marker] = anchors[mount]
+	holder.resized.connect(func() -> void:
+		for marker: Label in markers:
+			marker.position = holder.size / 2 + (markers[marker] as Vector2) * 2.0 * zoom - marker.custom_minimum_size / 2)
 	return holder
 
 

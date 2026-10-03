@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="HangarCatalog" load_steps=25 format=3]
+[gd_resource type="Resource" script_class="HangarCatalog" load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://resources/hangar_catalog.gd" id="1"]
 [ext_resource type="Script" path="res://resources/ship_def.gd" id="sdef"]
@@ -23,11 +23,14 @@
 [ext_resource type="Resource" path="res://data/hangar/parts/scrap_compactor.tres" id="pt_scrap_compactor"]
 [ext_resource type="Resource" path="res://data/hangar/parts/drone_bay.tres" id="pt_drone_bay"]
 [ext_resource type="Resource" path="res://data/hangar/parts/combo_amp.tres" id="pt_combo_amp"]
+[ext_resource type="Resource" path="res://data/hangar/parts/phase_engine.tres" id="pt_phase_engine"]
+[ext_resource type="Resource" path="res://data/hangar/parts/prism_shield.tres" id="pt_prism_shield"]
+[ext_resource type="Resource" path="res://data/hangar/parts/arc_lance.tres" id="pt_arc_lance"]
 
 [resource]
 script = ExtResource("1")
 ships = Array[ExtResource("sdef")]([ExtResource("s_kestrel")])
-parts = Array[ExtResource("ptdef")]([ExtResource("pt_pulse_laser"), ExtResource("pt_twin_cannon"), ExtResource("pt_needle_gun"), ExtResource("pt_missile_pod"), ExtResource("pt_bubble"), ExtResource("pt_regen_field"), ExtResource("pt_ablative_armor"), ExtResource("pt_cryo_pulse"), ExtResource("pt_ion_thruster"), ExtResource("pt_vector_jet"), ExtResource("pt_scrap_magnet"), ExtResource("pt_scrap_compactor"), ExtResource("pt_drone_bay"), ExtResource("pt_combo_amp")])
+parts = Array[ExtResource("ptdef")]([ExtResource("pt_pulse_laser"), ExtResource("pt_twin_cannon"), ExtResource("pt_needle_gun"), ExtResource("pt_missile_pod"), ExtResource("pt_arc_lance"), ExtResource("pt_bubble"), ExtResource("pt_regen_field"), ExtResource("pt_ablative_armor"), ExtResource("pt_prism_shield"), ExtResource("pt_cryo_pulse"), ExtResource("pt_ion_thruster"), ExtResource("pt_vector_jet"), ExtResource("pt_phase_engine"), ExtResource("pt_scrap_magnet"), ExtResource("pt_scrap_compactor"), ExtResource("pt_drone_bay"), ExtResource("pt_combo_amp")])
 pilots = Array[ExtResource("pdef")]([ExtResource("p_vega"), ExtResource("p_rook"), ExtResource("p_nyx"), ExtResource("p_juno")])
 starter_mounts = {
 "left": &"bubble",

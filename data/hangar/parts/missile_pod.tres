@@ -7,21 +7,42 @@ script = ExtResource("1")
 id = &"missile_pod"
 display_name = "Missile Pod"
 category = 0
-tier = 2
-rank_text = Array[String](["Homing missile beside your gun", "Missiles 40% more often", "Fires a pair"])
+tier = 3
+text = "Homing missiles beside your gun."
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"missiles",
 "value": 1
-}, {
+}])
+attributes = Array[Dictionary]([{
+"effects": [{
 "op": &"mul",
 "stat": &"missile_rate",
-"value": 1.4,
-"rank": 2
+"value": 1.15
+}],
+"id": &"reload",
+"max": 5,
+"name": "RELOAD",
+"text": "Missiles 15% more often per level"
 }, {
+"effects": [{
 "op": &"add",
 "stat": &"missiles",
-"value": 1,
-"rank": 3
+"value": 1
+}],
+"id": &"salvo",
+"max": 2,
+"name": "SALVO",
+"text": "+1 missile per volley per level"
+}, {
+"effects": [{
+"op": &"add",
+"stat": &"homing",
+"value": 1.0
+}],
+"id": &"homing",
+"max": 3,
+"name": "HOMING",
+"text": "Your shots curve toward enemies"
 }])
 part = &"pod_weapon"

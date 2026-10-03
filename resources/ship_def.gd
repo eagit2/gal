@@ -17,6 +17,15 @@ const ANCHORS := {&"nose": Vector2(0, -12), &"left": Vector2(-11, 3), &"rear": V
 @export var mounts: Array[StringName] = [&"nose", &"left", &"rear", &"right"]
 ## Player sprite (assets/art/dusk_armada/player*.png).
 @export var sprite: Texture2D
+## Blueprint tree nodes (data/hangar/tree/<ship>/).
+@export var tree: Array[TreeNodeDef] = []
+
+
+func node(id: StringName) -> TreeNodeDef:
+	for n in tree:
+		if n.id == id:
+			return n
+	return null
 
 
 func accepts(mount: StringName, part: PartDef) -> bool:

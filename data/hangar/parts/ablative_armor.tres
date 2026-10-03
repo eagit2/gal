@@ -8,7 +8,7 @@ id = &"ablative_armor"
 display_name = "Ablative Armor"
 category = 1
 tier = 1
-rank_text = Array[String](["2 extra layers, slow recharge", "3 extra layers", "Recharges faster"])
+text = "2 extra layers, slow recharge."
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"shield_layers",
@@ -16,16 +16,27 @@ effects = Array[Dictionary]([{
 }, {
 "op": &"mul",
 "stat": &"shield_recharge",
-"value": 2.5
-}, {
+"value": 1.5
+}])
+attributes = Array[Dictionary]([{
+"effects": [{
 "op": &"add",
 "stat": &"shield_layers",
-"value": 1,
-"rank": 2
+"value": 1
+}],
+"id": &"layers",
+"max": 3,
+"name": "LAYERS",
+"text": "Absorbs 1 more hit per level"
 }, {
+"effects": [{
 "op": &"mul",
 "stat": &"shield_recharge",
-"value": 0.6,
-"rank": 3
+"value": 0.9
+}],
+"id": &"recharge",
+"max": 5,
+"name": "RECHARGE",
+"text": "Recharges 10% faster per level"
 }])
 part = &"lens_hull"

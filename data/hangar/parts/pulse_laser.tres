@@ -8,16 +8,37 @@ id = &"pulse_laser"
 display_name = "Pulse Laser"
 category = 0
 tier = 0
-rank_text = Array[String](["Fast single shot", "+25% fire rate", "Twin bolts"])
-effects = Array[Dictionary]([{
+text = "A steady single shot."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"damage",
+"value": 1
+}],
+"id": &"power",
+"max": 3,
+"name": "POWER",
+"text": "+1 damage per level"
+}, {
+"effects": [{
 "op": &"mul",
 "stat": &"fire_rate",
-"value": 1.25,
-"rank": 2
+"value": 1.1
+}],
+"id": &"speed",
+"max": 5,
+"name": "SPEED",
+"text": "+10% fire rate per level"
 }, {
+"effects": [{
 "op": &"add",
-"stat": &"extra_shots",
-"value": 1,
-"rank": 3
+"stat": &"pierce",
+"value": 1
+}],
+"id": &"thickness",
+"max": 2,
+"name": "THICKNESS",
+"text": "Thicker beam: pierces 1 more enemy per level"
 }])
 part = &"barrel_weapon"

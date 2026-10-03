@@ -8,20 +8,21 @@ id = &"drone_bay"
 display_name = "Drone Bay"
 category = 4
 tier = 1
-rank_text = Array[String](["One drone copies your shots", "Two drones", "Three drones"])
+text = "A drone that copies your shots."
 effects = Array[Dictionary]([{
 "op": &"add",
 "stat": &"drones",
 "value": 1
-}, {
-"op": &"add",
-"stat": &"drones",
-"value": 1,
-"rank": 2
-}, {
-"op": &"add",
-"stat": &"drones",
-"value": 1,
-"rank": 3
 }])
-part = &"bay_support"
+attributes = Array[Dictionary]([{
+"effects": [{
+"op": &"add",
+"stat": &"drones",
+"value": 1
+}],
+"id": &"drones",
+"max": 2,
+"name": "DRONES",
+"text": "+1 drone per level"
+}])
+part = &"coil_support"

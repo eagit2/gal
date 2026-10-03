@@ -8,16 +8,27 @@ id = &"bubble"
 display_name = "Bubble"
 category = 1
 tier = 0
-rank_text = Array[String](["Absorbs 1 hit, recharges", "Recharges 20% faster", "Absorbs 2 hits"])
-effects = Array[Dictionary]([{
+text = "Absorbs a hit, then recharges."
+effects = Array[Dictionary]([])
+attributes = Array[Dictionary]([{
+"effects": [{
 "op": &"mul",
 "stat": &"shield_recharge",
-"value": 0.8,
-"rank": 2
+"value": 0.9
+}],
+"id": &"recharge",
+"max": 5,
+"name": "RECHARGE",
+"text": "Recharges 10% faster per level"
 }, {
+"effects": [{
 "op": &"add",
 "stat": &"shield_layers",
-"value": 1,
-"rank": 3
+"value": 1
+}],
+"id": &"layers",
+"max": 2,
+"name": "LAYERS",
+"text": "Absorbs 1 more hit per level"
 }])
 part = &"dome_hull"
