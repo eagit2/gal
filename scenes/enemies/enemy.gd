@@ -292,5 +292,7 @@ func _on_died() -> void:
 	remove_from_group(&"enemies")
 	remove_from_group(&"attackers")
 	var score := def.dive_score if state == State.DIVING else def.score
+	for t in def.all_traits():
+		t.killed(self)
 	EventBus.enemy_killed.emit(self, global_position, score)
 	queue_free()

@@ -13,6 +13,11 @@ func begin(_enemy: Enemy) -> void:
 	pass
 
 
+## The enemy just died (any cause), before the kill is announced on the EventBus.
+func killed(_enemy: Enemy) -> void:
+	pass
+
+
 ## Runs every frame after movement (not while frozen).
 func tick(_enemy: Enemy, _delta: float) -> void:
 	pass

@@ -18,6 +18,16 @@ const ENEMY_TRAITS := {
 	"plate": "res://scenes/enemies/traits/plate_trait.gd",
 	"rock_drop": "res://scenes/enemies/traits/rock_drop_trait.gd",
 	"split": "res://scenes/enemies/traits/split_trait.gd",
+	"blade_slash": "res://scenes/enemies/traits/blade_slash_trait.gd",
+	"fire_bar": "res://scenes/enemies/traits/fire_bar_trait.gd",
+	"slot_jam": "res://scenes/enemies/traits/slot_jam_trait.gd",
+	"evolve": "res://scenes/enemies/traits/evolve_trait.gd",
+	"flagship": "res://scenes/enemies/traits/flagship_trait.gd",
+	"scrap_thief": "res://scenes/enemies/traits/scrap_thief_trait.gd",
+	"hard_hat": "res://scenes/enemies/traits/hard_hat_trait.gd",
+	"wind_gust": "res://scenes/enemies/traits/wind_gust_trait.gd",
+	"boomerang": "res://scenes/enemies/traits/boomerang_trait.gd",
+	"spawner_pipe": "res://scenes/enemies/traits/spawner_pipe_trait.gd",
 }
 const ELITE_TRAITS := {
 	"frost_shell": "res://scenes/enemies/elites/frost_shell.gd",
@@ -31,6 +41,17 @@ const ELITE_TRAITS := {
 	"shield_link": "res://scenes/enemies/elites/shield_link.gd",
 	"sweep": "res://scenes/enemies/elites/sweep_trait.gd",
 	"twin": "res://scenes/enemies/elites/twin_trait.gd",
+	"gravity_pool": "res://scenes/enemies/elites/gravity_pool_trait.gd",
+	"blade_release": "res://scenes/enemies/elites/blade_release_trait.gd",
+	"orbit_guard": "res://scenes/enemies/elites/orbit_guard_trait.gd",
+	"decoy": "res://scenes/enemies/elites/decoy_trait.gd",
+	"reflect_shield": "res://scenes/enemies/elites/reflect_shield_trait.gd",
+	"weakness": "res://scenes/enemies/elites/weakness_trait.gd",
+	"copy_weapon": "res://scenes/enemies/elites/copy_weapon_trait.gd",
+	"time_stop": "res://scenes/enemies/elites/time_stop_trait.gd",
+	"scatter_body": "res://scenes/enemies/elites/scatter_body_trait.gd",
+	"leaf_shield": "res://scenes/enemies/elites/leaf_shield_trait.gd",
+	"multi_part": "res://scenes/enemies/elites/multi_part_trait.gd",
 }
 ## Sheet columns that name a different property.
 const COLUMN_PROPS := {"visual": "visual_scene", "scale": "visual_scale", "name": "display_name"}
@@ -39,6 +60,8 @@ const COLUMN_PROPS := {"visual": "visual_scene", "scale": "visual_scale", "name"
 var errors: PackedStringArray = []
 var _enemies := {}
 var _elites := {}
+## Elite difficulty levels (elite_levels.csv), lowest first.
+var levels: Array[EliteLevel] = []
 
 
 func _init() -> void:
@@ -75,8 +98,38 @@ func load_sheets(dir: String) -> void:
 		_apply(enemy(row["id"]), row, ENEMY_TRAITS)
 	for row in elite_rows:
 		_apply(elite(row["id"]), row, ELITE_TRAITS)
+	_load_levels(read_csv(dir + "elite_levels.csv"))
 	for e in errors:
 		push_error("Roster: " + e)
+
+
+func _load_levels(rows: Array[Dictionary]) -> void:
+	levels.clear()
+	for row in rows:
+		var made := EliteLevel.new()
+		for column: String in row:
+			set_property(made, column, row[column], "elite_levels row " + row["level"])
+		levels.append(made)
+	levels.sort_custom(func(a: EliteLevel, b: EliteLevel) -> bool: return a.level < b.level)
+	if levels.is_empty():
+		levels.append(EliteLevel.new())
+
+
+## The level an elite rolls on stage number `stage` (1-based): any level whose first stage has
+## come, `roll` in 0..1 picking among them (later stages also tilt toward the higher ones).
+func level_for(stage: int, roll: float) -> EliteLevel:
+	var open: Array[EliteLevel] = []
+	for l in levels:
+		if l.from_stage <= stage:
+			open.append(l)
+	if open.is_empty():
+		return levels[0]
+	return open[mini(open.size() - 1, int(pow(roll, 0.8) * open.size()))]
+
+
+## Level `number` exactly (dev option level=N), clamped to the levels that exist.
+func level_number(number: int) -> EliteLevel:
+	return levels[clampi(number - 1, 0, levels.size() - 1)]
 
 
 ## Rows of a CSV file as Dictionaries keyed by the header. Blank rows and # comments are skipped.
@@ -145,6 +198,9 @@ func parse_traits(text: String, registry: Dictionary, where: String) -> Array:
 			continue
 		if not registry.has(name):
 			errors.append("%s: unknown trait '%s'" % [where, name])
+			continue
+		if not ResourceLoader.exists(registry[name]):
+			errors.append("%s: trait '%s' has no script yet (%s)" % [where, name, registry[name]])
 			continue
 		var t: Resource = load(registry[name]).new()
 		if "(" in token:

@@ -89,13 +89,13 @@ func charge() -> float:
 	return clampf((layers + partial) / _max_layers, 0.0, 1.0)
 
 
-func _on_hurt(_hitbox: Hitbox) -> void:
+func _on_hurt(hitbox: Hitbox) -> void:
 	if not enabled:
 		return
 	EventBus.ship_struck.emit()
 	if layers >= _max_layers:
 		_recharge = _cycle_time()
-	layers -= 1
+	layers -= maxi(1, hitbox.damage)
 	if layers > 0:
 		_report()
 		return

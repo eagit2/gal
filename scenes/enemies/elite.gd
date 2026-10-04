@@ -24,12 +24,16 @@ var fire_scale := 1.0
 var can_fire := true
 ## Stage HP multiplier, set by the StageRunner before it joins the tree.
 var hp_scale := 1.0
+## Difficulty level (data/roster/elite_levels.csv), set by the StageRunner; null = level 1.
+var level: EliteLevel
 var _dir := 1.0
 var _t := randf() * TAU
 var _fire := 1.5
 var _visual: Node2D
-## Traits running now (the def's own plus the current boss phase's).
+## Traits running now (the def's own plus the current boss phase's), scaled to the level.
 var _traits: Array[EliteTrait] = []
+var _bases: Array[EliteTrait] = []
+var _copies := {}
 var _phase := 0
 
 @onready var health: Health = $Health
@@ -51,13 +55,16 @@ func _ready() -> void:
 	_visual.scale = Vector2.ONE * def.visual_scale
 	_visual.modulate = def.tint
 	add_child(_visual)
-	health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp * hp_scale)))
+	if level == null:
+		level = EliteLevel.new()
+	_visual.scale *= 1.0 + 0.05 * (level.level - 1)
+	health.reset(maxi(1, roundi(def.hp * difficulty.enemy_hp * hp_scale * level.hp)))
 	health.died.connect(_on_died)
 	hurtbox.hurt.connect(_on_hurt)
 	# Deferred: hits land inside physics callbacks, where phase traits can't add areas.
 	health.damaged.connect(func(_amount: int) -> void: _check_phase.call_deferred())
 	$ContactHitbox.hit.connect(func(_h: Hurtbox) -> void: health.take_damage(RAM_DAMAGE))
-	_traits = def.traits_for_phase(0)
+	_set_traits(def.traits_for_phase(0))
 	for t in _traits:
 		t.begin(self)
 	EventBus.elite_spawned.emit(def)
@@ -72,7 +79,7 @@ func _physics_process(delta: float) -> void:
 		position.y += ENTER_SPEED * delta
 		entered = position.y >= PATROL_Y
 	else:
-		position.x += _dir * def.speed * delta
+		position.x += _dir * def.speed * level.speed * delta
 		if position.x > MAX_X or position.x < MIN_X:
 			_dir = -_dir
 			position.x = clampf(position.x, MIN_X, MAX_X)
@@ -97,7 +104,7 @@ func fire_fan() -> void:
 
 func fire(direction: Vector2, speed: float) -> void:
 	var bullet: Bullet = Pools.acquire(ENEMY_BULLET)
-	bullet.launch(entities, global_position + direction * 26.0, direction * speed * difficulty.enemy_bullet_speed, 1, ENEMY_BULLET)
+	bullet.launch(entities, global_position + direction * 26.0, direction * speed * level.speed * difficulty.enemy_bullet_speed, maxi(1, roundi(level.damage)), ENEMY_BULLET)
 
 
 func _on_hurt(hitbox: Hitbox) -> void:
@@ -114,15 +121,25 @@ func _check_phase() -> void:
 		return
 	var keep := def.traits_for_phase(-1)
 	for t in _traits:
-		if t not in keep:
+		if _bases[_traits.find(t)] not in keep:
 			t.end(self)
 			t.clear(self)
 	_phase = next
-	_traits = def.traits_for_phase(next)
-	for t in _traits:
-		if t not in keep:
-			t.begin(self)
+	_set_traits(def.traits_for_phase(next))
+	for i in _traits.size():
+		if _bases[i] not in keep:
+			_traits[i].begin(self)
 	EventBus.elite_trait_broken.emit(global_position)
+
+
+## Makes `bases` the running traits, each scaled to this elite's level (one copy per trait, kept).
+func _set_traits(bases: Array[EliteTrait]) -> void:
+	_bases = bases
+	_traits = []
+	for t in bases:
+		if not _copies.has(t):
+			_copies[t] = t.scaled(level.perk, level.hp)
+		_traits.append(_copies[t])
 
 
 ## Damage from outside a hitbox (kill blasts, pilot powers).

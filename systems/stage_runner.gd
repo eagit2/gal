@@ -15,6 +15,10 @@ var formation: Formation
 var target: Player
 var entities: Node2D
 var stage: StageDef
+## 1-based number of the stage now playing, set by Game; sets which elite levels can roll.
+var stage_number := 1
+## Dev option: every elite at this level (DevOptions `level=N`); 0 = roll normally.
+var forced_level := 0
 ## Dev option: an extra elite for every stage (DevOptions `elite=<id>`).
 var extra_elite: EliteDef
 ## Dev option: every wave flies this enemy type instead (DevOptions `spawn=<id>`).
@@ -117,6 +121,7 @@ func _spawn(entry: Dictionary) -> void:
 		var elite: Elite = ELITE_SCENE.instantiate()
 		elite.setup(entry["elite"], _difficulty, target, entities)
 		elite.hp_scale = stage.enemy_hp_mult * hp_ramp
+		elite.level = Roster.level_number(forced_level) if forced_level > 0 else Roster.level_for(stage_number, randf())
 		entities.add_child(elite)
 		return
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
