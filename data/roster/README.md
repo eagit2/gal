@@ -33,6 +33,7 @@ You can open the files in Google Sheets or Excel, or edit them on GitHub (pencil
 - `scrap`: scrap the elite leaves.
 - `fire_interval`: seconds between fans.
 - `fan_shots`: shots per fan.
+- `chase`: 0 to 1, how often a patrol turn heads for the player's side instead of bouncing off the wall.
 
 **`traits`:** one or more traits separated by `;`. Settings go in brackets, separated by spaces:
 

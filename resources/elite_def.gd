@@ -18,6 +18,8 @@ extends Resource
 @export var fire_interval: float = 1.6
 @export var fan_shots: int = 3
 @export var bullet_speed: float = 260.0
+## 0..1: how often a patrol turn heads for the player's side instead of bouncing off the wall.
+@export_range(0.0, 1.0) var chase: float = 0.0
 @export var visual_scene: PackedScene
 @export var visual_scale: float = 1.8
 @export var tint: Color = Color.WHITE
