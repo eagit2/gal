@@ -6,6 +6,8 @@ extends Node
 var active := false
 var difficulty: DifficultyDef
 var aggression := 1.0
+## Dive speed multiplier for kamikaze (swarmer) brains.
+var kamikaze_speed := 1.0
 var target: Player
 var _timer := 0.8
 var _volley := 1.5
@@ -31,6 +33,7 @@ func _launch_squad() -> void:
 		return
 	idle.shuffle()
 	for i in mini(mini(room, idle.size()), randi_range(1, 3)):
+		idle[i].kamikaze_speed = kamikaze_speed
 		idle[i].start_attack(target, aggression)
 
 

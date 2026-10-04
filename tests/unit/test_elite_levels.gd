@@ -3,17 +3,17 @@ extends TestCase
 ## higher level scales an elite's trait settings.
 
 
-func test_four_levels_load() -> void:
-	expect_eq(Roster.levels.size(), 4, "levels")
-	expect_true(Roster.levels[0].hp == 1.0 and Roster.levels[3].hp > Roster.levels[1].hp, "hp grows")
+func test_five_levels_load() -> void:
+	expect_eq(Roster.levels.size(), 5, "levels")
+	expect_true(Roster.levels[1].hp == 1.0 and Roster.levels[4].hp > Roster.levels[2].hp, "hp grows")
 
 
 func test_level_rolls_follow_the_stage() -> void:
 	for roll in [0.0, 0.5, 0.99]:
 		expect_eq(Roster.level_for(1, roll).level, 1, "stage 1 only rolls level 1")
-	expect_eq(Roster.level_for(4, 0.99).level, 2, "stage 4 opens level 2")
-	expect_eq(Roster.level_for(20, 0.99).level, 4, "stage 20 opens level 4")
-	expect_eq(Roster.level_number(9).level, 4, "dev level clamps")
+	expect_eq(Roster.level_for(7, 0.99).level, 2, "stage 7 opens level 2")
+	expect_eq(Roster.level_for(20, 0.99).level, 5, "stage 20 opens level 5")
+	expect_eq(Roster.level_number(9).level, 5, "dev level clamps")
 
 
 func test_scaled_trait_settings() -> void:

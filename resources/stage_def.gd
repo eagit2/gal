@@ -30,6 +30,10 @@ extends Resource
 @export var elite_pool_ids: Array[StringName] = []
 ## Multiplies every enemy's and elite's hp on this stage (later stages hit harder).
 @export var enemy_hp_mult: float = 1.0
+## Dive pressure for this stage (1 = normal); negative uses the sector's default ramp.
+@export var dive_aggression: float = -1.0
+## Multiplier on kamikaze (swarmer) dive speed.
+@export var kamikaze_speed: float = 1.0
 ## Chance that a scrap pile is a Mimic in disguise.
 @export var mimic_chance: float = 0.0
 

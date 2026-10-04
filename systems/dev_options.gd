@@ -10,7 +10,7 @@ extends RefCounted
 ##   capture     capture runs start at 3s and repeat every few seconds
 ##   elite       an elite or boss id from the roster sheet (e.g. puppeteer, matriarch) that joins
 ##               every stage at 4s
-##   level       1-4: every elite and boss spawns at that level (default: rolled per stage)
+##   level       1-5: every elite and boss spawns at that level (default: rolled per stage)
 ##   spawn       an enemy id from the roster sheet (e.g. blinker): every wave flies that type
 ##   unlock      0 turns off dev unlock (on by default during development: all items owned,
 ##               tree nodes toggle for free)

@@ -93,7 +93,8 @@ func _start_stage() -> void:
 	var stage := current_stage()
 	var loop := stage_number / sector.stages.size()
 	_dives.active = false
-	_dives.aggression = 1.0 + 0.25 * loop + 0.1 * (stage_number % sector.stages.size())
+	_dives.aggression = (stage.dive_aggression if stage.dive_aggression >= 0.0 else 1.0 + 0.1 * (stage_number % sector.stages.size())) + 0.25 * loop
+	_dives.kamikaze_speed = stage.kamikaze_speed + 0.3 * loop
 	_runner.hp_ramp = 1.0 + 0.3 * loop
 	_runner.stage_number = stage_number + 1
 	StyleDirector.set_stage_style(stage.style)
