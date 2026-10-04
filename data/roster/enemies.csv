@@ -1,0 +1,22 @@
+id,visual,scale,tint,brain,hp,speed,score,dive_score,bullet_speed,scrap_chance,scrap,can_capture,traits
+bee,bee,1,1 1 1,swarmer,1,280,50,100,300,0.3,1,false,
+blinker,spinner,1,1 1 1,swarmer,1,270,80,160,300,0.35,1,false,blink
+dasher,lancer,1,1 1 1,strafer,2,270,100,200,300,0.4,2,false,dash
+fragment,fragment,1,1 1 1,puppet,2,270,30,60,300,0.1,1,false,
+mender,mender,1,1 1 1,strafer,2,270,120,240,300,0.5,2,false,mend
+mine_layer,mine_layer,1,1 1 1,swarmer,2,270,100,200,300,0.4,2,false,mine
+moth,moth,1,1 1 1,strafer,1,270,80,160,300,0.4,2,false,
+plated,plated,1,1 1 1,strafer,1,270,90,180,300,0.4,2,false,plate
+rock_dropper,fusewing,1,1 1 1,swarmer,2,270,100,200,300,0.45,2,false,rock_drop
+splitter,splitter,1,1 1 1,swarmer,2,270,100,200,300,0.4,2,false,split
+warden,warden,1,1 1 1,hunter,2,230,150,400,300,1,5,true,
+blade_diver,lancer,1,1.2 1.2 1.3,puppet,5,270,150,300,300,0.5,2,false,blade_slash
+fire_breather,fusewing,1,1.3 0.8 0.55,strafer,3,240,150,300,300,0.5,3,false,fire_bar
+jammer,spinner,1,0.8 1.2 0.9,strafer,2,260,140,280,300,0.5,2,false,slot_jam
+evolver,bee,1,1.1 1.25 0.8,swarmer,1,280,80,160,300,0.35,1,false,evolve
+flagship,warden,1,1.25 1.1 0.6,hunter,3,240,300,800,300,0.8,4,false,flagship
+scrap_thief,moth,1,0.9 0.9 0.6,strafer,2,300,120,240,300,1,0,false,scrap_thief
+met,plated,1,1.25 1.1 0.6,strafer,2,240,90,180,300,0.4,2,false,hard_hat
+gust,moth,1,0.8 1.1 1.25,strafer,2,260,100,200,300,0.4,2,false,wind_gust
+boomeranger,lancer,1,1.1 1.25 1.1,swarmer,2,270,100,200,300,0.4,2,false,boomerang
+spawner_pod,mine_layer,1,0.9 0.9 0.9,escort,12,0,200,200,300,0.6,4,false,spawner_pipe

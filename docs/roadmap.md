@@ -60,6 +60,8 @@ Each milestone ends with a playable web build. See `architecture.md` section 8.
 - [x] M3.7 scrap economy (drops are hangar currency), elites with traits, capture and dual fighter, combos keep the screen
 - [x] M3.8 enemy roster batch 1 (design/enemy-roster.md): falling rocks crush enemies, Blinker, Dasher, Rock Dropper, Puppeteer, Phase Stalker, Hive Carrier; 1 ship per run plus Spare Hull part; Hangar from game over
 - [x] M3.9 enemy roster batch 2: Splitter, Plated, Mender, Mine Layer, Mimic, Meteor Caller, Mirror Knight, Gravity Well, Twin Sentinels, Sweeper; per-stage HP multiplier plus a ramp each loop; random elite pools per stage
+- [x] M3.11 roster expansion from the Roster Tuning artifact: 21 new traits (blade slash, fire bar, slot jam, evolve, flagship, scrap thief, hard hat, wind gust, boomerang, spawner pipe, gravity pool, blade release, orbit guard, decoy, reflect shield, weakness, copy weapon, time stop, scatter body, leaf shield, multi part), 10 new enemies, 9 new elites, 2 new bosses, elite levels 1 to 4, stage 3
+- [x] M3.10 roster sheet: data/roster/*.csv for enemies, elites and bosses (numbers, looks, trait mixes, boss phases), ?spawn= test option, draft Matriarch boss row
 ## M4 Difficulty + meta
 - [x] Hangar v2 (materia style): 4 frames with linked slots, 21 modules that level from AP, mastery copies and upgrade chains, ship parts per module, deeper menu (`docs/hangar.md`)
 - [x] Pilots with powers: Dave (Overclock), Rook (Bulwark), Chere (Phase Dash), Juno (Nova)

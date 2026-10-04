@@ -15,8 +15,14 @@ var formation: Formation
 var target: Player
 var entities: Node2D
 var stage: StageDef
+## 1-based number of the stage now playing, set by Game; sets which elite levels can roll.
+var stage_number := 1
+## Dev option: every elite at this level (DevOptions `level=N`); 0 = roll normally.
+var forced_level := 0
 ## Dev option: an extra elite for every stage (DevOptions `elite=<id>`).
 var extra_elite: EliteDef
+## Dev option: every wave flies this enemy type instead (DevOptions `spawn=<id>`).
+var only_enemy: EnemyDef
 ## Extra hp multiplier on top of the stage's (rises each time the sector loops).
 var hp_ramp := 1.0
 var _difficulty: DifficultyDef
@@ -36,7 +42,7 @@ func _ready() -> void:
 func start(stage_def: StageDef, difficulty: DifficultyDef) -> void:
 	stage = stage_def
 	_difficulty = difficulty
-	_queue = build_queue(stage_def, extra_elite)
+	_queue = build_queue(stage_def, extra_elite, only_enemy)
 	_total = _queue.size()
 	_time = 0.0
 	_kills = 0
@@ -47,7 +53,7 @@ func start(stage_def: StageDef, difficulty: DifficultyDef) -> void:
 
 
 ## Flattens waves into a spawn list sorted by time. Static so tests can check stage data.
-static func build_queue(stage_def: StageDef, extra_elite: EliteDef = null) -> Array[Dictionary]:
+static func build_queue(stage_def: StageDef, extra_elite: EliteDef = null, only_enemy: EnemyDef = null) -> Array[Dictionary]:
 	var queue: Array[Dictionary] = []
 	var elites := stage_def.pick_elites()
 	if extra_elite and not stage_def.is_challenge:
@@ -59,7 +65,7 @@ static func build_queue(stage_def: StageDef, extra_elite: EliteDef = null) -> Ar
 			var slot := wave.formation_slots[i] if i < wave.formation_slots.size() else Vector2i(-1, -1)
 			if stage_def.is_challenge:
 				slot = Vector2i(-1, -1)
-			queue.append({"time": wave.delay + i * SPAWN_INTERVAL, "enemy": wave.enemy, "path": wave.entry_path, "slot": slot})
+			queue.append({"time": wave.delay + i * SPAWN_INTERVAL, "enemy": only_enemy if only_enemy else wave.get_enemy(), "path": wave.entry_path, "slot": slot})
 	queue.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a["time"] < b["time"])
 	return queue
 
@@ -96,7 +102,7 @@ func _reinforce() -> void:
 	slots.shuffle()
 	var wave: WaveDef = stage.waves.pick_random()
 	for i in mini(stage.reinforcement_size, slots.size()):
-		_queue.append({"time": _time + i * SPAWN_INTERVAL, "enemy": wave.enemy, "path": wave.entry_path, "slot": slots[i]})
+		_queue.append({"time": _time + i * SPAWN_INTERVAL, "enemy": only_enemy if only_enemy else wave.get_enemy(), "path": wave.entry_path, "slot": slots[i]})
 	_total += mini(stage.reinforcement_size, slots.size())
 
 
@@ -115,6 +121,7 @@ func _spawn(entry: Dictionary) -> void:
 		var elite: Elite = ELITE_SCENE.instantiate()
 		elite.setup(entry["elite"], _difficulty, target, entities)
 		elite.hp_scale = stage.enemy_hp_mult * hp_ramp
+		elite.level = Roster.level_number(forced_level) if forced_level > 0 else Roster.level_for(stage_number, randf())
 		entities.add_child(elite)
 		return
 	var enemy: Enemy = ENEMY_SCENE.instantiate()

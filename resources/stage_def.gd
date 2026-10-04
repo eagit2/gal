@@ -24,6 +24,10 @@ extends Resource
 ## Elites drawn at random each run from `elite_pool`, after the fixed `elites`.
 @export var elite_pool: Array[EliteDef] = []
 @export var elite_picks: int = 0
+## Roster sheet ids (elites.csv, bosses.csv) added to `elites` and `elite_pool`, for elites and
+## bosses that only exist in the sheet.
+@export var elite_ids: Array[StringName] = []
+@export var elite_pool_ids: Array[StringName] = []
 ## Multiplies every enemy's and elite's hp on this stage (later stages hit harder).
 @export var enemy_hp_mult: float = 1.0
 ## Chance that a scrap pile is a Mimic in disguise.
@@ -34,6 +38,10 @@ extends Resource
 func pick_elites() -> Array[EliteDef]:
 	var picked := elites.duplicate()
 	var pool := elite_pool.duplicate()
+	for id in elite_ids:
+		picked.append(Roster.elite(id))
+	for id in elite_pool_ids:
+		pool.append(Roster.elite(id))
 	pool.shuffle()
 	picked.append_array(pool.slice(0, elite_picks))
 	return picked

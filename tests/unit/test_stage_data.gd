@@ -4,11 +4,11 @@ extends TestCase
 
 func test_sector_stages_load() -> void:
 	var sector: SectorDef = load("res://data/sectors/sector_1.tres")
-	expect_eq(sector.stages.size(), 2, "stage count (challenge stages are out for now)")
+	expect_eq(sector.stages.size(), 3, "stage count (challenge stages are out for now)")
 
 
 func test_formation_stages_fill_unique_slots() -> void:
-	for id in ["stage_1", "stage_2"]:
+	for id in ["stage_1", "stage_2", "stage_3"]:
 		var stage: StageDef = load("res://data/stages/%s.tres" % id)
 		var queue := StageRunner.build_queue(stage).filter(func(e: Dictionary) -> bool: return not e.has("elite"))
 		expect_eq(queue.size(), 40, "%s enemy count" % id)
@@ -38,14 +38,14 @@ func test_every_enemy_has_a_visual() -> void:
 func test_new_enemy_types_have_traits() -> void:
 	for id in ["blinker", "dasher", "rock_dropper", "splitter", "plated", "mender", "mine_layer"]:
 		var def: EnemyDef = load("res://data/enemies/%s.tres" % id)
-		expect_true(def.trait_logic != null, id)
+		expect_true(not def.all_traits().is_empty(), id)
 
 
 func test_elites_load_with_a_trait_and_visual() -> void:
 	for file in DirAccess.get_files_at("res://data/elites"):
 		if file.ends_with(".tres"):
 			var def: EliteDef = load("res://data/elites/" + file)
-			expect_true(def.trait_logic != null and def.visual_scene != null and not def.hint.is_empty(), file)
+			expect_true(not def.traits_for_phase(0).is_empty() and def.visual_scene != null and not def.hint.is_empty(), file)
 
 
 func test_dev_elite_joins_the_queue_early() -> void:

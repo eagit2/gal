@@ -13,20 +13,20 @@ const FLASH := Color(1.8, 1.8, 1.8)
 
 func tick(enemy: Enemy, delta: float) -> void:
 	if enemy.state != Enemy.State.DIVING:
-		enemy.trait_state["t"] = 0.0
+		state(enemy)["t"] = 0.0
 		enemy.modulate = Color.WHITE
 		return
-	var t: float = enemy.trait_state.get("t", 0.0) + delta
+	var t: float = state(enemy).get("t", 0.0) + delta
 	if t < interval - telegraph:
-		enemy.trait_state["t"] = t
+		state(enemy)["t"] = t
 		return
 	if t < interval:
 		enemy.modulate = FLASH
-		enemy.trait_state["dir"] = signf(enemy.predicted_player(0.2).x - enemy.position.x)
+		state(enemy)["dir"] = signf(enemy.predicted_player(0.2).x - enemy.position.x)
 	elif t < interval + dash_time:
 		enemy.modulate = Color.WHITE
-		enemy.position.x = clampf(enemy.position.x + enemy.trait_state.get("dir", 1.0) * dash_speed * delta, Enemy.MIN_X, Enemy.MAX_X)
+		enemy.position.x = clampf(enemy.position.x + state(enemy).get("dir", 1.0) * dash_speed * delta, Enemy.MIN_X, Enemy.MAX_X)
 	else:
 		enemy.fire_at(enemy.predicted_player(0.3))
 		t = 0.0
-	enemy.trait_state["t"] = t
+	state(enemy)["t"] = t

@@ -4,8 +4,8 @@ extends EliteTrait
 ## Meteors cost a life on contact and crush any enemy in the lane. Counter: stand outside the
 ## lanes, and lure enemies into them.
 
-@export var meteor_scene: PackedScene
-@export var warning_visual: PackedScene
+@export var meteor_scene: PackedScene = preload("res://scenes/enemies/elites/rock_chunk.tscn")
+@export var warning_visual: PackedScene = preload("res://assets/art/dusk_armada/elites/lane_warning.tscn")
 @export var interval := 7.0
 @export var warn_time := 1.4
 @export var lanes := 2
@@ -15,19 +15,19 @@ extends EliteTrait
 
 
 func begin(elite: Elite) -> void:
-	elite.state["t"] = interval - 2.0
-	elite.state["lanes"] = [] as Array[float]
+	state(elite)["t"] = interval - 2.0
+	state(elite)["lanes"] = [] as Array[float]
 	var warning: Node2D = warning_visual.instantiate()
 	elite.entities.add_child.call_deferred(warning)
-	elite.state["warning"] = warning
+	state(elite)["warning"] = warning
 
 
 func tick(elite: Elite, delta: float) -> void:
 	if not elite.entered:
 		return
-	var t: float = elite.state["t"] + delta
-	var lane_xs: Array[float] = elite.state["lanes"]
-	var warning: Node2D = elite.state["warning"]
+	var t: float = state(elite)["t"] + delta
+	var lane_xs: Array[float] = state(elite)["lanes"]
+	var warning: Node2D = state(elite)["warning"]
 	if lane_xs.is_empty() and t >= interval:
 		lane_xs.assign(_pick_lanes(elite))
 		t = 0.0
@@ -38,11 +38,11 @@ func tick(elite: Elite, delta: float) -> void:
 		lane_xs.clear()
 		t = 0.0
 	warning.call("set_lanes", lane_xs, lane_width, t / warn_time if not lane_xs.is_empty() else 0.0)
-	elite.state["t"] = t
+	state(elite)["t"] = t
 
 
 func end(elite: Elite) -> void:
-	var warning: Variant = elite.state.get("warning")
+	var warning: Variant = state(elite).get("warning")
 	if is_instance_valid(warning):
 		(warning as Node).queue_free()
 

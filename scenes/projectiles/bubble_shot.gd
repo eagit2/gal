@@ -47,7 +47,7 @@ func _on_area_entered(area: Area2D) -> void:
 
 func _on_hit(hurtbox: Hurtbox) -> void:
 	var enemy := hurtbox.get_parent() as Enemy
-	var plated := enemy != null and (enemy.def.trait_logic is PlateTrait or hurtbox.name != &"Hurtbox")
+	var plated := enemy != null and (enemy.def.all_traits().any(func(t: EnemyTrait) -> bool: return t is PlateTrait) or hurtbox.name != &"Hurtbox")
 	var trapped := enemy != null and enemy.has_node(NodePath(BubbleTrap.NODE_NAME))
 	if traps(enemy != null, plated, trapped) and enemy.health().hp > 0:
 		var trap := BubbleTrap.new()

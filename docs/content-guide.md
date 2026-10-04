@@ -25,6 +25,9 @@ Create `data/weapons/<id>.tres` of type `WeaponDef` (fire_rate, projectile_scene
 ## Upgrade
 Upgrades live in the hangar: add a `PartDef` under `data/hangar/parts/` and list it in `data/hangar/catalog.tres` (see docs/hangar.md). Effects use {"stat", "op", "value"} with a stat from `UpgradeSystem.BASE_STATS`.
 
+### Tune or add enemies, elites and bosses
+Edit the roster sheet in `data/roster/` (see its README). Numbers, looks and trait mixes need no code. Test with `?spawn=<enemy id>` or `?elite=<elite or boss id>`.
+
 ### Add an enemy trait
 Regular enemies can carry one `EnemyDef.trait_logic`: a sub-resource of an `EnemyTrait` script in `scenes/enemies/traits/` (Blink, Dash, Rock Drop, Split, Plate, Mend, Mine). Override `begin` and `tick`; keep per-enemy state in `enemy.trait_state`. Anything falling that should crush enemies gets a `Crusher` Area2D (`scenes/components/crusher.gd`, mask 2).
 

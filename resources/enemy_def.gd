@@ -23,3 +23,16 @@ extends Resource
 @export var scrap: int = 1
 ## Optional special behavior (blink, dash, drop rocks); scripts in scenes/enemies/traits/.
 @export var trait_logic: EnemyTrait
+## More traits on top of `trait_logic` (the roster sheet fills this).
+@export var traits: Array[EnemyTrait] = []
+## Visual scale and tint (the roster sheet sets these to make variants of one sprite).
+@export var visual_scale: float = 1.0
+@export var tint: Color = Color.WHITE
+
+
+func all_traits() -> Array[EnemyTrait]:
+	var all: Array[EnemyTrait] = []
+	if trait_logic:
+		all.append(trait_logic)
+	all.append_array(traits)
+	return all

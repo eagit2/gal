@@ -33,6 +33,10 @@ var dual := false
 var _wingman: Node2D
 ## Pixels per second this frame; enemies lead their aim with it.
 var velocity := Vector2.ZERO
+## Seconds the ship is frozen (Time Stopper): no steering, no firing.
+var frozen_left := 0.0
+## Gun mounts knocked offline (Jammer): mount -> seconds left.
+var jammed := {}
 var shield: Shield
 ## Every gun on the ship: {"mount", "weapon", "cooldown"} (ShipGuns).
 var _guns: Array[Dictionary] = []
@@ -67,12 +71,15 @@ func _physics_process(delta: float) -> void:
 	var stats := GameState.stats
 	# Real seconds, so slow-mo (Graze) slows the world but not the ship.
 	var real_delta := delta / Engine.time_scale
+	_tick_status(real_delta)
 	var speed: float = SPEED * stats[&"move_speed"]
 	var motion := Input.get_vector("move_left", "move_right", "move_up", "move_down") * speed * real_delta
+	if frozen_left > 0.0:
+		motion = Vector2.ZERO
 	# Engine placement: faster strafing away from the side the engine sits on.
 	var strafe: float = stats[&"strafe_left"] if motion.x < 0.0 else stats[&"strafe_right"]
 	motion.x *= strafe
-	if _touch_target != null:
+	if _touch_target != null and frozen_left <= 0.0:
 		var to_target := (_touch_target as Vector2) - position
 		strafe = stats[&"strafe_left"] if to_target.x < 0.0 else stats[&"strafe_right"]
 		motion = to_target.limit_length(speed * 1.5 * real_delta * strafe)
@@ -85,7 +92,7 @@ func _physics_process(delta: float) -> void:
 	var firing := Input.is_action_pressed("fire") or auto_fire or _touch_target != null
 	for gun in _guns:
 		gun["cooldown"] -= real_delta
-		if firing and gun["cooldown"] <= 0.0:
+		if firing and gun["cooldown"] <= 0.0 and frozen_left <= 0.0 and not jammed.has(gun["mount"]):
 			_fire(gun)
 
 	if _invuln > 0.0:
@@ -112,6 +119,35 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 ## Pilot powers: no damage for `seconds` (keeps the longer of this and any current window).
+## Time Stopper: the ship can't move or fire for `seconds`.
+func freeze_for(seconds: float) -> void:
+	frozen_left = maxf(frozen_left, seconds)
+	_visual.modulate = Color(0.6, 0.8, 1.5)
+
+
+## Jammer: knocks out one random gun mount for `seconds`. Returns the mount, or empty with no guns.
+func jam_random_slot(seconds: float) -> StringName:
+	var mounts: Array[StringName] = []
+	for gun in _guns:
+		mounts.append(gun["mount"])
+	if mounts.is_empty():
+		return &""
+	var mount: StringName = mounts.pick_random()
+	jammed[mount] = maxf(float(jammed.get(mount, 0.0)), seconds)
+	return mount
+
+
+func _tick_status(real_delta: float) -> void:
+	if frozen_left > 0.0:
+		frozen_left -= real_delta
+		if frozen_left <= 0.0:
+			_visual.modulate = Color.WHITE
+	for mount: StringName in jammed.keys():
+		jammed[mount] -= real_delta
+		if jammed[mount] <= 0.0:
+			jammed.erase(mount)
+
+
 func grant_invulnerability(seconds: float) -> void:
 	_invuln = maxf(_invuln, seconds)
 

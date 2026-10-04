@@ -8,7 +8,10 @@ extends RefCounted
 ##   repeat      replay the same stage instead of advancing
 ##   difficulty  cadet | pilot | ace | nightmare
 ##   capture     capture runs start at 3s and repeat every few seconds
-##   elite       an elite id (a file name in data/elites, e.g. puppeteer) that joins every stage at 4s
+##   elite       an elite or boss id from the roster sheet (e.g. puppeteer, matriarch) that joins
+##               every stage at 4s
+##   level       1-4: every elite and boss spawns at that level (default: rolled per stage)
+##   spawn       an enemy id from the roster sheet (e.g. blinker): every wave flies that type
 ##   unlock      0 turns off dev unlock (on by default during development: all items owned,
 ##               tree nodes toggle for free)
 
@@ -17,6 +20,8 @@ var god := false
 var repeat := false
 var difficulty: StringName = &""
 var elite: StringName = &""
+var spawn: StringName = &""
+var level := 0
 var capture := false
 var unlock := true
 
@@ -49,6 +54,10 @@ static func parse(args: PackedStringArray) -> DevOptions:
 				opts.capture = value != "0"
 			"elite":
 				opts.elite = StringName(value.to_lower())
+			"level":
+				opts.level = value.to_int()
+			"spawn":
+				opts.spawn = StringName(value.to_lower())
 			"unlock":
 				opts.unlock = value != "0"
 	return opts
@@ -56,7 +65,7 @@ static func parse(args: PackedStringArray) -> DevOptions:
 
 ## True when any option is set. Dev runs leave the saved run alone.
 func is_set() -> bool:
-	return not stage.is_empty() or god or repeat or difficulty != &"" or elite != &"" or capture
+	return not stage.is_empty() or god or repeat or difficulty != &"" or elite != &"" or spawn != &"" or level > 0 or capture
 
 
 ## Index into `stages` for the `stage` option, or `fallback` when unset or unknown.

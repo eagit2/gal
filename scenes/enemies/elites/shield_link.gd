@@ -7,34 +7,34 @@ extends EliteTrait
 @export var links := 5
 @export var radius := 300.0
 @export var refresh := 0.4
-@export var beam_visual: PackedScene
+@export var beam_visual: PackedScene = preload("res://assets/art/dusk_armada/elites/shield_beams.tscn")
 
 
 func begin(elite: Elite) -> void:
-	elite.state["linked"] = [] as Array[Enemy]
-	elite.state["refresh"] = 0.0
+	state(elite)["linked"] = [] as Array[Enemy]
+	state(elite)["refresh"] = 0.0
 	var beams: Node2D = beam_visual.instantiate()
 	elite.add_child(beams)
-	elite.state["beams"] = beams
+	state(elite)["beams"] = beams
 
 
 func tick(elite: Elite, delta: float) -> void:
-	elite.state["refresh"] -= delta
-	if elite.state["refresh"] <= 0.0 and elite.entered:
-		elite.state["refresh"] = refresh
+	state(elite)["refresh"] -= delta
+	if state(elite)["refresh"] <= 0.0 and elite.entered:
+		state(elite)["refresh"] = refresh
 		_relink(elite)
 	var points: Array[Vector2] = []
-	for enemy: Variant in elite.state["linked"]:
+	for enemy: Variant in state(elite)["linked"]:
 		if is_instance_valid(enemy):
 			points.append((enemy as Enemy).global_position)
-	(elite.state["beams"] as Node).call("set_targets", points)
+	(state(elite)["beams"] as Node).call("set_targets", points)
 
 
 func end(elite: Elite) -> void:
-	for enemy: Variant in elite.state["linked"]:
+	for enemy: Variant in state(elite)["linked"]:
 		if is_instance_valid(enemy):
 			(enemy as Enemy).set_shielded(false)
-	elite.state["linked"] = [] as Array[Enemy]
+	state(elite)["linked"] = [] as Array[Enemy]
 
 
 func _relink(elite: Elite) -> void:
@@ -45,9 +45,9 @@ func _relink(elite: Elite) -> void:
 			candidates.append(enemy)
 	candidates.sort_custom(func(a: Enemy, b: Enemy) -> bool: return a.position.distance_squared_to(elite.position) < b.position.distance_squared_to(elite.position))
 	var keep := candidates.slice(0, links)
-	for enemy: Variant in elite.state["linked"]:
+	for enemy: Variant in state(elite)["linked"]:
 		if is_instance_valid(enemy) and enemy not in keep:
 			(enemy as Enemy).set_shielded(false)
 	for enemy in keep:
 		enemy.set_shielded(true)
-	elite.state["linked"] = keep
+	state(elite)["linked"] = keep

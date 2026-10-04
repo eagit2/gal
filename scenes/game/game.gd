@@ -49,8 +49,11 @@ func _ready() -> void:
 	_runner.formation = _formation
 	_runner.target = _player
 	_runner.entities = _entities
-	if _dev.elite != &"" and ResourceLoader.exists("res://data/elites/%s.tres" % _dev.elite):
-		_runner.extra_elite = load("res://data/elites/%s.tres" % _dev.elite)
+	if _dev.elite != &"":
+		_runner.extra_elite = Roster.elite(_dev.elite)
+	_runner.forced_level = _dev.level
+	if _dev.spawn != &"":
+		_runner.only_enemy = Roster.enemy(_dev.spawn)
 	_runner.finished.connect(_on_stage_finished)
 	_dives.difficulty = difficulty
 	_dives.target = _player
@@ -92,6 +95,7 @@ func _start_stage() -> void:
 	_dives.active = false
 	_dives.aggression = 1.0 + 0.25 * loop + 0.1 * (stage_number % sector.stages.size())
 	_runner.hp_ramp = 1.0 + 0.3 * loop
+	_runner.stage_number = stage_number + 1
 	StyleDirector.set_stage_style(stage.style)
 	_drops.enabled = not stage.is_challenge
 	_drops.mimic_chance = stage.mimic_chance

@@ -10,6 +10,9 @@ const FALL_ACCEL := 90.0
 const MAX_FALL := 170.0
 const BOTTOM := 1100.0
 const RADIUS := 52.0
+## Follow speed while swinging (stiffer, so the rock really sweeps).
+const SWING_FOLLOW := 7.0
+const SWING_RAMP := 0.6
 
 var elite: Elite
 var tethered := true
@@ -18,6 +21,11 @@ var _chunks := 6
 var _chunk_hp := 40
 var _chunk_damage := 0
 var _fall := 0.0
+var _swinging := false
+var _swing_time := 0.0
+var _swing_speed := 2.2
+var _swing_arc := 2.4
+var _warn := 0.0
 var _visual: Node2D
 
 @onready var _health: Health = $Health
@@ -52,8 +60,8 @@ func _physics_process(delta: float) -> void:
 		if not is_instance_valid(elite):
 			cut()
 			return
-		var goal := elite.position + Vector2(0, _length)
-		position = position.lerp(goal, minf(1.0, FOLLOW * delta))
+		var goal := elite.position + Vector2(0, _length).rotated(_swing_angle(delta))
+		position = position.lerp(goal, minf(1.0, (SWING_FOLLOW if _swinging else FOLLOW) * delta))
 		# The tether's hurtbox covers only the exposed line between the rock's edge and the elite.
 		var anchor := elite.position + Vector2(0, 18) - position
 		var edge := anchor.normalized() * _body_shape.radius
@@ -69,10 +77,50 @@ func _physics_process(delta: float) -> void:
 			queue_free()
 
 
+## Telegraph: the rock flashes red for `seconds` before it swings.
+func warn(seconds: float) -> void:
+	_warn = seconds
+
+
+## Starts swinging back and forth across `arc` radians at `speed` rad/s around the elite. The
+## rock now crushes enemies it sweeps through (not the elite).
+func start_swing(speed: float, arc: float) -> void:
+	if _swinging or not tethered:
+		return
+	_swinging = true
+	_swing_speed = speed
+	_swing_arc = minf(arc, 3.0)
+	_warn = 0.0
+	modulate = Color.WHITE
+	$Crusher.ignore = elite
+	$Crusher.set_deferred(&"monitoring", true)
+
+
+## Angle of the swing from straight down after `t` seconds: the top angular speed is `speed`,
+## eased in over SWING_RAMP so the rock doesn't snap sideways.
+static func swing_angle_at(t: float, speed: float, arc: float) -> float:
+	var half := maxf(arc, 0.01) * 0.5
+	return sin(t * speed / half) * half * clampf(t / SWING_RAMP, 0.0, 1.0)
+
+
+func _swing_angle(delta: float) -> float:
+	if _warn > 0.0:
+		_warn -= delta
+		modulate = Color(1.6, 0.6, 0.6) if int(_warn * 10.0) % 2 == 0 else Color.WHITE
+		if _warn <= 0.0:
+			modulate = Color.WHITE
+	if not _swinging:
+		return 0.0
+	_swing_time += delta
+	return swing_angle_at(_swing_time, _swing_speed, _swing_arc)
+
+
 func cut() -> void:
 	if not tethered:
 		return
 	tethered = false
+	_swinging = false
+	modulate = Color.WHITE
 	$Crusher.ignore = elite
 	$Crusher.set_deferred(&"monitoring", true)
 	_tether.queue_free()

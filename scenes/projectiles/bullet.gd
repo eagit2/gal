@@ -21,6 +21,8 @@ var homing := 0.0
 var burn := 0
 var chill := 0
 var chain := 0
+## The player weapon that fired this shot (weaknesses and Copy Robot read it); empty for enemy shots.
+var weapon_id: StringName = &""
 ## Set once the player has grazed this shot.
 var grazed := false
 ## Pixels this shot flies before it fizzles; 0 = until it leaves the screen.
@@ -50,6 +52,7 @@ func launch(parent: Node, from: Vector2, vel: Vector2, dmg: int, pool_scene: Pac
 	chill = 0
 	chain = 0
 	grazed = false
+	weapon_id = &""
 	max_range = 0.0
 	_travelled = 0.0
 	spent = false
@@ -65,6 +68,7 @@ func launch(parent: Node, from: Vector2, vel: Vector2, dmg: int, pool_scene: Pac
 
 ## A player shot just launched from `weapon` with run `stats`: picks up the weapon's extras.
 func configure(weapon: WeaponDef, _stats: Dictionary) -> void:
+	weapon_id = weapon.id
 	max_range = weapon.max_range
 	if weapon.active_cap > 0:
 		_cap_group = weapon.id
