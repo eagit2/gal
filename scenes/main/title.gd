@@ -17,6 +17,7 @@ var _difficulty_info := Label.new()
 
 
 func _ready() -> void:
+	$Version.text = "V%s" % ProjectSettings.get_setting("application/config/version", "0")
 	$HighScore.text = "HIGH SCORE  %d" % SaveManager.data["high_score"]
 	_difficulties = load_difficulties()
 	_difficulty_index = maxi(_find_difficulty(StringName(SaveManager.data["last_difficulty"])), 0)

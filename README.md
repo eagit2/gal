@@ -1,4 +1,4 @@
-# Modern Galaga
+# Overkill Armada
 
 A modern take on Galaga for the browser: deep upgrade system, selectable difficulty, varied sectors and bosses. Built with Godot 4.5 (GDScript, Compatibility renderer). Portrait; a "Dusk Armada" 16-bit pixel base art style that switches to neon "Outrun Grid" under certain level conditions.
 
