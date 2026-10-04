@@ -35,6 +35,8 @@ var fire_cooldown := 0.0
 var shots_left := 0
 ## Stage aggression when the attack started; brains scale risk-taking by it.
 var aggression := 1.0
+## Stage multiplier on kamikaze dive speed (SwarmerBrain reads it).
+var kamikaze_speed := 1.0
 ## Per-enemy personality in 0..1, so two enemies with the same brain don't fly identically.
 var quirk := randf()
 ## Face the player instead of the direction of travel (strafers).

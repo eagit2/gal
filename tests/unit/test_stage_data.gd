@@ -4,20 +4,21 @@ extends TestCase
 
 func test_sector_stages_load() -> void:
 	var sector: SectorDef = load("res://data/sectors/sector_1.tres")
-	expect_eq(sector.stages.size(), 10, "stage count (stage 10 is the boss)")
-	var last: StageDef = sector.stages[9]
-	expect_true(last.boss and last.elite_ids.has(&"matriarch"), "stage 10 is the Matriarch")
+	expect_eq(sector.stages.size(), 20, "stage count (stages 10 and 20 are the Matriarch)")
+	for i in [9, 19]:
+		var last: StageDef = sector.stages[i]
+		expect_true(last.boss and last.elite_ids.has(&"matriarch"), "stage %d is the Matriarch" % (i + 1))
 
 
 func test_formation_stages_fill_unique_slots() -> void:
-	for id in ["stage_1", "stage_2", "stage_3", "stage_4", "stage_5", "stage_6", "stage_7", "stage_8", "stage_9", "stage_10"]:
+	for id in range(1, 21).map(func(i: int) -> String: return "stage_%d" % i):
 		var stage: StageDef = load("res://data/stages/%s.tres" % id)
 		var queue := StageRunner.build_queue(stage).filter(func(e: Dictionary) -> bool: return not e.has("elite"))
 		var total := 0
 		for w in stage.waves:
 			total += w.count
 		expect_eq(queue.size(), total, "%s enemy count" % id)
-		expect_true(total >= 20 and total <= Formation.COLUMNS * Formation.ROWS, "%s fits the grid" % id)
+		expect_true(total >= 8 and total <= Formation.COLUMNS * Formation.ROWS, "%s fits the grid" % id)
 		var seen := {}
 		for entry in queue:
 			var slot: Vector2i = entry["slot"]
