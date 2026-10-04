@@ -7,6 +7,7 @@ Every enemy, elite and boss is a row in one of three tables. Edit a number, save
 | `enemies.csv` | Regular enemies (formation and divers) |
 | `elites.csv` | Elites (tough named enemies with traits) |
 | `bosses.csv` | Bosses: elites whose traits change in phases as they lose hp |
+| `elite_levels.csv` | Elite difficulty levels 1 to 4: multipliers on hp, speed, damage and perk power, and the first stage each can roll on |
 | `TRAITS.md` | Every trait you can use, what it does, and its settings with defaults |
 
 You can open the files in Google Sheets or Excel, or edit them on GitHub (pencil icon). Keep the header row. Rows starting with `#` are ignored.
@@ -46,6 +47,10 @@ split(fragment=bee count=3)
 ```
 100: shield_link; puppeteer | 65: hive_tow; mirror | 30: meteor_call; sweep(interval=4.5)
 ```
+
+## Elite levels
+
+`elite_levels.csv` has one row per level. Every elite and boss rolls a level when it spawns, from the levels whose `from_stage` has been reached. `hp`, `speed` (movement and bullets) and `damage` multiply the elite's numbers. `perk` makes its traits stronger: counts, radii and speeds grow, waits (intervals, telegraphs) shrink, and hit-point settings follow `hp`. Test one with `?elite=<id>&level=3`.
 
 ## Adding a new type
 

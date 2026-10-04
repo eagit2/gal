@@ -14,7 +14,7 @@ blade_diver,lancer,1,1.2 1.2 1.3,puppet,5,270,150,300,300,0.5,2,false,blade_slas
 fire_breather,fusewing,1,1.3 0.8 0.55,strafer,3,240,150,300,300,0.5,3,false,fire_bar
 jammer,spinner,1,0.8 1.2 0.9,strafer,2,260,140,280,300,0.5,2,false,slot_jam
 evolver,bee,1,1.1 1.25 0.8,swarmer,1,280,80,160,300,0.35,1,false,evolve
-flagship,warden,1,1.25 1.1 0.6,escort,3,240,300,800,300,0.8,4,false,flagship
+flagship,warden,1,1.25 1.1 0.6,hunter,3,240,300,800,300,0.8,4,false,flagship
 scrap_thief,moth,1,0.9 0.9 0.6,strafer,2,300,120,240,300,1,0,false,scrap_thief
 met,plated,1,1.25 1.1 0.6,strafer,2,240,90,180,300,0.4,2,false,hard_hat
 gust,moth,1,0.8 1.1 1.25,strafer,2,260,100,200,300,0.4,2,false,wind_gust
