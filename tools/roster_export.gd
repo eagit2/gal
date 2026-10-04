@@ -1,7 +1,8 @@
 extends SceneTree
 ## Writes data/roster/enemies.csv and elites.csv from the current data/enemies and data/elites
 ## .tres files (bosses.csv is hand-written), and data/roster/README.md's trait list from the trait
-## scripts. Run: godot --headless -s res://tools/roster_export.gd
+## scripts. Run: godot --headless -s res://tools/roster_export.gd (add `-- traits-only` to rewrite only
+## TRAITS.md, which is what you want once the sheet holds rows that have no .tres)
 ## Only settings that differ from a trait's defaults are written.
 
 const ENEMY_COLUMNS := ["id", "visual", "scale", "tint", "brain", "hp", "speed", "score", "dive_score", "bullet_speed", "scrap_chance", "scrap", "can_capture", "traits"]
@@ -10,6 +11,9 @@ const ELITE_COLUMNS := ["id", "name", "hint", "visual", "scale", "tint", "hp", "
 
 func _process(_delta: float) -> bool:
 	var roster: Node = root.get_node("Roster")
+	if "traits-only" in OS.get_cmdline_user_args():
+		_write_traits("res://data/roster/TRAITS.md", roster.ENEMY_TRAITS, roster.ELITE_TRAITS)
+		return true
 	_write("res://data/roster/enemies.csv", ENEMY_COLUMNS, _defs("res://data/enemies/"), roster.ENEMY_TRAITS)
 	_write("res://data/roster/elites.csv", ELITE_COLUMNS, _defs("res://data/elites/"), roster.ELITE_TRAITS)
 	_write_traits("res://data/roster/TRAITS.md", roster.ENEMY_TRAITS, roster.ELITE_TRAITS)
