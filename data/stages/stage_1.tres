@@ -4,7 +4,6 @@
 [ext_resource type="Script" path="res://resources/elite_def.gd" id="elite_def_script"]
 [ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
 [ext_resource type="Resource" path="res://data/enemies/bee.tres" id="e_bee"]
-[ext_resource type="Resource" path="res://data/enemies/warden.tres" id="e_warden"]
 [ext_resource type="Resource" path="res://data/enemies/moth.tres" id="e_moth"]
 [ext_resource type="Curve2D" path="res://data/paths/side_left.tres" id="p_side_left"]
 [ext_resource type="Curve2D" path="res://data/paths/side_right.tres" id="p_side_right"]
@@ -13,11 +12,8 @@
 [ext_resource type="Resource" path="res://data/medals/no_damage.tres" id="medal"]
 [ext_resource type="Resource" path="res://data/elites/rock_hauler.tres" id="elite_rock_hauler"]
 [ext_resource type="Resource" path="res://data/enemies/rock_dropper.tres" id="e_rock_dropper"]
-[ext_resource type="Resource" path="res://data/elites/puppeteer.tres" id="elite_puppeteer"]
 [ext_resource type="Resource" path="res://data/enemies/plated.tres" id="e_plated"]
 [ext_resource type="Resource" path="res://data/elites/meteor_caller.tres" id="elite_meteor_caller"]
-[ext_resource type="Resource" path="res://data/elites/mirror_knight.tres" id="elite_mirror_knight"]
-[ext_resource type="Resource" path="res://data/elites/twin_sentinels.tres" id="elite_twin_sentinels"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -37,7 +33,7 @@ delay = 0.0
 
 [sub_resource type="Resource" id="w2"]
 script = ExtResource("wave")
-enemy = ExtResource("e_warden")
+enemy = ExtResource("e_bee")
 count = 4
 entry_path = ExtResource("p_side_left")
 formation_slots = Array[Vector2i]([Vector2i(3, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0)])
@@ -84,6 +80,6 @@ reinforcements = 3
 style = &""
 medal = ExtResource("medal")
 elites = Array[ExtResource("elite_def_script")]([ExtResource("elite_rock_hauler")])
-elite_pool = Array[ExtResource("elite_def_script")]([ExtResource("elite_puppeteer"), ExtResource("elite_meteor_caller"), ExtResource("elite_mirror_knight"), ExtResource("elite_twin_sentinels")])
+elite_pool = Array[ExtResource("elite_def_script")]([ExtResource("elite_meteor_caller")])
 elite_picks = 1
 mimic_chance = 0.04

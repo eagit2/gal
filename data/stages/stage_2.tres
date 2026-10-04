@@ -12,15 +12,12 @@
 [ext_resource type="Curve2D" path="res://data/paths/swoop_right.tres" id="p_swoop_right"]
 [ext_resource type="Resource" path="res://data/medals/sharpshooter.tres" id="medal"]
 [ext_resource type="Resource" path="res://data/elites/frost_shell.tres" id="elite_frost_shell"]
-[ext_resource type="Resource" path="res://data/elites/shield_warden.tres" id="elite_shield_warden"]
 [ext_resource type="Resource" path="res://data/enemies/blinker.tres" id="e_blinker"]
 [ext_resource type="Resource" path="res://data/enemies/dasher.tres" id="e_dasher"]
-[ext_resource type="Resource" path="res://data/elites/phase_stalker.tres" id="elite_phase_stalker"]
 [ext_resource type="Resource" path="res://data/elites/hive_carrier.tres" id="elite_hive_carrier"]
 [ext_resource type="Resource" path="res://data/enemies/mender.tres" id="e_mender"]
 [ext_resource type="Resource" path="res://data/enemies/splitter.tres" id="e_splitter"]
 [ext_resource type="Resource" path="res://data/enemies/mine_layer.tres" id="e_mine_layer"]
-[ext_resource type="Resource" path="res://data/elites/gravity_well.tres" id="elite_gravity_well"]
 [ext_resource type="Resource" path="res://data/elites/sweeper.tres" id="elite_sweeper"]
 
 [sub_resource type="Resource" id="w0"]
@@ -88,7 +85,7 @@ reinforcements = 4
 style = &""
 medal = ExtResource("medal")
 elites = Array[ExtResource("elite_def_script")]([ExtResource("elite_frost_shell")])
-elite_pool = Array[ExtResource("elite_def_script")]([ExtResource("elite_shield_warden"), ExtResource("elite_phase_stalker"), ExtResource("elite_hive_carrier"), ExtResource("elite_gravity_well"), ExtResource("elite_sweeper")])
+elite_pool = Array[ExtResource("elite_def_script")]([ExtResource("elite_hive_carrier"), ExtResource("elite_sweeper")])
 elite_picks = 2
 mimic_chance = 0.08
 enemy_hp_mult = 1.15
