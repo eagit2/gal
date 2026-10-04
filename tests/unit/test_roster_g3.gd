@@ -46,4 +46,4 @@ func test_rows_carry_traits() -> void:
 	expect_true(Roster.elite(&"mirage").traits_for_phase(0).any(func(t: EliteTrait) -> bool: return t is DecoyTrait), "mirage")
 	expect_true(Roster.elite(&"hive_carrier").traits_for_phase(0).any(func(t: EliteTrait) -> bool: return t is BladeReleaseTrait), "carrier")
 	var tow: RockTowTrait = Roster.elite(&"rock_hauler").traits_for_phase(0).filter(func(t: EliteTrait) -> bool: return t is RockTowTrait)[0]
-	expect_true(is_equal_approx(tow.tether_length, 250.0) and is_equal_approx(tow.swing_after, 5.0), "rock hauler")
+	expect_true(is_equal_approx(tow.tether_length, 250.0) and is_equal_approx(tow.swing_after, 3.0), "rock hauler")

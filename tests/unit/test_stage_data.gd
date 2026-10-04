@@ -4,14 +4,20 @@ extends TestCase
 
 func test_sector_stages_load() -> void:
 	var sector: SectorDef = load("res://data/sectors/sector_1.tres")
-	expect_eq(sector.stages.size(), 3, "stage count (challenge stages are out for now)")
+	expect_eq(sector.stages.size(), 10, "stage count (stage 10 is the boss)")
+	var last: StageDef = sector.stages[9]
+	expect_true(last.boss and last.elite_ids.has(&"matriarch"), "stage 10 is the Matriarch")
 
 
 func test_formation_stages_fill_unique_slots() -> void:
-	for id in ["stage_1", "stage_2", "stage_3"]:
+	for id in ["stage_1", "stage_2", "stage_3", "stage_4", "stage_5", "stage_6", "stage_7", "stage_8", "stage_9", "stage_10"]:
 		var stage: StageDef = load("res://data/stages/%s.tres" % id)
 		var queue := StageRunner.build_queue(stage).filter(func(e: Dictionary) -> bool: return not e.has("elite"))
-		expect_eq(queue.size(), 40, "%s enemy count" % id)
+		var total := 0
+		for w in stage.waves:
+			total += w.count
+		expect_eq(queue.size(), total, "%s enemy count" % id)
+		expect_true(total >= 20 and total <= Formation.COLUMNS * Formation.ROWS, "%s fits the grid" % id)
 		var seen := {}
 		for entry in queue:
 			var slot: Vector2i = entry["slot"]

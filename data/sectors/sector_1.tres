@@ -1,13 +1,20 @@
-[gd_resource type="Resource" script_class="SectorDef" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="SectorDef" load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://resources/sector_def.gd" id="sector"]
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stagedef"]
 [ext_resource type="Resource" path="res://data/stages/stage_1.tres" id="s1"]
 [ext_resource type="Resource" path="res://data/stages/stage_2.tres" id="s2"]
 [ext_resource type="Resource" path="res://data/stages/stage_3.tres" id="s3"]
+[ext_resource type="Resource" path="res://data/stages/stage_4.tres" id="s4"]
+[ext_resource type="Resource" path="res://data/stages/stage_5.tres" id="s5"]
+[ext_resource type="Resource" path="res://data/stages/stage_6.tres" id="s6"]
+[ext_resource type="Resource" path="res://data/stages/stage_7.tres" id="s7"]
+[ext_resource type="Resource" path="res://data/stages/stage_8.tres" id="s8"]
+[ext_resource type="Resource" path="res://data/stages/stage_9.tres" id="s9"]
+[ext_resource type="Resource" path="res://data/stages/stage_10.tres" id="s10"]
 
 [resource]
 script = ExtResource("sector")
 id = &"sector_1"
 display_name = "Dusk Approach"
-stages = Array[ExtResource("stagedef")]([ExtResource("s1"), ExtResource("s2"), ExtResource("s3")])
+stages = Array[ExtResource("stagedef")]([ExtResource("s1"), ExtResource("s2"), ExtResource("s3"), ExtResource("s4"), ExtResource("s5"), ExtResource("s6"), ExtResource("s7"), ExtResource("s8"), ExtResource("s9"), ExtResource("s10")])

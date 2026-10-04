@@ -27,6 +27,7 @@ var hp_scale := 1.0
 ## Difficulty level (data/roster/elite_levels.csv), set by the StageRunner; null = level 1.
 var level: EliteLevel
 var _dir := 1.0
+var _chase_t := 0.0
 var _t := randf() * TAU
 var _fire := 1.5
 var _visual: Node2D
@@ -79,6 +80,11 @@ func _physics_process(delta: float) -> void:
 		position.y += ENTER_SPEED * delta
 		entered = position.y >= PATROL_Y
 	else:
+		_chase_t -= delta
+		if _chase_t <= 0.0:
+			_chase_t = 0.8
+			if def.chase > 0.0 and randf() < def.chase and is_instance_valid(target) and absf(target.global_position.x - position.x) > 30.0:
+				_dir = signf(target.global_position.x - position.x)
 		position.x += _dir * def.speed * level.speed * delta
 		if position.x > MAX_X or position.x < MIN_X:
 			_dir = -_dir

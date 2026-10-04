@@ -91,4 +91,4 @@ elites = Array[ExtResource("elite_def_script")]([ExtResource("elite_frost_shell"
 elite_pool = Array[ExtResource("elite_def_script")]([ExtResource("elite_shield_warden"), ExtResource("elite_phase_stalker"), ExtResource("elite_hive_carrier"), ExtResource("elite_gravity_well"), ExtResource("elite_sweeper")])
 elite_picks = 2
 mimic_chance = 0.08
-enemy_hp_mult = 1.3
+enemy_hp_mult = 1.15
