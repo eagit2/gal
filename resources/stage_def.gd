@@ -13,6 +13,9 @@ extends Resource
 @export var reinforcement_size: int = 8
 @export var reinforce_below: int = 18
 @export var modifiers: Array[StringName] = []
+## This stage's track from the sector soundtrack (tools/audio/tracks.py). Null plays the style's
+## music, or SoundBank.boss_music on boss stages. Consecutive stages sharing a track keep it playing.
+@export var music: AudioStream
 @export_range(0, 3) var music_intensity: int = 1
 ## Optional goal that pays hangar credits once per run (see MedalTracker).
 @export var medal: MedalDef
@@ -49,5 +52,5 @@ func pick_elites() -> Array[EliteDef]:
 	pool.shuffle()
 	picked.append_array(pool.slice(0, elite_picks))
 	return picked
-## Boss stage: plays SoundBank.boss_music instead of the style's music.
+## Boss stage: plays SoundBank.boss_music when `music` is unset.
 @export var boss: bool = false

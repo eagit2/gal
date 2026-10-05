@@ -97,6 +97,7 @@ Spec: `/mnt/project-files/design/intro-levels.md` (approved by Eric).
 - [x] Audio system: SoundBank data, AudioManager crossfades and voice priority, AudioCues on EventBus, mute key
 - [x] 19 generated SFX (shots, hits, explosions, shield pop/restore, graze, combos, jingles, UI) and 8 music loops (title, stage, boss, 5 combo styles) (`tools/audio/`)
 - [x] Combo-style tracks wired into the M3 ThemeDefs
+- [x] Sector 1 soundtrack: a track per stage group plus mini-boss and Matriarch themes (`StageDef.music`)
 - [ ] Adaptive music layers (stems by intensity), classic SFX set for Arcade '81
 ## M7 Content scale
 - [ ] Consider: in-game level editor scene (place waves visually, press play to test)

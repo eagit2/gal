@@ -1,8 +1,8 @@
 class_name AudioCues
 extends Node
 ## Turns game events into sounds and music. Lives under AudioManager, so it works in every scene
-## without gameplay code knowing about audio. Music follows the art style (ThemeDef.music):
-## stages play their style's track, combo modes crossfade to theirs, boss stages use the boss track.
+## without gameplay code knowing about audio. Stages play their own track (StageDef.music, the
+## sector soundtrack); without one they fall back to the boss track or the style's track.
 
 const STAGES_DIR := "res://data/stages/%s.tres"
 ## Every sound id this script plays directly (tests check they exist in the bank).
@@ -27,6 +27,7 @@ const OPTIONAL_CUES := {
 
 var _shield_up := true
 var _boss_stage := false
+var _stage_track: AudioStream
 var _in_run := false
 
 
@@ -66,8 +67,11 @@ func _signal_arg_count(signal_name: StringName) -> int:
 	return 0
 
 
-## Music for the game scene: the boss track on boss stages, else the active style's track.
+## Music for the game scene: the stage's own track, else the boss track on boss stages, else the
+## active style's track.
 func stage_music() -> AudioStream:
+	if _stage_track:
+		return _stage_track
 	if _boss_stage and AudioManager.BANK.boss_music:
 		return AudioManager.BANK.boss_music
 	var theme: ThemeDef = StyleDirector.current
@@ -103,6 +107,7 @@ func _on_stage_started(stage_id: StringName) -> void:
 	var path := STAGES_DIR % stage_id
 	var stage: StageDef = load(path) if ResourceLoader.exists(path) else null
 	_boss_stage = stage != null and stage.boss
+	_stage_track = stage.music if stage else null
 	AudioManager.play(&"stage_start")
 	AudioManager.play_music(stage_music())
 

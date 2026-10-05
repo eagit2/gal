@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StageDef" load_steps=30 format=3]
+[gd_resource type="Resource" script_class="StageDef" load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/elite_def.gd" id="elite_def_script"]
@@ -19,6 +19,7 @@
 [ext_resource type="Resource" path="res://data/enemies/splitter.tres" id="e_splitter"]
 [ext_resource type="Resource" path="res://data/enemies/mine_layer.tres" id="e_mine_layer"]
 [ext_resource type="Resource" path="res://data/elites/sweeper.tres" id="elite_sweeper"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/act3.ogg" id="music"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -79,6 +80,7 @@ delay = 7.92
 [resource]
 script = ExtResource("stage")
 id = &"stage_12"
+music = ExtResource("music")
 waves = Array[ExtResource("wave")]([SubResource("w0"), SubResource("w1"), SubResource("w2"), SubResource("w3"), SubResource("w4"), SubResource("w5"), SubResource("w6")])
 is_challenge = false
 reinforcements = 4
