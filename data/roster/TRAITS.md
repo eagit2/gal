@@ -45,7 +45,8 @@ After living `evolve_time` seconds it glows, then upgrades into a tougher type (
 While diving it breathes a spinning, meandering chain of fireballs that hurts on contact and reverses now and then. Counter: slip through the gap as the bar swings past, or shoot the breather.
 
 - `segments` = 6
-- `spacing` = 18.0
+- `ball_radius` = 12.0
+- `spacing` = 26.0
 - `spin_speed` = 1.6
 - `wobble` = 24.0
 - `wobble_speed` = 3.0
@@ -59,10 +60,13 @@ Dives with an escort squad, Galaxian style. Kill the escorts first, then the fla
 - `bonus_mult` = 3
 
 ### hard_hat
-Hides under a helmet that no shot can hurt, then peeks out to fire a spread. Counter: hit it while it peeks.
+Slowly creeps toward the player. While it watches, any shot it sees coming makes it duck under a helmet no shot can hurt; it pops back up with a spread. Every so often it looks away (it dims). Counter: shoot while it is looking away.
 
-- `hide_time` = 1.8
-- `peek_time` = 0.9
+- `creep_speed` = 40.0
+- `sight_range` = 220.0
+- `watch_time` = 2.0
+- `away_time` = 1.2
+- `hide_time` = 1.0
 - `spread_shots` = 3
 - `spread_angle` = 30.0
 
@@ -185,13 +189,14 @@ Lobs gravity pools at you that drag your ship and your shots into the well, like
 - `shot_pull` = 420.0
 
 ### hive_tow
-Tows a hive pod that hatches a swarm of diving enemies every `spawn_interval`. Counter: destroy the pod first (it has its own hp); kill the carrier instead and the pod falls like a rock, crushing enemies below it.
+Tows a hive pod (the size of the Rock Hauler's rock) that hatches a swarm of diving enemies every `spawn_interval`. Counter: destroy the pod first (it has its own hp); kill the carrier instead and the pod falls like a rock, crushing enemies below it.
 
 - `pod_hp` = 30
 - `swarm_enemy` = bee
 - `swarm` = 3
 - `spawn_interval` = 6.0
 - `tether_length` = 120.0
+- `pod_radius` = 52.0
 
 ### leaf_shield
 Leaves orbit the elite and soak up your shots, then all launch at you at once after a red flash. Counter: sidestep the launch, then shoot the bare elite while the leaves regrow.
@@ -264,13 +269,11 @@ Every `interval` it hooks strings onto up to `puppets` formation enemies, then h
 - `puppet_brain` = puppet
 
 ### reflect_shield
-A rotating dome sends every projectile back at you; it drops after each volley. Counter: fire through the open arc or right after the volley (rams and falling rocks ignore it).
+A dome reflects every shot back at you for `reflect_time` seconds, then overloads and flickers out for `down_time` seconds before it reboots. Counter: hold fire while it is up, then unload during the overload (rams and falling rocks ignore it).
 
 - `dome_radius` = 62.0
-- `arc_open` = 60
-- `rotate_speed` = 0.8
-- `volley_interval` = 4.0
-- `drop_time` = 1.0
+- `reflect_time` = 5.0
+- `down_time` = 2.0
 - `reflect_speed_mult` = 1.0
 - `reflect_gap` = 0.04
 
@@ -308,13 +311,6 @@ Every `interval` it stops, shows a thin aiming line, then sweeps a long laser ac
 - `aim_time` = 1.1
 - `sweep_time` = 1.6
 - `arc` = 1.0
-
-### time_stop
-Warns, then freezes your ship for a moment while its shots keep flying. Counter: be in a safe spot when the warning ends.
-
-- `interval` = 9.0
-- `warn_time` = 1.2
-- `freeze_time` = 1.0
 
 ### twin
 Comes as a linked pair. When one dies, the other rebuilds it after `revive_time` (up to `revives` times). Counter: kill both within the revive window; split your damage.

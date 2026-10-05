@@ -3,13 +3,13 @@ extends Node2D
 ## A chain of fireballs spinning around its anchor enemy. Segments hurt the player on contact (like
 ## enemy shots) and cannot be shot down; the bar goes when the anchor does.
 
-const HIT_RADIUS := 7.0
 const GROW_TIME := 0.5
 const SPIN_EASE := 5.0
 const WOBBLE_PHASE := 0.6
 
 var segments := 6
-var spacing := 18.0
+var ball_radius := 12.0
+var spacing := 26.0
 var spin_speed := 1.6
 var wobble := 24.0
 var wobble_speed := 3.0
@@ -52,7 +52,7 @@ func _ready() -> void:
 		box.monitoring = false
 		var shape := CollisionShape2D.new()
 		var circle := CircleShape2D.new()
-		circle.radius = HIT_RADIUS
+		circle.radius = ball_radius
 		shape.shape = circle
 		box.add_child(shape)
 		add_child(box)
@@ -83,4 +83,4 @@ func _physics_process(delta: float) -> void:
 		if live != _armed[i]:
 			_armed[i] = live
 			_hitboxes[i].set_deferred(&"monitoring", live)
-	_visual.call("show_chain", points, _grow)
+	_visual.call("show_chain", points, _grow, ball_radius)

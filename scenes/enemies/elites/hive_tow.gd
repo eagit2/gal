@@ -1,6 +1,6 @@
 class_name HiveTowTrait
 extends EliteTrait
-## Tows a hive pod that hatches a swarm of diving enemies every `spawn_interval`. Counter: destroy
+## Tows a hive pod (the size of the Rock Hauler's rock) that hatches a swarm of diving enemies every `spawn_interval`. Counter: destroy
 ## the pod first (it has its own hp); kill the carrier instead and the pod falls like a rock,
 ## crushing enemies below it.
 
@@ -10,11 +10,13 @@ extends EliteTrait
 @export var swarm := 3
 @export var spawn_interval := 6.0
 @export var tether_length := 120.0
+## Same as the Rock Hauler's rock.
+@export var pod_radius := 52.0
 
 
 func begin(elite: Elite) -> void:
 	var pod: Node2D = pod_scene.instantiate()
-	pod.call("setup", elite, maxi(1, roundi(pod_hp * elite.difficulty.enemy_hp)), tether_length, swarm_enemy, swarm, spawn_interval)
+	pod.call("setup", elite, maxi(1, roundi(pod_hp * elite.difficulty.enemy_hp)), tether_length, swarm_enemy, swarm, spawn_interval, pod_radius)
 	elite.entities.add_child.call_deferred(pod)
 	state(elite)["pod"] = pod
 
