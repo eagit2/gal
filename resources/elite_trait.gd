@@ -8,7 +8,7 @@ extends Resource
 ## Settings that wait for something (smaller = harder), so a stronger perk divides them.
 const WAITS := ["interval", "delay", "telegraph", "warn", "aim_time", "closed_time", "down_time", "lock_time", "charge_time", "respawn", "regrow", "gap", "stagger", "mark_time", "swing_after", "evolve_time"]
 ## Settings a stronger perk must not change (a longer window would make the elite easier).
-const KEEP := ["mult", "hp_step", "alpha", "solid_time", "open_time", "eye_open", "peek_time", "arc_open", "copy_life", "fragment", "weapon"]
+const KEEP := ["mult", "hp_step", "alpha", "solid_time", "open_time", "eye_open", "peek_time", "arc_open", "copy_life", "fragment", "weapon", "lane"]
 
 
 ## A copy for an elite of a higher level: counts, radii and speeds times `perk`, waits divided by

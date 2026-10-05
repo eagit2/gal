@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SoundBank" load_steps=43 format=3]
+[gd_resource type="Resource" script_class="SoundBank" load_steps=45 format=3]
 
 [ext_resource type="Script" path="res://resources/sound_bank.gd" id="bank"]
 [ext_resource type="Script" path="res://resources/sfx_def.gd" id="sfx_def"]
@@ -23,6 +23,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_move.wav" id="s_ui_move"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_confirm.wav" id="s_ui_confirm"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_back.wav" id="s_ui_back"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/elite_alert.wav" id="s_elite_alert"]
 
 [sub_resource type="Resource" id="shot"]
 script = ExtResource("sfx_def")
@@ -214,9 +215,19 @@ cooldown = 0.05
 priority = 6
 bus = &"UI"
 
+[sub_resource type="Resource" id="elite_alert"]
+script = ExtResource("sfx_def")
+id = &"elite_alert"
+streams = Array[AudioStream]([ExtResource("s_elite_alert")])
+volume_db = -6.0
+pitch_variance = 0.0
+cooldown = 1.0
+priority = 6
+bus = &"SFX"
+
 [resource]
 script = ExtResource("bank")
-sfx = Array[ExtResource("sfx_def")]([SubResource("shot"), SubResource("shot_hit"), SubResource("explode_small"), SubResource("explode_big"), SubResource("player_hit"), SubResource("shield_pop"), SubResource("shield_restore"), SubResource("graze"), SubResource("pickup"), SubResource("upgrade_pick"), SubResource("combo_start"), SubResource("combo_end"), SubResource("synergy"), SubResource("stage_start"), SubResource("stage_clear"), SubResource("game_over"), SubResource("ui_move"), SubResource("ui_confirm"), SubResource("ui_back")])
+sfx = Array[ExtResource("sfx_def")]([SubResource("shot"), SubResource("shot_hit"), SubResource("explode_small"), SubResource("explode_big"), SubResource("player_hit"), SubResource("shield_pop"), SubResource("shield_restore"), SubResource("graze"), SubResource("pickup"), SubResource("upgrade_pick"), SubResource("combo_start"), SubResource("combo_end"), SubResource("synergy"), SubResource("stage_start"), SubResource("stage_clear"), SubResource("game_over"), SubResource("ui_move"), SubResource("ui_confirm"), SubResource("ui_back"), SubResource("elite_alert")])
 boss_music = ExtResource("m_boss")
 scene_music = {
 "res://scenes/main/title.tscn": ExtResource("m_title")

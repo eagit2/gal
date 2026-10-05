@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Generates every sound effect into assets/audio/sfx/*.wav. All sounds are original synthesis.
 
-Run: python3 tools/audio/gen_sfx.py   (needs numpy, scipy)
+Run: python3 tools/audio/gen_sfx.py [sound ...]   (needs numpy, scipy)
 Sound ids match data/audio/sound_bank.tres. Keep effects short; music lives in gen_music.py.
 """
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -177,6 +178,12 @@ def game_over() -> np.ndarray:
                   bass=["A2", ".", ".", ".", "F2", ".", ".", ".", "D2", ".", "E2", ".", "A1", ".", ".", ".", ".", "."])
 
 
+def elite_alert() -> np.ndarray:
+    """Two short low blips: a warning that doesn't clash with the music's key."""
+    blip = lambda: tone("square", 220, 0.07, 0.5, a=0.001, d=0.03, s=0.5, r=0.02) * 0.4
+    return seq([blip(), blip()], 0.11)
+
+
 def ui_move() -> np.ndarray:
     return tone("square", "E6", 0.035, 0.25, a=0.001, d=0.02, s=0.3, r=0.01) * 0.25
 
@@ -198,12 +205,14 @@ SOUNDS = {
     "upgrade_pick": (upgrade_pick, 0.7), "combo_start": (combo_start, 0.85), "combo_end": (combo_end, 0.6),
     "synergy": (synergy, 0.7), "stage_start": (stage_start, 0.7), "stage_clear": (stage_clear, 0.7),
     "game_over": (game_over, 0.75), "ui_move": (ui_move, 0.4), "ui_confirm": (ui_confirm, 0.5),
-    "ui_back": (ui_back, 0.5),
+    "ui_back": (ui_back, 0.5), "elite_alert": (elite_alert, 0.55),
 }
 
 
 def main() -> None:
-    for name, (make, peak) in SOUNDS.items():
+    names = sys.argv[1:] or list(SOUNDS)
+    for name in names:
+        make, peak = SOUNDS[name]
         x = fade_out(normalize(np.asarray(make(), dtype=float), peak), 0.008)
         write_wav(OUT / f"{name}.wav", x)
         print(f"{name}.wav  {len(x) / SR:.2f}s")

@@ -15,7 +15,7 @@ const OPTIONAL_CUES := {
 	&"combo_started": &"combo_start",
 	&"combo_ended": &"combo_end",
 	&"scrap_collected": &"pickup",
-	&"elite_spawned": &"stage_start",
+	&"elite_spawned": &"elite_alert",
 	&"elite_killed": &"explode_big",
 	&"elite_trait_broken": &"shield_pop",
 	&"player_captured": &"player_hit",
