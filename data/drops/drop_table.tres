@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="DropTable" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/drop_table.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+elite_chips = Array[StringName]([&"power_chip", &"rapid_chip", &"split_chip", &"pierce_chip", &"seeker_chip", &"ember_chip", &"frost_chip", &"volt_chip"])

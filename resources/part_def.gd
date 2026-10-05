@@ -34,6 +34,10 @@ const SLOT_OF: Array[StringName] = [&"weapon", &"shield", &"extra", &"engine", &
 ## combo. Linked pairs come first.
 @export var sockets := 1
 @export var links := 0
+## Never sold, dropped or granted by dev unlock (story rewards like the Mentor's Needle).
+@export var unique := false
+## Chips fixed in the sockets, in order; they can't be removed or swapped.
+@export var locked_chips: Array[StringName] = []
 ## Weapons only: the shot this weapon fires.
 @export var weapon: WeaponDef
 ## Ship part sprite (assets/art/dusk_armada/parts/<part>.png), e.g. cannon_weapon.

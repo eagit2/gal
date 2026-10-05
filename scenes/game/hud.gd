@@ -23,6 +23,8 @@ var _banner_tween: Tween
 var _mode_tween: Tween
 var _toast_tween: Tween
 var _bars := {}  # combo id -> ProgressBar
+## Power-up stacks held this life ("P2 F1 +1"), bottom right.
+var _powerups: Label
 
 
 func _ready() -> void:
@@ -43,6 +45,9 @@ func _ready() -> void:
 	EventBus.run_ended.connect(_on_run_ended)
 	EventBus.power_changed.connect(_on_power_changed)
 	EventBus.power_used.connect(func(p: PilotDef) -> void: show_toast(p.power_name, p.color))
+	EventBus.drop_banked.connect(show_toast)
+	EventBus.powerups_changed.connect(func(counts: Dictionary) -> void: _powerups.text = Powerups.hud_text(counts))
+	_build_powerups()
 	_build_meters()
 	_on_power_changed(1.0)
 	_mode.visible = false
@@ -109,6 +114,17 @@ func show_toast(text: String, color := Color.WHITE) -> void:
 	_toast_tween.tween_interval(1.4)
 	_toast_tween.tween_property(_toast, "modulate:a", 0.0, 0.4)
 	_toast_tween.tween_callback(_toast.hide)
+
+
+func _build_powerups() -> void:
+	_powerups = Label.new()
+	_powerups.position = Vector2(244, 928)
+	_powerups.size = Vector2(280, 24)
+	_powerups.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_powerups.add_theme_font_size_override(&"font_size", 16)
+	_powerups.modulate = Color(1, 0.85, 0.45)
+	_powerups.text = Powerups.hud_text(GameState.powerups)
+	add_child(_powerups)
 
 
 func _build_meters() -> void:

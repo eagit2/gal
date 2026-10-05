@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CutsceneDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/cutscene_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"stage18_mentor"
+stage_id = &"stage_18"
+intro_line = "do you even combo bro?"
+grant_part = &"mentor_needle"
+reward_chip = &"ember_chip"
+line_first_clean = "Settle down big shot"
+line_retry_clean = "Top Gun called, they want their fighter jet back"
+line_fallback = "You miss 100% of the shots you don't take, but you managed to miss over a 100 of the shots you did take."

@@ -51,7 +51,7 @@ func tick(elite: Elite, delta: float) -> void:
 	if not elite.entered:
 		return
 	var list: Array[CannonPart] = state(elite)["parts"]
-	var alive := list.filter(func(p: CannonPart) -> bool: return is_instance_valid(p) and not p.is_queued_for_deletion())
+	var alive := list.filter(func(p: Variant) -> bool: return is_instance_valid(p) and not (p as Node).is_queued_for_deletion())
 	var lost := list.size() - alive.size()
 	var rate := rate_for(lost)
 	for part: CannonPart in alive:
@@ -65,7 +65,7 @@ func tick(elite: Elite, delta: float) -> void:
 
 func absorb(elite: Elite, amount: int, _hitbox: Hitbox) -> int:
 	var list: Array[CannonPart] = state(elite)["parts"]
-	if list.any(func(p: CannonPart) -> bool: return is_instance_valid(p) and not p.is_queued_for_deletion()):
+	if list.any(func(p: Variant) -> bool: return is_instance_valid(p) and not (p as Node).is_queued_for_deletion()):
 		return 0
 	return maxi(1, roundi(amount * core_hp_mult))
 

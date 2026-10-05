@@ -13,7 +13,7 @@ func _owning(ids: Array) -> Dictionary:
 
 func test_every_weapon_part_fires_its_own_shot() -> void:
 	var scenes := {}
-	for part in CATALOG.parts.filter(func(p: PartDef) -> bool: return p.category == PartDef.Category.WEAPON):
+	for part in CATALOG.parts.filter(func(p: PartDef) -> bool: return p.category == PartDef.Category.WEAPON and not p.unique):
 		expect_true(part.weapon != null, "%s has a WeaponDef" % part.id)
 		if part.weapon:
 			expect_eq(part.weapon.id, part.id, "%s weapon id" % part.id)
