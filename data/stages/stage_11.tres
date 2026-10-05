@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StageDef" load_steps=26 format=3]
+[gd_resource type="Resource" script_class="StageDef" load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/elite_def.gd" id="elite_def_script"]
@@ -14,6 +14,7 @@
 [ext_resource type="Resource" path="res://data/enemies/rock_dropper.tres" id="e_rock_dropper"]
 [ext_resource type="Resource" path="res://data/enemies/plated.tres" id="e_plated"]
 [ext_resource type="Resource" path="res://data/elites/meteor_caller.tres" id="elite_meteor_caller"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/act3.ogg" id="music"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -74,6 +75,7 @@ delay = 7.92
 [resource]
 script = ExtResource("stage")
 id = &"stage_11"
+music = ExtResource("music")
 waves = Array[ExtResource("wave")]([SubResource("w0"), SubResource("w1"), SubResource("w2"), SubResource("w3"), SubResource("w4"), SubResource("w5"), SubResource("w6")])
 is_challenge = false
 reinforcements = 3

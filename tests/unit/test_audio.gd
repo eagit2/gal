@@ -43,6 +43,24 @@ func test_music_loops() -> void:
 	for file in DirAccess.get_files_at("res://data/themes"):
 		if file.ends_with(".tres"):
 			tracks.append((load("res://data/themes/" + file) as ThemeDef).music)
+	for file in DirAccess.get_files_at("res://data/stages"):
+		var stage: StageDef = load("res://data/stages/" + file) if file.ends_with(".tres") else null
+		if stage and stage.music:
+			tracks.append(stage.music)
 	for track in tracks:
 		expect_true(track is AudioStreamOggVorbis and (track as AudioStreamOggVorbis).loop,
 				"%s loops" % (track.resource_path if track else "missing track"))
+
+
+## Every Sector 1 stage has a soundtrack track, and boss stages never share a track with
+## regular stages.
+func test_sector_stages_have_music() -> void:
+	var sector: SectorDef = load("res://data/sectors/sector_1.tres")
+	var boss_tracks := {}
+	var stage_tracks := {}
+	for stage in sector.stages:
+		expect_true(stage.music != null, "%s has music" % stage.id)
+		if stage.music:
+			(boss_tracks if stage.boss else stage_tracks)[stage.music] = true
+	for track in boss_tracks:
+		expect_true(not stage_tracks.has(track), "%s is boss-only" % track.resource_path)

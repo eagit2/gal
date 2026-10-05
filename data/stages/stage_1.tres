@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StageDef" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="StageDef" load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
@@ -7,6 +7,7 @@
 [ext_resource type="Curve2D" path="res://data/paths/swoop_left.tres" id="p_swoop_left"]
 [ext_resource type="Curve2D" path="res://data/paths/swoop_right.tres" id="p_swoop_right"]
 [ext_resource type="Resource" path="res://data/medals/no_damage.tres" id="medal"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/act1.ogg" id="music"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -45,4 +46,5 @@ dive_aggression = 0.5
 kamikaze_speed = 0.7
 mimic_chance = 0.02
 enemy_hp_mult = 0.5
+music = ExtResource("music")
 music_intensity = 2

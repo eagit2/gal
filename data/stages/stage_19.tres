@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StageDef" load_steps=17 format=3]
+[gd_resource type="Resource" script_class="StageDef" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://resources/stage_def.gd" id="stage"]
 [ext_resource type="Script" path="res://resources/wave_def.gd" id="wave"]
@@ -7,6 +7,7 @@
 [ext_resource type="Curve2D" path="res://data/paths/swoop_left.tres" id="p_swoop_left"]
 [ext_resource type="Curve2D" path="res://data/paths/swoop_right.tres" id="p_swoop_right"]
 [ext_resource type="Resource" path="res://data/medals/sharpshooter.tres" id="medal"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/act4.ogg" id="music"]
 
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
@@ -93,6 +94,7 @@ elite_pool_ids = Array[StringName]([&"aegis", &"wood_leaf", &"copy_robot", &"gra
 elite_picks = 2
 mimic_chance = 0.12
 enemy_hp_mult = 2.7
+music = ExtResource("music")
 music_intensity = 3
 dive_aggression = 1.8
 kamikaze_speed = 0.85
