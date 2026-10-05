@@ -48,7 +48,6 @@ const ELITE_TRAITS := {
 	"reflect_shield": "res://scenes/enemies/elites/reflect_shield_trait.gd",
 	"weakness": "res://scenes/enemies/elites/weakness_trait.gd",
 	"copy_weapon": "res://scenes/enemies/elites/copy_weapon_trait.gd",
-	"time_stop": "res://scenes/enemies/elites/time_stop_trait.gd",
 	"scatter_body": "res://scenes/enemies/elites/scatter_body_trait.gd",
 	"leaf_shield": "res://scenes/enemies/elites/leaf_shield_trait.gd",
 	"multi_part": "res://scenes/enemies/elites/multi_part_trait.gd",

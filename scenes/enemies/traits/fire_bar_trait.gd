@@ -5,7 +5,8 @@ extends EnemyTrait
 
 @export var bar_scene: PackedScene = preload("res://scenes/enemies/traits/fire_bar.tscn")
 @export var segments := 6
-@export var spacing := 18.0
+@export var ball_radius := 12.0
+@export var spacing := 26.0
 @export var spin_speed := 1.6
 @export var wobble := 24.0
 @export var wobble_speed := 3.0
@@ -19,6 +20,7 @@ func tick(enemy: Enemy, _delta: float) -> void:
 	if diving and bar == null:
 		bar = bar_scene.instantiate()
 		bar.segments = segments
+		bar.ball_radius = ball_radius
 		bar.spacing = spacing
 		bar.spin_speed = spin_speed
 		bar.wobble = wobble

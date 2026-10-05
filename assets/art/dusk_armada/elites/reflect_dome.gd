@@ -1,5 +1,6 @@
 extends Node2D
-## Aegis's dome: a ring with one open arc that turns slowly. Fades to a faint outline while dropped.
+## Aegis's dome: a closed ring (or one with an open arc). Flickers before it overloads and fades to a
+## faint outline while down.
 
 const BLUE := Color(0.55, 0.85, 1.0)
 const OUTLINE := Color(0.11, 0.09, 0.16)
@@ -34,5 +35,7 @@ func _draw() -> void:
 	var glow := 0.7 + (0.3 * sin(_t * 30.0) if _warn else 0.0)
 	draw_arc(Vector2.ZERO, _radius, from, to, 48, OUTLINE, 9.0)
 	draw_arc(Vector2.ZERO, _radius, from, to, 48, Color(BLUE, glow), 5.0)
+	if _gap_arc <= 0.0:
+		return
 	for edge in [from, to]:
 		draw_circle(Vector2.from_angle(edge) * _radius, 5.0, Color.WHITE)

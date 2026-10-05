@@ -7,11 +7,14 @@ const EMBER := Color(0.7, 0.15, 0.1, 0.5)
 
 var _points := PackedVector2Array()
 var _grow := 0.0
+var _radius := 7.0
 var _t := 0.0
 
 
-func show_chain(points: PackedVector2Array, grow: float) -> void:
+## `radius` is each fireball's hit radius; the glow scales with it.
+func show_chain(points: PackedVector2Array, grow: float, radius := 7.0) -> void:
 	_points = points
+	_radius = radius
 	_grow = grow
 	queue_redraw()
 
@@ -28,9 +31,9 @@ func _draw() -> void:
 			# Not lit yet: a faint ember shows where the bar is unfurling.
 			draw_circle(p, 3.0, EMBER)
 			continue
-		var flicker := 1.0 + 0.2 * sin(_t * 18.0 + i * 1.7)
+		var flicker := (1.0 + 0.2 * sin(_t * 18.0 + i * 1.7)) * _radius / 7.0
 		draw_line(prev, p, EMBER, 3.0)
 		draw_circle(p, 10.0 * flicker, Color(FLAME, 0.35))
 		draw_circle(p, 7.0 * flicker, FLAME)
-		draw_circle(p, 3.5, HOT)
+		draw_circle(p, 0.5 * _radius, HOT)
 		prev = p

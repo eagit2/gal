@@ -43,3 +43,11 @@ func test_pod_stops_at_the_cap() -> void:
 func test_boomerang_curve_rate_sweeps_the_leg() -> void:
 	# 220 px at 300 px/s takes 0.733 s; the turn rate times that is the sweep.
 	expect_true(is_equal_approx(BoomerangShot.curve_rate(220.0, 300.0, 1.7) * 220.0 / 300.0, 1.7), "sweep")
+
+
+func test_met_ducks_only_while_watching() -> void:
+	var W := HardHatTrait.Mode.WATCH
+	expect_eq(HardHatTrait.next_mode(W, 1.0, true, 2.0, 1.2, 1.0), [HardHatTrait.Mode.HIDE, 1.0], "sees a shot and ducks")
+	expect_eq(HardHatTrait.next_mode(HardHatTrait.Mode.AWAY, 0.5, true, 2.0, 1.2, 1.0), [HardHatTrait.Mode.AWAY, 0.5], "looking away, open to fire")
+	expect_eq(HardHatTrait.next_mode(W, 0.0, false, 2.0, 1.2, 1.0), [HardHatTrait.Mode.AWAY, 1.2], "looks away after watching")
+	expect_eq(HardHatTrait.next_mode(HardHatTrait.Mode.HIDE, 0.0, true, 2.0, 1.2, 1.0), [W, 2.0], "pops back up to watch")
