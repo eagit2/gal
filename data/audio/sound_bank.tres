@@ -111,7 +111,7 @@ id = &"pickup"
 streams = Array[AudioStream]([ExtResource("s_pickup")])
 volume_db = -4.0
 pitch_variance = 0.02
-cooldown = 0.05
+cooldown = 0.12
 priority = 7
 bus = &"SFX"
 

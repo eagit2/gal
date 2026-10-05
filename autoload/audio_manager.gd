@@ -3,7 +3,7 @@ extends Node
 ## Sounds are data (data/audio/sound_bank.tres); AudioCues maps EventBus signals to them.
 ## Browsers start audio on the first input; Godot resumes the web audio context by itself.
 
-const SFX_POOL_SIZE := 16
+const SFX_POOL_SIZE := 24
 const BANK: SoundBank = preload("res://data/audio/sound_bank.tres")
 const FADE_TIME := 0.6
 const SILENT_DB := -60.0

@@ -1,6 +1,9 @@
 extends Node
 ## Object pools for frequently spawned scenes (bullets, particles, pickups).
 
+## Spares kept per scene; extras are freed so a bullet-heavy moment doesn't pin memory forever.
+const MAX_PER_SCENE := 256
+
 var _pools: Dictionary = {}  # PackedScene -> Array[Node]
 
 
@@ -18,6 +21,9 @@ func release(scene: PackedScene, node: Node) -> void:
 		node.get_parent().remove_child(node)
 	if not _pools.has(scene):
 		_pools[scene] = []
+	if _pools[scene].size() >= MAX_PER_SCENE:
+		node.queue_free()
+		return
 	_pools[scene].append(node)
 
 

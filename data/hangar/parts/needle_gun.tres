@@ -14,16 +14,6 @@ effects = Array[Dictionary]([])
 attributes = Array[Dictionary]([{
 "effects": [{
 "op": &"add",
-"stat": &"damage",
-"value": 1
-}],
-"id": &"power",
-"max": 2,
-"name": "POWER",
-"text": "+1 damage per level"
-}, {
-"effects": [{
-"op": &"add",
 "stat": &"fire_rate",
 "value": 0.1
 }],
