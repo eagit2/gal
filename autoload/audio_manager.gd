@@ -3,7 +3,7 @@ extends Node
 ## Sounds are data (data/audio/sound_bank.tres); AudioCues maps EventBus signals to them.
 ## Browsers start audio on the first input; Godot resumes the web audio context by itself.
 
-const SFX_POOL_SIZE := 16
+const SFX_POOL_SIZE := 24
 const BANK: SoundBank = preload("res://data/audio/sound_bank.tres")
 const FADE_TIME := 0.6
 const SILENT_DB := -60.0
@@ -11,8 +11,6 @@ const SILENT_DB := -60.0
 var cues: AudioCues
 var _music: Array[AudioStreamPlayer] = []
 var _active := 0
-## Where each track was left, so a style that comes back resumes instead of restarting.
-var _positions: Dictionary = {}
 var _music_tweens: Array[Tween] = [null, null]
 var _sfx_pool: Array[AudioStreamPlayer] = []
 var _voice_priority: Array[int] = []
@@ -57,21 +55,28 @@ func current_music() -> AudioStream:
 	return player.stream if player.playing else null
 
 
-## Crossfades to stream. Null fades the music out.
+## Crossfades to stream. Null fades the music out. Asking for a track that is still fading out
+## (restart right after game over, a style that flips back) fades that player back in instead
+## of leaving silence or restarting the track.
 func play_music(stream: AudioStream, fade: float = FADE_TIME) -> void:
-	var old := _music[_active]
-	if stream != null and old.stream == stream and old.playing:
+	if stream != null and _music[_active].stream == stream and _music[_active].playing:
+		_fade(_active, 0.0, fade, false)
 		return
+	var old := _music[_active]
 	if old.playing:
-		_positions[old.stream] = old.get_playback_position()
 		_fade(_active, SILENT_DB, fade, true)
 	if stream == null:
 		return
 	_active = 1 - _active
 	var new := _music[_active]
+	if new.stream == stream and new.playing:
+		_fade(_active, 0.0, fade, false)
+		return
+	new.stop()
 	new.stream = stream
 	new.volume_db = SILENT_DB if fade > 0.0 else 0.0
-	new.play(_positions.get(stream, 0.0))
+	# Always from the loop start: seeking a looping track can glitch under web sample playback.
+	new.play()
 	_fade(_active, 0.0, fade, false)
 
 
@@ -79,7 +84,8 @@ func _fade(index: int, to_db: float, time: float, stop_after: bool) -> void:
 	if _music_tweens[index]:
 		_music_tweens[index].kill()
 	var player := _music[index]
-	var tween := create_tween()
+	# Combos change Engine.time_scale; fades keep real time.
+	var tween := create_tween().set_ignore_time_scale(true)
 	tween.tween_property(player, "volume_db", to_db, maxf(time, 0.01))
 	if stop_after:
 		tween.tween_callback(player.stop)

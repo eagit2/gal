@@ -27,3 +27,12 @@ func test_scaled_trait_settings() -> void:
 
 func test_dev_level_option() -> void:
 	expect_eq(DevOptions.parse(PackedStringArray(["level=3"])).level, 3, "level=3")
+
+
+## Lanes must still fit at the top level, or the lane picker could never finish (froze the game).
+func test_meteor_lanes_fit_at_level_5() -> void:
+	var base := MeteorCallTrait.new()
+	var top := base.scaled(1.75, 2.6) as MeteorCallTrait
+	expect_true(is_equal_approx(top.lane_width, base.lane_width), "lane width stays put")
+	var fit := floori((540.0 - 2.0 * top.lane_width) / (top.lane_width * 1.6)) + 1
+	expect_true(top.lanes <= fit, "%d lanes fit" % top.lanes)

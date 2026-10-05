@@ -44,6 +44,7 @@ func _spawn_partner(elite: Elite, at: Vector2, hp_fraction: float) -> void:
 		return
 	var twin: Elite = load(ELITE_SCENE).instantiate()
 	twin.setup(elite.def, elite.difficulty, elite.target, elite.entities)
+	twin.level = elite.level
 	twin.hp_scale = elite.hp_scale * hp_fraction
 	state(twin)["partner"] = elite
 	state(twin)["revives"] = state(elite)["revives"]

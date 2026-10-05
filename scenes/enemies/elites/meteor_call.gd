@@ -52,7 +52,10 @@ func _pick_lanes(elite: Elite) -> Array[float]:
 	# One lane on the player's column, the rest elsewhere.
 	if is_instance_valid(elite.target):
 		picked.append(clampf(elite.target.global_position.x, lane_width, 540.0 - lane_width))
-	while picked.size() < lanes:
+	# Bounded: at high elite levels wide lanes may not all fit, and an unbounded retry froze the game.
+	var tries := 0
+	while picked.size() < lanes and tries < 64:
+		tries += 1
 		var x := randf_range(lane_width, 540.0 - lane_width)
 		if picked.all(func(p: float) -> bool: return absf(p - x) > lane_width * 1.6):
 			picked.append(x)

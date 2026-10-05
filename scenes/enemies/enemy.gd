@@ -244,12 +244,20 @@ func _speed_scale() -> float:
 	return 1.0 + 0.15 * (aggression - 1.0)
 
 
+## Built once per physics frame and shared by every diver (was rebuilt by each one: O(n^2) per frame).
+## Includes this enemy; Steering.separation skips its own zero-distance entry.
+static var _positions_frame := -1
+static var _positions: Array[Vector2] = []
+
+
 func _attacker_positions() -> Array[Vector2]:
-	var positions: Array[Vector2] = []
-	for node in get_tree().get_nodes_in_group(&"attackers"):
-		if node != self:
-			positions.append((node as Node2D).position)
-	return positions
+	var frame := Engine.get_physics_frames()
+	if frame != _positions_frame:
+		_positions_frame = frame
+		_positions.clear()
+		for node in get_tree().get_nodes_in_group(&"attackers"):
+			_positions.append((node as Node2D).position)
+	return _positions
 
 
 # --- Entry and formation ---------------------------------------------------------------------

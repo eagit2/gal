@@ -259,3 +259,9 @@ func test_pilots() -> void:
 	state.erase("pilot")
 	state.erase("pilots")
 	expect_eq(Loadout.pilot_of(CATALOG, Loadout.normalize(state, CATALOG)), CATALOG.pilots[0], "older hangar saves get a pilot")
+
+
+func test_laser_never_gets_penetration() -> void:
+	var def := CATALOG.part(&"pulse_laser")
+	expect_true(def.attribute(&"thickness").is_empty(), "no PENETRATION track on the laser")
+	expect_eq(def.attributes.size(), 2, "two tracks: POWER and SPEED")

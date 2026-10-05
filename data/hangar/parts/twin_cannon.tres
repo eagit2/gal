@@ -24,21 +24,6 @@ attributes = Array[Dictionary]([{
 }, {
 "effects": [{
 "op": &"add",
-"stat": &"fire_rate",
-"value": 0.1
-}],
-"final": [{
-"op": &"add",
-"stat": &"fire_rate",
-"value": 1.0
-}],
-"id": &"fire_rate",
-"max": 5,
-"name": "FIRE RATE",
-"text": "+10% fire rate per level; the last level is a big jump"
-}, {
-"effects": [{
-"op": &"add",
 "stat": &"extra_shots",
 "value": 1
 }],
