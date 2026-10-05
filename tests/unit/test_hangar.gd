@@ -180,7 +180,7 @@ func test_sockets_grow_with_rarity() -> void:
 	for def in CATALOG.parts:
 		expect_true(def.links * 2 <= def.sockets, "%s links fit" % def.id)
 	for tier in PartDef.Tier.values():
-		var counts := CATALOG.parts.filter(func(p: PartDef) -> bool: return p.tier == tier).map(func(p: PartDef) -> int: return p.sockets)
+		var counts := CATALOG.parts.filter(func(p: PartDef) -> bool: return p.tier == tier and not p.unique).map(func(p: PartDef) -> int: return p.sockets)
 		if not counts.is_empty():
 			expect_true(counts.min() >= last, "tier %d has at least as many sockets" % tier)
 			last = counts.max()

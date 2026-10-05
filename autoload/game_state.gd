@@ -13,6 +13,8 @@ var stats: Dictionary = UpgradeSystem.BASE_STATS.duplicate()
 var rng := RandomNumberGenerator.new()
 ## Seconds left on a Cryo Pulse freeze. Enemies, enemy shots and attack orders hold while above 0.
 var freeze_left := 0.0
+## Power-ups held this life (Powerups counts); lost with the life.
+var powerups: Dictionary = Powerups.empty()
 var _combo_effects: Array[Dictionary] = []
 ## Permanent bonuses from the hangar loadout. Kept across runs.
 var _meta_effects: Array[Dictionary] = []
@@ -25,6 +27,7 @@ func start_run(difficulty: StringName, starting_lives: int) -> void:
 	sector_index = 0
 	stage_index = 0
 	freeze_left = 0.0
+	powerups = Powerups.empty()
 	_combo_effects.clear()
 	rng.randomize()
 	_recompute()
@@ -59,6 +62,7 @@ func add_score(amount: int) -> void:
 ## Returns true when the run is over.
 func lose_life() -> bool:
 	lives = max(lives - 1, 0)
+	clear_powerups()
 	EventBus.player_died.emit(lives)
 	EventBus.lives_changed.emit(lives)
 	return lives == 0
@@ -70,11 +74,26 @@ func set_meta_effects(effects: Array[Dictionary]) -> void:
 	_recompute()
 
 
+## Counts one power-up pickup. Returns false when that kind is already capped.
+func add_powerup(kind: StringName) -> bool:
+	if not Powerups.add(powerups, kind, Powerups.TABLE):
+		return false
+	_recompute()
+	EventBus.powerups_changed.emit(powerups)
+	return true
+
+
+func clear_powerups() -> void:
+	powerups = Powerups.empty()
+	_recompute()
+	EventBus.powerups_changed.emit(powerups)
+
+
 func set_combo_effects(effects: Array[Dictionary]) -> void:
 	_combo_effects = effects
 	_recompute()
 
 
 func _recompute() -> void:
-	stats = UpgradeSystem.compute(_meta_effects + _combo_effects)
+	stats = UpgradeSystem.compute(_meta_effects + _combo_effects + Powerups.effects(powerups, Powerups.TABLE))
 	EventBus.stats_changed.emit()

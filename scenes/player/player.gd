@@ -22,6 +22,8 @@ const WINGMAN_OFFSET := Vector2(38, 0)
 const CAPTURE_TIME := 1.1
 ## Enemy shots passing within this distance (but missing) count as grazes.
 const GRAZE_RADIUS := 30.0
+## Gap between side-by-side copies of a volley (+1 SHOT power-ups), plus the gun's own barrel spread.
+const VOLLEY_GAP := 16.0
 
 ## The nose weapon (drones copy it); set from the hangar loadout on ready.
 @export var weapon: WeaponDef
@@ -50,10 +52,8 @@ var _graze_candidates: Array[Bullet] = []
 
 func _ready() -> void:
 	_hurtbox.hurt.connect(_on_hurt)
-	_guns = ShipGuns.mounted(Hangar.CATALOG, Hangar.state())
-	for gun in _guns:
-		gun["cooldown"] = 0.0
-	weapon = _guns[0]["weapon"]
+	reload_guns()
+	EventBus.hangar_changed.connect(reload_guns)
 	# Added from code so player.tscn stays untouched while the art PR is open.
 	shield = SHIELD_SCENE.instantiate()
 	add_child(shield)
@@ -63,6 +63,14 @@ func _ready() -> void:
 	var power: Node = PILOT_POWER.new()
 	power.set("player", self)
 	add_child(power)
+
+
+## Rebuilds the gun list from the hangar loadout (a cutscene can swap the nose gun mid-run).
+func reload_guns() -> void:
+	_guns = ShipGuns.mounted(Hangar.CATALOG, Hangar.state())
+	for gun in _guns:
+		gun["cooldown"] = 0.0
+	weapon = _guns[0]["weapon"]
 
 
 func _physics_process(delta: float) -> void:
@@ -214,11 +222,13 @@ func _fire(gun: Dictionary) -> void:
 	var offsets := WeaponDef.barrels(count, gun_weapon.spacing)
 	var facing := ShipGuns.muzzle_angle(mount)
 	var muzzle := ShipGuns.muzzle_offset(mount)
-	for i in angles.size():
-		var from := muzzle + Vector2(offsets[i], 0).rotated(deg_to_rad(facing))
-		fire_shot(global_position + from, facing + angles[i], gun_weapon)
-		if dual:
-			fire_shot(global_position + WINGMAN_OFFSET + from, facing + angles[i], gun_weapon)
+	var copies := WeaponDef.barrels(1 + int(stats[&"volleys"]), VOLLEY_GAP + gun_weapon.spacing * (count - 1))
+	for copy in copies:
+		for i in angles.size():
+			var from := muzzle + Vector2(offsets[i] + copy, 0).rotated(deg_to_rad(facing))
+			fire_shot(global_position + from, facing + angles[i], gun_weapon)
+			if dual:
+				fire_shot(global_position + WINGMAN_OFFSET + from, facing + angles[i], gun_weapon)
 	if mount == &"nose":
 		EventBus.shot_fired.emit()
 
@@ -231,7 +241,8 @@ func fire_shot(from: Vector2, degrees: float, shot_weapon: WeaponDef = null) -> 
 		return  # Capped weapon (mines) already has its most out.
 	var bullet: Bullet = Pools.acquire(w.projectile_scene)
 	var shot_velocity: Vector2 = Vector2.UP.rotated(deg_to_rad(degrees)) * w.projectile_speed * stats[&"projectile_speed"]
-	bullet.launch(entities, from, shot_velocity, w.damage + stats[&"damage"], w.projectile_scene, w.pierce + stats[&"pierce"], w.homing + stats[&"homing"])
+	var damage := Powerups.scaled_damage(w.damage + stats[&"damage"], stats[&"power_mult"], randf())
+	bullet.launch(entities, from, shot_velocity, damage, w.projectile_scene, w.pierce + stats[&"pierce"], w.homing + stats[&"homing"])
 	bullet.burn = stats[&"burn"]
 	bullet.chill = stats[&"chill"]
 	bullet.chain = stats[&"chain"]

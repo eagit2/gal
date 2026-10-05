@@ -10,7 +10,7 @@ const CHIP_COPIES := 8
 ## Owns everything in the catalog (adds to the state; never removes).
 static func grant_all(catalog: HangarCatalog, state: Dictionary) -> void:
 	for def in catalog.parts:
-		if not state["parts"].has(String(def.id)):
+		if not def.unique and not state["parts"].has(String(def.id)):
 			state["parts"][String(def.id)] = {}
 	var pilots: Array = state["pilots"]
 	for def in catalog.pilots:

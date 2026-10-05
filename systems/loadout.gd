@@ -171,6 +171,8 @@ static func chips_in(catalog: HangarCatalog, state: Dictionary, def: PartDef) ->
 	for group in sockets(catalog, state, def):
 		count += maxi(group, 1)
 	var saved: Array = state["sockets"].get(String(def.id), [])
+	if not def.locked_chips.is_empty():
+		saved = def.locked_chips.map(func(c: StringName) -> String: return String(c))
 	var result: Array[String] = []
 	for i in count:
 		var id := str(saved[i]) if i < saved.size() else ""
@@ -200,7 +202,7 @@ static func chips_free(state: Dictionary, chip: StringName) -> int:
 ## Puts an owned chip (or "" to empty it) in socket `index` of an owned part. False when no free copy.
 static func set_chip(catalog: HangarCatalog, state: Dictionary, def: PartDef, index: int, chip: StringName) -> bool:
 	var list := chips_in(catalog, state, def)
-	if index < 0 or index >= list.size() or not owns(state, def.id):
+	if index < 0 or index >= list.size() or not owns(state, def.id) or not def.locked_chips.is_empty():
 		return false
 	if chip != &"" and list[index] != String(chip) and chips_free(state, chip) <= 0:
 		return false

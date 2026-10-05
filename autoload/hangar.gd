@@ -134,6 +134,23 @@ func toggle_node(node: TreeNodeDef) -> void:
 	_changed()
 
 
+## A caught part drop: owned from now on and saved at once. Returns false (and pays `scrap_instead`)
+## when it is already owned.
+func bank_part(id: StringName, scrap_instead: int) -> bool:
+	if Loadout.owns(state(), id):
+		add_scrap(scrap_instead)
+		return false
+	state()["parts"][String(id)] = {}
+	_changed()
+	return true
+
+
+## A caught chip drop: one more copy, saved at once.
+func bank_chip(id: StringName) -> void:
+	state()["chips"][String(id)] = int(state()["chips"].get(String(id), 0)) + 1
+	_changed()
+
+
 ## New store stock for a fee. Returns false when it can't be afforded.
 func reroll() -> bool:
 	if HangarStock.REROLL_COST > credits():
@@ -166,6 +183,11 @@ func set_power_effects(effects: Array[Dictionary]) -> void:
 ## Pushes the loadout into the run stats.
 func apply() -> void:
 	GameState.set_meta_effects(Loadout.effects(CATALOG, state()) + _power_effects)
+
+
+## Saves and applies a loadout changed from outside the hangar menus (mentor cutscenes).
+func commit() -> void:
+	_changed()
 
 
 func _spend(amount: int) -> void:

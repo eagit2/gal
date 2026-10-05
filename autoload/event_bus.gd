@@ -67,3 +67,12 @@ signal captive_lost()
 signal wingman_lost(at: Vector2)
 ## SaveManager switched to (or started fresh in) a save slot; `data` now holds that slot.
 signal save_slot_loaded(slot: int)
+## A drop capsule was caught: kind &"powerup" (id = Powerups kind), &"part" or &"chip" (id = its id).
+signal drop_caught(kind: StringName, id: StringName, at: Vector2)
+## The per-life power-up counts changed (Powerups counts dictionary).
+signal powerups_changed(counts: Dictionary)
+## A caught drop was banked or applied; `text` is the toast to show.
+signal drop_banked(text: String, color: Color)
+## A cutscene started or finished (gameplay holds meanwhile).
+signal cutscene_started(id: StringName)
+signal cutscene_finished(id: StringName)

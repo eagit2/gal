@@ -9,6 +9,8 @@ const BASE_STATS := {
 	&"extra_shots": 0,
 	&"spread": 0.0,  # extra fan degrees
 	&"damage": 0,  # added to the weapon's damage
+	&"power_mult": 1.0,  # damage multiplier (POWER power-ups)
+	&"volleys": 0,  # extra side-by-side copies of every gun's volley (+1 SHOT power-ups)
 	&"pierce": 0,  # enemies a shot passes through
 	&"homing": 0.0,  # shot turn rate, radians per second
 	&"projectile_speed": 1.0,

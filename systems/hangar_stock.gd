@@ -14,7 +14,7 @@ const CHIP_WEIGHT := 2
 ## Replaces state["stock"] with up to SIZE different picks: unowned parts and chips.
 static func roll(catalog: HangarCatalog, state: Dictionary, rng: RandomNumberGenerator) -> void:
 	var pool: Array[Resource] = []
-	pool.append_array(catalog.parts.filter(func(p: PartDef) -> bool: return not Loadout.owns(state, p.id)))
+	pool.append_array(catalog.parts.filter(func(p: PartDef) -> bool: return not p.unique and not Loadout.owns(state, p.id)))
 	pool.append_array(catalog.chips)
 	var stock: Array = []
 	while stock.size() < SIZE and not pool.is_empty():

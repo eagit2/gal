@@ -12,6 +12,8 @@ var _stages_cleared := 0
 var _styles: Array[StringName] = []
 var _scrap := 0
 var _combos: Array[StringName] = []
+var _cutscenes: Array[StringName] = []
+var _drops: Array[StringName] = []
 
 
 func _initialize() -> void:
@@ -26,6 +28,8 @@ func _initialize() -> void:
 	bus.stage_cleared.connect(func(_id: StringName) -> void: _stages_cleared += 1)
 	bus.scrap_collected.connect(func(amount: int, _at: Vector2) -> void: _scrap += amount)
 	bus.combo_started.connect(func(c: Resource, _chain: int) -> void: _combos.append(c.get("id")))
+	bus.cutscene_finished.connect(func(id: StringName) -> void: _cutscenes.append(id))
+	bus.drop_caught.connect(func(kind: StringName, id: StringName, _at: Vector2) -> void: _drops.append(StringName("%s:%s" % [kind, id])))
 	root.get_node("StyleDirector").style_changed.connect(func(t: ThemeDef) -> void: _styles.append(t.id))
 
 
@@ -38,7 +42,7 @@ func _process(_delta: float) -> bool:
 	if _frame < _frames:
 		return false
 	var state := root.get_node("GameState")
-	print("kills=%d hits=%d stages_cleared=%d score=%d lives=%d scrap=%d combos=%s styles=%s" % [_kills, _hits, _stages_cleared, state.score, state.lives, _scrap, _combos, _styles])
+	print("kills=%d hits=%d stages_cleared=%d score=%d lives=%d scrap=%d combos=%s styles=%s cutscenes=%s drops=%s" % [_kills, _hits, _stages_cleared, state.score, state.lives, _scrap, _combos, _styles, _cutscenes, _drops])
 	var ok: bool = _kills > 0 and state.score > 0
 	if not ok:
 		printerr("SMOKE FAIL: no kills or score")

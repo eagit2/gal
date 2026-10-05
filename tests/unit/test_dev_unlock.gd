@@ -8,7 +8,7 @@ func test_grant_all_owns_everything() -> void:
 	var state := Loadout.default_state(CATALOG)
 	DevUnlock.grant_all(CATALOG, state)
 	for def in CATALOG.parts:
-		expect_true(Loadout.owns(state, def.id), "owns %s" % def.id)
+		expect_eq(Loadout.owns(state, def.id), not def.unique, "owns %s (story parts excepted)" % def.id)
 	for i in CATALOG.ships.size():
 		var id: StringName = CATALOG.ships[i].id
 		expect_true(Loadout.unlocked(state, CATALOG.ship(id)), "%s unlocked" % id)

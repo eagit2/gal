@@ -22,6 +22,7 @@ const PERFECT_SCRAP := 25
 var stage_number := 0
 var game_over := false
 var _dev := DevOptions.from_environment()
+var _mentor := MentorDirector.new()
 
 @onready var _entities: Node2D = $Entities
 @onready var _player: Player = $Entities/Player
@@ -69,6 +70,10 @@ func _ready() -> void:
 	EventBus.player_captured.connect(_on_player_captured)
 	_combos.difficulty = difficulty
 	_hud.set_lives(GameState.lives)
+	_mentor.player = _player
+	add_child(_mentor)
+	if _dev.mentor:
+		_mentor.force_intro()
 	stage_number = _dev.stage_index(sector.stages, int(run.get("stage", first_stage)))
 	_start_stage()
 
@@ -80,7 +85,7 @@ func _load_difficulty(id: StringName) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not game_over and event.is_action_pressed("pause"):
+	if not game_over and not _mentor.playing and event.is_action_pressed("pause"):
 		get_tree().paused = not get_tree().paused
 		_hud.show_message("PAUSED" if get_tree().paused else "")
 
@@ -89,7 +94,13 @@ func current_stage() -> StageDef:
 	return sector.stages[stage_number % sector.stages.size()]
 
 
+## A mentor cutscene due before this stage plays first.
 func _start_stage() -> void:
+	if not _mentor.intercept_start(current_stage().id, _begin_stage):
+		_begin_stage()
+
+
+func _begin_stage() -> void:
 	var stage := current_stage()
 	var loop := stage_number / sector.stages.size()
 	_dives.active = false
@@ -127,6 +138,11 @@ func _on_stage_finished(kills: int, total: int) -> void:
 		_hud.show_banner("%sHITS %d / %d\nBONUS %d" % ["PERFECT!\n" if kills == total else "", kills, total, bonus], STAGE_DELAY)
 	if not _dev.repeat:
 		stage_number += 1
+	if not _mentor.intercept_clear(stage.id, _wait_for_next_stage):
+		_wait_for_next_stage()
+
+
+func _wait_for_next_stage() -> void:
 	get_tree().create_timer(STAGE_DELAY, false).timeout.connect(_on_stage_delay_done)
 
 
