@@ -10,12 +10,21 @@ const WAITS := ["interval", "delay", "telegraph", "warn", "aim_time", "closed_ti
 ## Settings a stronger perk must not change (a longer window would make the elite easier).
 const KEEP := ["mult", "hp_step", "alpha", "solid_time", "open_time", "eye_open", "peek_time", "arc_open", "copy_life", "fragment", "weapon", "lane", "pod_radius"]
 
+## Scaled copies already made: base trait -> {Vector2(perk, hp): copy}.
+static var _scaled := {}
+
 
 ## A copy for an elite of a higher level: counts, radii and speeds times `perk`, waits divided by
 ## it, and hit-point settings (ending in "hp") times `hp`. Settings named in `KEEP` stay put.
+## Elites of the same level share one copy, so state(other) reads the same key (Twin Sentinels set
+## their partner's state; with a copy each, every twin spawned another twin forever and froze the game).
 func scaled(perk: float, hp: float) -> EliteTrait:
 	if is_equal_approx(perk, 1.0) and is_equal_approx(hp, 1.0):
 		return self
+	var copies: Dictionary = _scaled.get_or_add(self, {})
+	var level_key := Vector2(perk, hp)
+	if copies.has(level_key):
+		return copies[level_key]
 	var copy: EliteTrait = duplicate()
 	for info in get_property_list():
 		if not info["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE:
@@ -26,6 +35,7 @@ func scaled(perk: float, hp: float) -> EliteTrait:
 			continue
 		var factor := hp if key.ends_with("hp") else (1.0 / perk if WAITS.any(func(w: String) -> bool: return key.contains(w)) else perk)
 		copy.set(key, maxi(1, roundi(value * factor)) if value is int else snappedf(value * factor, 0.01))
+	copies[level_key] = copy
 	return copy
 
 

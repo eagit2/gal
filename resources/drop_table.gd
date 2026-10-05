@@ -22,8 +22,8 @@ extends Resource
 @export var owned_part_scrap := 100
 
 @export_group("Power-ups")
-@export var enemy_powerup := 0.015
-@export var elite_powerup := 0.25
+@export var enemy_powerup := 0.012
+@export var elite_powerup := 0.2
 @export var boss_powerup := 1.0
 ## Each POWER or FIRE RATE pickup multiplies by this; capped at the max.
 @export var powerup_step := 1.1

@@ -8,8 +8,8 @@ const CATALOG: HangarCatalog = preload("res://data/hangar/catalog.tres")
 func test_rates_match_the_plan() -> void:
 	expect_true(is_equal_approx(TABLE.enemy_item, 0.005), "enemy item 0.5%")
 	expect_true(is_equal_approx(TABLE.elite_item, 0.05), "elite item 5%")
-	expect_true(is_equal_approx(TABLE.enemy_powerup, 0.015), "enemy power-up 1.5%")
-	expect_true(is_equal_approx(TABLE.elite_powerup, 0.25), "elite power-up 25%")
+	expect_true(is_equal_approx(TABLE.enemy_powerup, 0.012), "enemy power-up 1.2%")
+	expect_true(is_equal_approx(TABLE.elite_powerup, 0.2), "elite power-up 20%")
 	expect_true(is_equal_approx(TABLE.boss_powerup, 1.0), "boss power-up always")
 
 

@@ -23,6 +23,16 @@ func test_scaled_trait_settings() -> void:
 	expect_eq(tougher.layer_hp, base.layer_hp * 3, "hp settings scale with level hp")
 	expect_true(is_equal_approx(tougher.regrow_delay, base.regrow_delay / 2.0), "waits shrink")
 	expect_true(base.scaled(1.0, 1.0) == base, "level 1 keeps the same resource")
+	expect_true(base.scaled(2.0, 3.0) == tougher, "same level shares one copy")
+
+
+## Twins write their partner's state; both must key it on the same trait copy, or every new twin
+## spawns another one forever (stage 6 freeze, V38).
+func test_twins_share_state_above_level_1() -> void:
+	var base := TwinTrait.new()
+	var a := base.scaled(1.25, 1.5)
+	var b := base.scaled(1.25, 1.5)
+	expect_true(a == b, "one copy per level")
 
 
 func test_dev_level_option() -> void:
